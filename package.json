@@ -19,6 +19,8 @@
   "scripts": {
     "start": "ts-node index.ts",
     "woof": "nodemon index.ts",
-    "commands": "ts-node commands.ts"
+    "commands": "ts-node commands.ts",
+    "build": "tsc",
+    "postinstall": "npm run build"
   }
 }
