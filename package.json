@@ -17,7 +17,7 @@
     "redis-om": "^0.3.6"
   },
   "scripts": {
-    "start": "node index.ts",
+    "start": "ts-node index.ts",
     "woof": "nodemon index.ts",
     "commands": "ts-node commands.ts"
   }
