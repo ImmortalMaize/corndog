@@ -1,3 +1,3 @@
 import { Client } from 'redis-om'
 
-export default new Client()
+export default await new Client().open(process.env.REDIS_URL)
