@@ -20,6 +20,8 @@ interface FinishedBeepForm {
 
 export default {
     generate: async (form: FinishedBeepForm) => {
+        await client.open(process.env.REDIS_URL)
+
         const repository = client.fetchRepository(schema)
         const finishedBeep = repository.createEntity()
 
@@ -35,6 +37,8 @@ export default {
         console.log("Did it work?")
     },
     search: async (key: keyof FinishedBeepForm, value: string) => {
+        await client.open(process.env.REDIS_URL)
+
         const repository = client.fetchRepository(schema)
         await repository.createIndex()
 
@@ -43,6 +47,7 @@ export default {
         .where(key)
         .equals(value).return.first().catch((reason => console.log(reason)))
 
+        await client.close()
         return results
     }
 }
