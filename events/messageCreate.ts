@@ -30,12 +30,14 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
         if (!message.cleanContent.match(utils.hasSauce)) {
             bad = true
             reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
+        } else {
+            if (!message.cleanContent.match(utils.hasSauce)?.every(
+                sauce => sauce.length < 50
+            )) {
+                reply(message, "Shorten your link(s)...! > _<")
+            }
         }
-        if (!message.cleanContent.match(utils.hasSauce)?.every(
-            sauce => sauce.length < 50
-        )) {
-            reply(message, "Shorten your link(s)...! > _<")
-        }
+
         if (message.attachments.filter(attachment => attachment.contentType === "audio").size > 0) {
             reply(message, "Shorten your link(s)...! > _<")
         }
