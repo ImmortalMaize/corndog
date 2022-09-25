@@ -14,8 +14,8 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
         return
     }
 
-    console.log("New finished beep! Alright let's see...")
     if (message.channel.id === channels["finished-beeps"]) {
+        console.log("New finished beep! Alright let's see...")
         message.react('👌')
 
         let bad: boolean = false
