@@ -1,1 +1,1 @@
-web: npm start --port=$PORT
+worker: ts-node index.ts
