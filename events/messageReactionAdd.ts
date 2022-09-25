@@ -35,11 +35,10 @@ const pickEmbed = (
 }
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-    console.log(reaction.message)
     if (!(reaction.message.channel.id === channels["finished-beeps"])) {
         return
     }
-
+    console.log("New!")
     if (reaction.partial) {
         try {
             await reaction.fetch()
@@ -51,6 +50,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     const guild = reaction.message.guild
     const member = guild?.members.cache.get((reaction.message.author as User).id)
     const count = (await reaction.message.reactions.cache.get('👌')?.users.fetch()).filter(user => user.id !== member.id && user.id !== config.clientId).size
+    console.log('👌:' + count)
     const quota = count >= picks.quota
     const precedent = await finishedBeep.search("submission", reaction.message.id)
     
@@ -61,7 +61,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
     if (quota) {
         if (precedent) {
-            console.log("deja vu")
+            console.log("Quota and precedent met!")
             const embedID = precedent.toJSON().embed
             console.log(embedID)
             
@@ -72,6 +72,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             })
 
         } else {
+            console.log("Quota but no precedent!")
             member?.roles.add(reward)
 
             const embed = pickEmbed(reaction.message as Message, reaction.count)
@@ -84,12 +85,13 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 submission: reaction.message.id,
                 embed: pick.id
             })
+            console.log("Generated ting")
         }
     } else {
         if (precedent) {
-
+            console.log("Quota not met but precedented!")
         } else {
-
+            console.log("Quota and precedent not met!")
         }
     }
 })
