@@ -26,7 +26,7 @@ await getCommands()
 const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN as string);
 
 
-rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+await rest.put(Routes.applicationCommands(clientId), { body: commands })
 	.then((data) => console.log(`Successfully registered ${(data as Array<any>).length} application commands.`))
 	.catch(console.error)
 }
