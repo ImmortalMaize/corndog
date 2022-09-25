@@ -36,11 +36,13 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             if (!message.cleanContent.match(utils.hasSauce)?.every(
                 sauce => sauce.length < 50
             )) {
+                bad = true
                 reply(message, "Shorten your link(s)...! > _<")
             }
         }
 
         if (message.attachments.filter(attachment => attachment.contentType === "audio").size > 0) {
+            bad = true
             reply(message, "Shorten your link(s)...! > _<")
         }
         if (bad) {
