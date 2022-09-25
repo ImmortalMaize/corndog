@@ -13,35 +13,39 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
     if (message.author.id === config.clientId) {
         return
     }
+
+    console.log("New finished beep! Alright let's see...")
     if (message.channel.id === channels["finished-beeps"]) {
         message.react('👌')
 
         let bad: boolean = false
         if (message.cleanContent.length > 450) {
+            console.log("Message length is bad.")
             bad = true
             reply(message, "The character limit is 450 or under. Yours is " + message.cleanContent.length + "! > _<")
         }
         if (message.cleanContent.match(/\n/gm)?.length >= 5) {
-            bad = true
-            reply(message, "Too many line breaks! > _<")
-        }
-        if (message.cleanContent.match(/\n/gm)?.length >= 5) {
+            console.log("Message line breaks are bad.")
             bad = true
             reply(message, "Too many line breaks! > _<")
         }
         if (!message.cleanContent.match(utils.hasSauce)) {
+            console.log("No link = bad!")
             bad = true
             reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
         } else {
+            console.log("There's a link... Okay.")
             if (!message.cleanContent.match(utils.hasSauce)?.every(
                 sauce => sauce.length < 50
             )) {
+                console.log("The link is too long. BAD.")
                 bad = true
                 reply(message, "Shorten your link(s)...! > _<")
             }
         }
 
-        if (message.attachments.filter(attachment => attachment.contentType === "audio").size > 0) {
+        if (message.attachments.size > 0) {
+            console.log("ATTACHMENTS ARE BAD!!!")
             bad = true
             reply(message, "Shorten your link(s)...! > _<")
         }
