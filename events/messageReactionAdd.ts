@@ -75,7 +75,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             console.log("Quota but no precedent!")
             member?.roles.add(reward)
 
-            const embed = pickEmbed(reaction.message as Message, reaction.count)
+            const embed = pickEmbed(reaction.message as Message, count)
             const pick = await finishedPicks.send({
                 content: `Congratulations ${userMention(member.id)} on getting picked!`,
                 embeds: [embed]
