@@ -24,7 +24,7 @@ export default new ReadableCommand(
         const scope = interaction.options.getSubcommand()
         const backWhen = scope === "monthly" ? utils.goBack(1, "month") : utils.goBack(1, "week")
         const picks = (await finishedPicks.messages.fetch()).filter(message => message.createdTimestamp > backWhen).map(pick => pick)
-        const pickReactions = picks.map(async (pick) => pick.reactions.cache.get(utils.hand).users.fetch())
+        const pickReactions = picks.map(pick => pick.reactions.cache.get(utils.hand).users.cache)
         const all = await Promise.all(pickReactions)
 
         console.log(all.slice(0, 5))
