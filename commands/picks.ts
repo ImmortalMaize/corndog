@@ -19,12 +19,13 @@ export default new ReadableCommand(
         .setDescription("Get finished picks for this week.")
     )
     , async (interaction: ChatInputCommandInteraction) => {
-        const finishedPicks = (await interaction.guild.channels.fetch()).get(channels["finished-picks"]) as TextChannel
+        const finishedPicks = (await interaction.guild.channels.fetch()).get(channels["finished-beeps"]) as TextChannel
 
         const scope = interaction.options.getSubcommand()
         const backWhen = scope === "monthly" ? utils.goBack(1, "month") : utils.goBack(1, "week")
-        const picks = (await finishedPicks.messages.fetch()).filter(message => message.createdTimestamp > backWhen).map(pick => pick.cleanContent).slice(0, 4)
-        console.log(picks)
+        const picks = (await finishedPicks.messages.fetch()).filter(message => message.createdTimestamp > backWhen).map(pick => pick)
+        const pickReactions = picks.map(pick => ({content: pick.cleanContent, reactions: pick.reactions.cache.filter(reaction => reaction.emoji.name === utils.hand).size}))
+        console.log(pickReactions.slice(0, 5))
 
         interaction.reply({
             content: "Check logs?",
