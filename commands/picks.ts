@@ -24,7 +24,7 @@ export default new ReadableCommand(
         const scope = interaction.options.getSubcommand()
         const backWhen = scope === "monthly" ? utils.goBack(1, "month") : utils.goBack(1, "week")
         const picks = (await finishedPicks.messages.fetch()).filter(message => message.createdTimestamp > backWhen).map(pick => pick)
-        const pickReactions = picks.map(pick => ({content: pick.cleanContent, reactions: pick.reactions.cache.filter(reaction => reaction.emoji.name === utils.hand).size}))
+        const pickReactions = picks.map(pick => ({content: pick.cleanContent, reactions: pick.reactions.cache.size}))
         console.log(pickReactions.slice(0, 5))
 
         interaction.reply({
