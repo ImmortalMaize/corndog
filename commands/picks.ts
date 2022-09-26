@@ -25,7 +25,9 @@ export default new ReadableCommand(
         const backWhen = scope === "monthly" ? utils.goBack(1, "month") : utils.goBack(1, "week")
         const picks = (await finishedPicks.messages.fetch()).filter(message => message.createdTimestamp > backWhen).map(pick => pick)
         const pickReactions = picks.map(async (pick) => ({content: pick.cleanContent, reactions: ( await pick.reactions.cache.get(utils.hand).users.fetch()).filter(user => user.id !== pick.author.id && user.id !== config.clientId).size}))
-        console.log(pickReactions.slice(0, 5))
+        const all = await Promise.all(pickReactions)
+
+        console.log(all.slice(0, 5))
 
         interaction.reply({
             content: "Check logs?",
