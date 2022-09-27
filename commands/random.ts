@@ -12,7 +12,7 @@ export default new ReadableCommand(
         .setDescription("Do you want the result to be public?")
     ),
     async (interaction: ChatInputCommandInteraction) => {
-        const isPublic = interaction.options.getBoolean("public") ?? true
+        const isPublic = interaction.options.getBoolean("public") ?? false
 
         const finishedBeeps = (await interaction.guild.channels.fetch()).get(channels["finished-beeps"]) as TextChannel
         const messages = (await finishedBeeps.messages.fetch())
