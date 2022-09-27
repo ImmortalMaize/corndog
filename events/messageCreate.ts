@@ -52,12 +52,12 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             reply(message, "Shorten your link(s)...! > _<")
         }
         if (bad) {
-            message.react('❔')
+            message.react(utils.emojis.question)
             setTimeout(
                 async () => await message.delete(), 8000
             )
         } else {
-            message.react('👌')
+            message.react(utils.emojis.hand)
         }
     }
 })

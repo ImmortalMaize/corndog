@@ -3,7 +3,7 @@ import relativeTime from "./relativeTime"
 import colorScale from "./colorScale"
 import hasSauce from "./hasSauce"
 import goBack from "./goBack"
-import hand from "./hand"
+import emojis from "./emojis"
 
 export default {
     duration,
@@ -11,5 +11,5 @@ export default {
     colorScale,
     hasSauce,
     goBack,
-    hand
+    emojis
 }
