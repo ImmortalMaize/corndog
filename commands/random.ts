@@ -23,7 +23,7 @@ export default new ReadableCommand(
         interaction.reply({
             content: "Here's a beep by " + (randomBeepAuthor.nickname ?? randomBeep.author.username) + "!",
             embeds: [embed],
-            ephemeral: isPublic
+            ephemeral: !isPublic
 
         })
     })
