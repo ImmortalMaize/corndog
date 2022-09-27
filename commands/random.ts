@@ -23,7 +23,7 @@ export default new ReadableCommand(
         const count = (await randomBeep.reactions.cache.get(utils.emojis.hand)?.users.fetch()).filter(user => user.id !== randomBeepAuthor.id && user.id !== config.clientId).size
         const embed = utils.pickEmbed(randomBeep, count)
         interaction.reply({
-            content: "Here's a beep by" + randomBeepAuthor,
+            content: "Here's a beep by " + randomBeepAuthor.nickname ?? randomBeep.author.id + "!",
             embeds: [embed],
             ephemeral: isPublic
 
