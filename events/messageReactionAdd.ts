@@ -4,36 +4,6 @@ import { picks, channels, config } from "../config"
 import { finishedBeep } from "../redis/entities"
 import utils from "../utils"
 
-const pickEmbed = (
-    submission: Message,
-    count: number
-) => {
-    const member  = submission.guild.members.cache.get((submission.author as User).id)
-    const nickname = member?.nickname ?? member?.user.username
-    const avatar = member?.avatarURL() ?? member?.user.avatarURL()
-    const sauce = submission.cleanContent.match(utils.hasSauce)
-    const blurb = (sauce ? submission.cleanContent
-        ?.replaceAll(utils.hasSauce, "")
-        ?.replaceAll(/^\n$/gm, "")
-        : submission.cleanContent) as string
-
-    const colors = utils.colorScale(config.colors)
-
-    return new EmbedBuilder()
-    .setTitle("It's " + nickname as string + "!")
-    .setURL(submission.url)
-    .setThumbnail(avatar as string)
-    .setColor(colors(Math.random()).hex() as ColorResolvable)
-    .setDescription(blurb.length > 0 ? blurb : "undefined")
-    .addFields(
-        {name: "Sauce 🎵", value: sauce?.join("\n") ?? "undefined", inline: true},
-        {name: "Score 👌", value: String(count), inline: true}
-    )
-    .setFooter({
-        text: "Submitted " + utils.relativeTime(submission.createdTimestamp)
-    })
-}
-
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (!(reaction.message.channel.id === channels["finished-beeps"])) {
         return
@@ -67,7 +37,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             const embedID = precedent.toJSON().embed
             console.log(embedID)
             
-            const embed = pickEmbed(reaction.message as Message, count)
+            const embed = utils.pickEmbed(reaction.message as Message, count)
             const channel = await finishedPicks.messages.fetch()
             channel.get(embedID).edit({
                 embeds: [embed]
@@ -77,7 +47,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             console.log("Quota but no precedent!")
             member?.roles.add(reward)
 
-            const embed = pickEmbed(reaction.message as Message, count)
+            const embed = utils.pickEmbed(reaction.message as Message, count)
             const pick = await finishedPicks.send({
                 content: `Congratulations ${userMention(member.id)} on getting picked!`,
                 embeds: [embed]
