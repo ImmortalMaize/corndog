@@ -56,7 +56,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     
     const reward = guild?.roles.cache.get(picks.reward)
 
-    const finishedBeeps = guild?.channels.cache.get(channels["finished-beeps"]) as TextChannel
+    const finishedBeeps = guild?.channels.cache.get(channels["bot-commands"]) as TextChannel
     const finishedPicks = guild?.channels.cache.get(channels["finished-picks"]) as TextChannel
 
     if (quota) {

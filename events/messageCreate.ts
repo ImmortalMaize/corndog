@@ -2,15 +2,17 @@ import { ReadableEvent } from "../classes"
 import { Message } from 'discord.js';
 import { channels, config } from "../config";
 import utils from "../utils";
-
-const reply = async (message: Message, content: string) => {
-    const reply = await message.reply(content)
-    setTimeout(async () => {
-        await reply.delete()
-    }, 8000)
-}
+import { TextChannel, userMention } from 'discord.js';
 
 export default new ReadableEvent("messageCreate", async (message: Message) => {
+    const reply = async (message: Message, content: string) => {
+        const botCommands = (await message.guild.channels.fetch()).get(channels["bot-commands"]) as TextChannel
+        const reply = await botCommands.send(userMention(message.author.id) + content)
+        setTimeout(async () => {
+            await reply.delete()
+        }, 8000)
+    }
+
     if (message.author.id === config.clientId) {
         return
     }
