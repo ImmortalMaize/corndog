@@ -16,9 +16,7 @@ export default new ReadableCommand(
 
         const finishedBeeps = (await interaction.guild.channels.fetch()).get(channels["finished-beeps"]) as TextChannel
         const messages = (await finishedBeeps.messages.fetch())
-        const randomIndex = Math.floor(Math.random() * messages.size)
-        const iterable = Array.from(messages.values())
-        const randomBeep = iterable[randomIndex]
+        const randomBeep = messages.random()
         const randomBeepAuthor = (await interaction.guild.members.fetch()).get(randomBeep.author.id)
         const count = (await randomBeep.reactions.cache.get(utils.emojis.hand)?.users.fetch()).filter(user => user.id !== randomBeepAuthor.id && user.id !== config.clientId).size
         const embed = utils.pickEmbed(randomBeep, count)
