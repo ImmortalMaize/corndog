@@ -19,7 +19,6 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
 
     if (message.channel.id === channels["finished-beeps"]) {
         console.log("New finished beep! Alright let's see...")
-        message.react('👌')
 
         let bad: boolean = false
         if (message.cleanContent.length > 450) {
@@ -53,9 +52,12 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             reply(message, "Shorten your link(s)...! > _<")
         }
         if (bad) {
+            message.react('❔')
             setTimeout(
                 async () => await message.delete(), 8000
             )
+        } else {
+            message.react('👌')
         }
     }
 })
