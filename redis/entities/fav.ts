@@ -5,8 +5,9 @@ class Fav extends Entity { }
 const schema = new Schema(
     Fav,
     {
-        submission: { type: 'string' },
-        embed: { type: 'string' }
+        user: { type: 'string' },
+        sauce: { type: 'string' },
+        name: { type: 'string' }
     },
     {
         dataStructure: 'JSON'
