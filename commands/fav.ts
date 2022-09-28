@@ -50,18 +50,18 @@ export default new ReadableCommand(
                 content: "Okay! I saved " + sauce + " as " + name + "! ^_^",
                 ephemeral: true
             })
-            return
         }
         if (interaction.options.getSubcommand() === "get") {
             const name = interaction.options.getString("name")
 
             //@ts-ignore
             const sauce = await fav.search(interaction.user.id, "name", name)?.sauce
+            console.log(sauce)
+
             await interaction.reply({
                 content: sauce,
                 ephemeral: true
             })
-            return
         }
     }
 )
