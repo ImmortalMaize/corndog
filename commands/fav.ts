@@ -113,7 +113,7 @@ export default new ReadableCommand(
         if (interaction.options.getSubcommand() === "all") {
             const member = (await interaction.guild.members.fetch()).get(interaction.user.id)
 
-            const results = (await fav.all(interaction.user.id, 1))
+            const results = (await fav.all(interaction.user.id, 0))
             .map(bookmark => {
                 const json = bookmark.toJSON()
                 return {name: json.name, value: json.sauce}
