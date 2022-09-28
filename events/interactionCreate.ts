@@ -19,7 +19,7 @@ export default new ReadableEvent('interactionCreate', async (interaction: Intera
 
     if (interaction.isModalSubmit()) {
         const modalInteraction = interaction as ModalSubmitInteraction
-        console.log(modalInteraction)
+        console.log(interaction)
 
         const sauce = modalInteraction.fields.getTextInputValue("sauce")
         const description = modalInteraction.fields.getTextInputValue("desc")
