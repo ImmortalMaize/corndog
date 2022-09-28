@@ -55,11 +55,11 @@ export default new ReadableCommand(
             const name = interaction.options.getString("name")
 
             //@ts-ignore
-            const sauce = await fav.search(interaction.user.id, "name", name)?.sauce
+            const sauce = await fav.search(interaction.user.id, "name", name)
             console.log(sauce)
 
             await interaction.reply({
-                content: sauce,
+                content: "idk",
                 ephemeral: true
             })
         }
