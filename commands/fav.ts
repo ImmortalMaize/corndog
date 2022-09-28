@@ -1,9 +1,9 @@
 import { ReadableCommand } from "../classes";
-import { ActionRowBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle, Interaction } from 'discord.js';
+import { ActionRowBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle} from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder().setName("fav").setDescription("Set a bookmark."),
-    async (interaction: Interaction) => {
+    async (interaction) => {
         const favModal = new ModalBuilder()
         .setCustomId('fav')
         .setTitle("Set Bookmark")

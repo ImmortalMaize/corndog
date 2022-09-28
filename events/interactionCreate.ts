@@ -1,4 +1,4 @@
-import { Interaction } from 'discord.js';
+import { Interaction, ModalSubmitInteraction } from 'discord.js';
 import { ReadableEvent } from "../classes"
 
 export default new ReadableEvent('interactionCreate', async (interaction: Interaction) => {
@@ -9,10 +9,23 @@ export default new ReadableEvent('interactionCreate', async (interaction: Intera
 
         if (!command) return;
 
+        if (interaction.isChatInputCommand()) {
         try {
             await command.execute(interaction);
         } catch (error) {
             console.error(error);
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
+    }
+
+    if (interaction.isModalSubmit()) {
+        const modalInteraction = interaction as ModalSubmitInteraction
+        const sauce = modalInteraction.fields.getTextInputValue("sauce")
+        const description = modalInteraction.fields.getTextInputValue("desc")
+
+        modalInteraction.reply({
+            ephemeral: true,
+            content: sauce + ", " + description
+        })
+    }
     })
