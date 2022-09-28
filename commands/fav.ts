@@ -32,6 +32,11 @@ export default new ReadableCommand(
             .setDescription("What's the name?")
             .setRequired(true)
         )
+        .addBooleanOption(
+            option => option
+            .setName("public")
+            .setDescription("Do you want this to be public?")
+        )
     ),
     async (interaction: ChatInputCommandInteraction) => {
 
@@ -53,6 +58,7 @@ export default new ReadableCommand(
         }
         if (interaction.options.getSubcommand() === "get") {
             const name = interaction.options.getString("name")
+            const isPublic = interaction.options.getBoolean("public") ?? false
 
             //@ts-ignore
             const sauce = (await fav.search(interaction.user.id, "name", name))?.toJSON().sauce
@@ -60,7 +66,7 @@ export default new ReadableCommand(
 
             await interaction.reply({
                 content: sauce,
-                ephemeral: true
+                ephemeral: !isPublic
             })
         }
     }

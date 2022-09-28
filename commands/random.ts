@@ -9,7 +9,7 @@ export default new ReadableCommand(
     new SlashCommandBuilder().setName("random").setDescription("Gets random beep.").addBooleanOption(
         option => option
         .setName("public")
-        .setDescription("Do you want the result to be public?")
+        .setDescription("Do you want this to be public?")
     ),
     async (interaction: ChatInputCommandInteraction) => {
         const isPublic = interaction.options.getBoolean("public") ?? false
