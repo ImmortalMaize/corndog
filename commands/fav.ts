@@ -119,6 +119,7 @@ export default new ReadableCommand(
                 return {name: json.name, value: json.sauce}
             })
 
+            console.log(results)
             const embed = new EmbedBuilder()
             .setTitle(member.nickname ?? member.user.username + "'s Bookmarks")
             .setThumbnail(member.avatarURL() ?? member.user.avatarURL())
