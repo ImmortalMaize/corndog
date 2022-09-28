@@ -4,7 +4,8 @@ import { ReadableEvent } from "../classes"
 export default new ReadableEvent('interactionCreate', async (interaction: Interaction) => {
         // @ts-ignore
         const command = interaction.client.commands.get(interaction.commandName);
-
+        console.log(interaction.type)
+        
         if (!command) return;
 
         if (interaction.isChatInputCommand()) {
