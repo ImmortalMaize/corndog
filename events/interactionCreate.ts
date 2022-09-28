@@ -5,10 +5,11 @@ export default new ReadableEvent('interactionCreate', async (interaction: Intera
         // @ts-ignore
         const command = interaction.client.commands.get(interaction.commandName);
         console.log(interaction.isModalSubmit())
+        console.log(interaction.isChatInputCommand())
 
         if (!command) return;
 
-        if (interaction.isChatInputCommand()) {
+    if (interaction.isChatInputCommand()) {
         try {
             await command.execute(interaction);
         } catch (error) {
