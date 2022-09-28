@@ -1,5 +1,6 @@
 import { ReadableCommand } from "../classes";
 import { ActionRowBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle, ChatInputCommandInteraction } from 'discord.js';
+import { fav } from "../redis/entities";
 
 export default new ReadableCommand(
     new SlashCommandBuilder().setName("fav")
@@ -19,8 +20,15 @@ export default new ReadableCommand(
         const sauce = interaction.options.getString("sauce")
         const name = interaction.options.getString("name")
 
-        interaction.reply({
-            content: name + ", " + sauce,
+        //@ts-ignore
+        fav.generate({
+            user: interaction.user.id,
+            sauce: sauce,
+            name: name
+        })
+
+        await interaction.reply({
+            content: "Okay! I saved " + sauce + " as " + name + "! ^_^",
             ephemeral: true
         })
     }
