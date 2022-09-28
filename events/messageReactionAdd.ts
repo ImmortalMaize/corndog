@@ -49,7 +49,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
             const embed = utils.pickEmbed(reaction.message as Message, count)
             const pick = await finishedPicks.send({
-                content: `Congratulations ${userMention(member.id)} on getting picked!`,
+                content: `Congratulations ${userMention(member?.id ?? reaction.message.author.id)} on getting picked!`,
                 embeds: [embed]
             })
 

@@ -7,7 +7,7 @@ export default (
     count: number
 ) => {
     const member  = submission.guild.members.cache.get((submission.author as User).id)
-    const nickname = member?.nickname ?? member?.user.username
+    const nickname = member?.nickname ?? member?.user.username ?? submission.author.username
     const avatar = member?.avatarURL() ?? member?.user.avatarURL()
     const sauce = submission.cleanContent.match(utils.hasSauce)
     const blurb = (sauce ? submission.cleanContent
