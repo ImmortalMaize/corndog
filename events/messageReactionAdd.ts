@@ -39,7 +39,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             
             const embed = utils.pickEmbed(reaction.message as Message, count)
             const channel = await finishedPicks.messages.fetch()
-            channel.get(embedID).edit({
+            channel.get(embedID)?.edit({
                 embeds: [embed]
             })
 
