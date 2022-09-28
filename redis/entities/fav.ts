@@ -35,7 +35,7 @@ export default {
 
         console.log("Did it work?")
     },
-    search: async (key: keyof Fav, value: string) => {
+    search: async (user: string, key: keyof Fav, value: string) => {
         await client.open(process.env.REDIS_URL)
 
         const repository = client.fetchRepository(schema)
@@ -44,7 +44,10 @@ export default {
         const results = await repository
         .search()
         .where(key)
-        .equals(value).return.first().catch((reason => console.log(reason)))
+        .equals(value)
+        .and("user")
+        .equals(user)
+        .return.first().catch((reason => console.log(reason)))
 
         await client.close()
         return results
