@@ -87,7 +87,7 @@ export default new ReadableCommand(
             })
 
             await interaction.reply({
-                content: "Okay! I saved your" + sauce.contentType + "attachment as" + name + "! ^_^",
+                content: "Okay! I saved your " + sauce.contentType + " attachment as " + name + "! ^_^",
                 ephemeral: true
             })
         }
