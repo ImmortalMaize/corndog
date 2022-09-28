@@ -61,6 +61,7 @@ export default new ReadableCommand(
                 content: sauce,
                 ephemeral: true
             })
+            return
         }
     }
 )
