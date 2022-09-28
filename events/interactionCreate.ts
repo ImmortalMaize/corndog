@@ -6,9 +6,6 @@ export default new ReadableEvent('interactionCreate', async (interaction: Intera
         const command = interaction.client.commands.get(interaction.commandName);
         console.log(interaction.isModalSubmit())
         console.log(interaction.isChatInputCommand())
-
-        if (!command) return;
-
     if (interaction.isChatInputCommand()) {
         try {
             await command.execute(interaction);
