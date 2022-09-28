@@ -1,6 +1,7 @@
 import { ReadableCommand } from "../classes";
 import { ActionRowBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle, ChatInputCommandInteraction, Attachment } from 'discord.js';
 import { fav } from "../redis/entities";
+import { EmbedBuilder } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -55,9 +56,13 @@ export default new ReadableCommand(
             .setName("public")
             .setDescription("Do you want this to be public?")
         )
+    )
+    .addSubcommand(
+        subcommand => subcommand
+        .setName("all")
+        .setDescription("Gets all the bookmarks!")
     ),
     async (interaction: ChatInputCommandInteraction) => {
-
         if (interaction.options.getSubcommand() === "set") {
             const sauce = interaction.options.getString("sauce")
             const name = interaction.options.getString("name")
@@ -104,6 +109,26 @@ export default new ReadableCommand(
                 ephemeral: !isPublic
             })
             return
+        }
+        if (interaction.options.getSubcommand() === "all") {
+            const member = (await interaction.guild.members.fetch()).get(interaction.user.id)
+
+            const results = (await fav.all(interaction.user.id, 1))
+            .map(bookmark => {
+                const json = bookmark.toJSON()
+                return {name: json.name, value: json.sauce}
+            })
+
+            const embed = new EmbedBuilder()
+            .setTitle(member.nickname ?? member.user.username + "'s Bookmarks")
+            .setThumbnail(member.avatarURL() ?? member.user.avatarURL())
+            .addFields(results)
+
+            interaction.reply({
+                content: "Here are your bookmarks!",
+                embeds: [embed],
+                ephemeral: true
+            })
         }
     }
 )

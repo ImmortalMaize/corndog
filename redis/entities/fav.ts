@@ -52,5 +52,21 @@ export default {
 
         await client.close()
         return results
+    },
+    all: async (user: string, offset: number) => {
+        await client.open(process.env.REDIS_URL)
+        const repository = client.fetchRepository(schema)
+        await repository.createIndex()
+
+        const results = await repository
+        .search()
+        .where("user")
+        .equals(user)
+        .page(5*offset - 1, 5)
+        .catch((reason => console.log(reason)))
+
+        await client.close()
+        return results as Fav[]
+
     }
 }
