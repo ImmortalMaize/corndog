@@ -114,17 +114,15 @@ export default new ReadableCommand(
             const member = (await interaction.guild.members.fetch()).get(interaction.user.id)
 
             const results = (await fav.all(interaction.user.id, 1))
-            console.log(results)
-
-            results.map(bookmark => {
+            .map(bookmark => {
                 const json = bookmark.toJSON()
                 return {name: json.name, value: json.sauce}
             })
 
-            console.log(results)
             const embed = new EmbedBuilder()
             .setTitle(member.nickname ?? member.user.username + "'s Bookmarks")
             .setThumbnail(member.avatarURL() ?? member.user.avatarURL())
+            .addFields(results)
 
             interaction.reply({
                 content: "Here are your bookmarks!",

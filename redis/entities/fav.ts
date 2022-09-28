@@ -62,7 +62,7 @@ export default {
         .search()
         .where("user")
         .equals(user)
-        .page(5*offset - 1, 5)
+        .page(5*offset, 5)
         .catch((reason => console.log(reason)))
 
         await client.close()
