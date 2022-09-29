@@ -21,8 +21,6 @@ export default new ReadableCommand(
         const nameRow = new ActionRowBuilder().addComponents(nameInput)
 
 
-        const favModal = new ModalBuilder(sauceRow, nameRow)
-        .setCustomId("fav")
-        interaction.showModal(favModal)
+        const favModal = new ModalBuilder()
     }
 )
