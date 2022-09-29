@@ -6,6 +6,9 @@ export default new ReadableCommand(
     .setName("Bookmark")
     .setType(ApplicationCommandType.Message),
     async (interaction: ContextMenuCommandInteraction) => {
+        const message = (await interaction.channel.messages.fetch()).get(interaction.targetId)
+        console.log(message.content)
+
         const favModal = new ModalBuilder()
         .setCustomId('fav')
         .setTitle("Bookmarks")
