@@ -7,7 +7,6 @@ export default new ReadableCommand(
     .setType(ApplicationCommandType.Message),
     async (interaction: ContextMenuCommandInteraction) => {
         const message = (await interaction.channel.messages.fetch()).get(interaction.targetId)
-        console.log(message.content)
 
         const favModal = new ModalBuilder()
         .setCustomId('fav')
@@ -22,6 +21,7 @@ export default new ReadableCommand(
         .setLabel("Sauce")
         .setStyle(TextInputStyle.Paragraph)
         .setCustomId("sauce")
+        .setValue(message.content)
 
         const sauceRow = new ActionRowBuilder().addComponents(sauceInput)
         const nameRow = new ActionRowBuilder().addComponents(nameInput)
@@ -30,5 +30,10 @@ export default new ReadableCommand(
         favModal.addComponents(sauceRow, nameRow)
 
         await interaction.showModal(favModal)
+
+        interaction.awaitModalSubmit({
+            componentType: ComponentType.ActionRow,
+            time: 60 * 1000
+        })
     }
 )
