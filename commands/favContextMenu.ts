@@ -17,19 +17,14 @@ export default new ReadableCommand(
         .setCustomId("sauce")
         .setValue("")
 
-        const sauceRow = new ActionRowBuilder().addComponents()
+        const sauceRow = new ActionRowBuilder().addComponents(sauceInput)
         const nameRow = new ActionRowBuilder().addComponents(nameInput)
 
 
         const favModal = new ModalBuilder()
         .setCustomId("fav")
         //@ts-ignore
-        .addComponents(nameRow)
+        .addComponents(sauceRow, nameRow)
         interaction.showModal(favModal)
-
-        await interaction.awaitModalSubmit({
-            componentType: ComponentType["TextInput"],
-            time: 60 * 1000
-        })
     }
 )
