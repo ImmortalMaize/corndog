@@ -6,6 +6,10 @@ export default new ReadableCommand(
     .setName("Bookmark")
     .setType(ApplicationCommandType.Message),
     async (interaction: ContextMenuCommandInteraction) => {
+        const favModal = new ModalBuilder()
+        .setCustomId('fav')
+        .setTitle("Bookmarks")
+
         const nameInput = new TextInputBuilder()
         .setLabel("Name")
         .setStyle(TextInputStyle.Short)
@@ -15,12 +19,13 @@ export default new ReadableCommand(
         .setLabel("Sauce")
         .setStyle(TextInputStyle.Paragraph)
         .setCustomId("sauce")
-        .setValue("")
 
         const sauceRow = new ActionRowBuilder().addComponents(sauceInput)
         const nameRow = new ActionRowBuilder().addComponents(nameInput)
 
+        //@ts-ignore
+        favModal.addComponents(sauceRow, nameRow)
 
-        const favModal = new ModalBuilder()
+        await interaction.showModal(favModal)
     }
 )
