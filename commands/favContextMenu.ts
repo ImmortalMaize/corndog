@@ -30,11 +30,5 @@ export default new ReadableCommand(
         favModal.addComponents(sauceRow, nameRow)
 
         await interaction.showModal(favModal)
-
-        const collector = await interaction.awaitModalSubmit({
-            componentType: ComponentType.TextInput,
-            time: 60 * 1000
-        })
-
     }
 )
