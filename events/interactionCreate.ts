@@ -16,9 +16,10 @@ export default new ReadableEvent('interactionCreate', async (interaction: Intera
 
     if (interaction.isModalSubmit()) {
         const modalSubmitInteraction = interaction as ModalSubmitInteraction
-        const sauce = modalSubmitInteraction.fields.getField("sauce")
-        const name = modalSubmitInteraction.fields.getField("name")
+        const sauce = modalSubmitInteraction.fields.getTextInputValue("sauce")
+        const name = modalSubmitInteraction.fields.getTextInputValue("name")
 
+        //@ts-ignore
         fav.generate({
             user: interaction.user.id,
             sauce,
