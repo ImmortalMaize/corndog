@@ -31,9 +31,10 @@ export default new ReadableCommand(
 
         await interaction.showModal(favModal)
 
-        await interaction.awaitModalSubmit({
-            componentType: ComponentType.ActionRow,
+        const collector = await interaction.awaitModalSubmit({
+            componentType: ComponentType.TextInput,
             time: 60 * 1000
-        }).then(modal => console.log(modal.fields))
+        })
+
     }
 )
