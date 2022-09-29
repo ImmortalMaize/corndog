@@ -10,7 +10,7 @@ export default new ReadableCommand(
 
         const favModal = new ModalBuilder()
         .setCustomId('fav')
-        .setTitle("Bookmarks")
+        .setTitle("Set A Bookmark")
 
         const nameInput = new TextInputBuilder()
         .setLabel("Name")
