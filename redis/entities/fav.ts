@@ -23,13 +23,21 @@ interface Fav {
 export default {
     generate: async (form: Fav) => {
         await client.open(process.env.REDIS_URL)
+
         const repository = client.fetchRepository(schema)
         await repository.createIndex()
 
-        const already = await repository.search().where("name").equals(form.name).and("user").equals(form.user).return.first()
+        const already = await repository.search()
+                                        .where("name")
+                                        .equals(form.name)
+                                        .and("user")
+                                        .equals(form.user)
+                                        .return.first()
         if (already) {
             already.sauce = form.sauce
+
             await repository.save(already)
+            await client.close()
 
             console.log("Bookmark edited!")
             return
@@ -45,6 +53,21 @@ export default {
 
         console.log("Bookmark created!")
         return
+    },
+    waste: async (user: string, name: string) => {
+        await client.open(process.env.REDIS_URL)
+
+        const repository = client.fetchRepository(schema)
+        await repository.createIndex()
+
+        const already = await repository
+                                                .search()
+                                            .where("name")
+                                        .equals(name)
+                                    .and("user")
+                                .equals(user)
+                            .return.allIds()
+        await repository.remove(already)
     },
     search: async (user: string, key: keyof Fav, value: string) => {
         await client.open(process.env.REDIS_URL)
@@ -77,6 +100,5 @@ export default {
 
         await client.close()
         return results as Fav[]
-
     }
 }

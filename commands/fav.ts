@@ -59,6 +59,17 @@ export default new ReadableCommand(
     )
     .addSubcommand(
         subcommand => subcommand
+        .setName("clear")
+        .setDescription("Get a bookmark!")
+        .addStringOption(
+            option => option
+            .setName("name")
+            .setDescription("What's the name?")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand(
+        subcommand => subcommand
         .setName("all")
         .setDescription("Gets all the bookmarks!")
     ),
@@ -109,6 +120,15 @@ export default new ReadableCommand(
                 ephemeral: !isPublic
             })
             return
+        }
+        if (interaction.options.getSubcommand() === "clear") {
+            const name = interaction.options.getString("name")
+
+            await fav.waste(interaction.user.id, name)
+            await interaction.reply({
+                content: "Okay! I cleared the bookmark named " + name + "!",
+                ephemeral: true
+            })
         }
         if (interaction.options.getSubcommand() === "all") {
             const member = (await interaction.guild.members.fetch()).get(interaction.user.id)
