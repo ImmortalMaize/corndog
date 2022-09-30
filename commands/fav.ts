@@ -115,9 +115,14 @@ export default new ReadableCommand(
             const sauce = (await fav.search(interaction.user.id, "name", name))?.toJSON().sauce
             console.log(sauce)
 
-            await interaction.reply({
+            sauce
+            ? await interaction.reply({
                 content: sauce,
                 ephemeral: !isPublic
+            })
+            : await interaction.reply({
+                content: "https://images-ext-1.discordapp.net/external/GdeJKKfX8wdFqPCXhZ2CkrilBUEKFcoJaFgwOMYkQWA/https/media.tenor.com/9ud1r4sc-QQAAAPo/confused-john-travolta.mp4",
+                ephemeral: true
             })
             return
         }
