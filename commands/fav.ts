@@ -121,7 +121,7 @@ export default new ReadableCommand(
                 ephemeral: !isPublic
             })
             : await interaction.reply({
-                content: "https://images-ext-1.discordapp.net/external/GdeJKKfX8wdFqPCXhZ2CkrilBUEKFcoJaFgwOMYkQWA/https/media.tenor.com/9ud1r4sc-QQAAAPo/confused-john-travolta.mp4",
+                content: "https://tenor.com/view/confused-john-travolta-what-gif-5114829",
                 ephemeral: true
             })
             return
