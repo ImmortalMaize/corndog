@@ -23,8 +23,17 @@ interface Fav {
 export default {
     generate: async (form: Fav) => {
         await client.open(process.env.REDIS_URL)
-
         const repository = client.fetchRepository(schema)
+        await repository.createIndex()
+
+        const already = await repository.search().where("name").equals(form.name).and("user").equals(form.user).return.first()
+        if (already) {
+            already.sauce = form.sauce
+            await repository.save(already)
+
+            console.log("Bookmark edited!")
+            return
+        }
         const fav = repository.createEntity()
 
         fav.user = form.user
@@ -34,7 +43,8 @@ export default {
         await repository.save(fav)
         await client.close()
 
-        console.log("Did it work?")
+        console.log("Bookmark created!")
+        return
     },
     search: async (user: string, key: keyof Fav, value: string) => {
         await client.open(process.env.REDIS_URL)
