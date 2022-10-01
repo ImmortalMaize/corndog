@@ -13,22 +13,19 @@ const schema = new Schema(
     }
 )
 
-interface FinishedBeepForm {
+interface FinishedBeep {
     submission: string,
     embed: string
 }
 
 export default {
-    generate: async (form: FinishedBeepForm) => {
+    generate: async (form: FinishedBeep) => {
         await client.open(process.env.REDIS_URL)
 
         const repository = client.fetchRepository(schema)
         const finishedBeep = repository.createEntity()
 
-        //@ts-ignore
         finishedBeep.embed = form.embed
-
-        //@ts-ignore
         finishedBeep.submission = form.submission
 
         await repository.save(finishedBeep)
@@ -36,7 +33,7 @@ export default {
 
         console.log("Did it work?")
     },
-    search: async (key: keyof FinishedBeepForm, value: string) => {
+    search: async (key: keyof FinishedBeep, value: string) => {
         await client.open(process.env.REDIS_URL)
 
         const repository = client.fetchRepository(schema)

@@ -18,7 +18,7 @@ export default (
     const colors = utils.colorScale(config.colors)
 
     return new EmbedBuilder()
-    .setTitle("It's " + nickname as string + "!")
+    .setTitle("Check Out" + nickname as string + "'s Beep!")
     .setURL(submission.url)
     .setThumbnail(avatar as string)
     .setColor(colors(Math.random()).hex() as ColorResolvable)

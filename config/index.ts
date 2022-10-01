@@ -1,15 +1,15 @@
-//@ts-ignore
 import config from "./config.json" 
-//@ts-ignore
 import picks from "./picks.json"
-//@ts-ignore
 import channels from "./channels.json"
-//@ts-ignore
 import redis from "./redis.json"
+import cooldowns from "./cooldowns.json"
+import misc from "./misc.json"
 
 export {
     redis,
     config,
     channels,
-    picks
+    picks,
+    cooldowns,
+    misc
 }

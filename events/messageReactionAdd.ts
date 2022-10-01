@@ -52,6 +52,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                     embeds: [embed]
                 })
 
+                //@ts-ignore
                 await finishedBeep.generate({
                     submission: reaction.message.id,
                     embed: pick.id
