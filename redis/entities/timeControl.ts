@@ -50,7 +50,8 @@ export default {
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         const all = await repository.search().all()
 
-        for (const timeControl of all) {
+        for (let index in all) {
+            const timeControl = all[index]
             if (utils.time.past(timeControl.cooldown)) {
                 console.log("Cooldown met: " + timeControl.name + "!")
                 const whenRemove = table.get(timeControl.name)
