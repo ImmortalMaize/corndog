@@ -28,7 +28,7 @@ export default new ReadableCommand(
         const checks = setInterval(() => {
             timeControl.check(new Map([
                 ["test", async () => {
-                    interaction.reply({
+                    interaction.followUp({
                         content: "Time controls seem to be normal!",
                         ephemeral: true
                 })
