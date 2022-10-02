@@ -28,6 +28,6 @@ export default (
         {name: "Score 👌", value: String(count), inline: true}
     )
     .setFooter({
-        text: "Submitted " + utils.relativeTime(submission.createdTimestamp)
+        text: "Submitted " + utils.time.relative(submission.createdTimestamp)
     })
 }

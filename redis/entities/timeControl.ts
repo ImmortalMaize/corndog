@@ -1,10 +1,12 @@
 import { Entity, Schema, Repository } from 'redis-om';
+import utils from '../../utils';
 import client from "../index"
 
 interface TimeControl {
     name: string,
     cooldown: Date,
 }
+type TimeTable = Map<string, () => Promise<any>>
 class TimeControl extends Entity {}
 const schema = new Schema(
     TimeControl,
@@ -41,14 +43,18 @@ export default {
         
         await client.close()
     },
-    async check() {
+    async check(table: TimeTable) {
         await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         const all = await repository.search().all()
 
         for (const timeControl of all) {
-            timeControl.cooldown
+            if (utils.time.past(timeControl.cooldown)) {
+                const whenRemove = table.get(timeControl.name)
+                if (whenRemove) await whenRemove()
+                await repository.remove(timeControl.entityId)
+            }
         }
     }
 }

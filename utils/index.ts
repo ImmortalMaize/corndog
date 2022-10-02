@@ -1,17 +1,13 @@
-import duration from "./duration"
-import relativeTime from "./relativeTime"
 import colorScale from "./colorScale"
 import hasSauce from "./hasSauce"
-import goBack from "./goBack"
 import emojis from "./emojis"
+import time from "./time"
 import pickEmbed from './pickEmbed'
 
 export default {
-    duration,
-    relativeTime,
+    time,
     colorScale,
     hasSauce,
-    goBack,
     emojis,
     pickEmbed
 }

@@ -7,7 +7,7 @@ export default new ReadableCommand(
     new SlashCommandBuilder().setName("first").setDescription("Gets first message in channel"), async (interaction: ChatInputCommandInteraction) => {
         const firstTime = (await interaction.channel.messages.fetch()).last().createdTimestamp
         interaction.reply({
-            content: "The first message I could find here was from" + utils.relativeTime(firstTime),
+            content: "The first message I could find here was from" + utils.time.relative(firstTime),
             ephemeral: true
         })
     }

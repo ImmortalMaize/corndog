@@ -77,7 +77,7 @@ export default new ReadableCommand(
         if (interaction.options.getSubcommand() === "set") {
             const sauce = interaction.options.getString("sauce")
             const name = interaction.options.getString("name")
-
+            
             //@ts-ignore
             fav.generate({
                 user: interaction.user.id,
