@@ -44,6 +44,7 @@ export default {
         await client.close()
     },
     async check(table: TimeTable) {
+        console.log("Checking time controls!")
         await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
@@ -51,9 +52,13 @@ export default {
 
         for (const timeControl of all) {
             if (utils.time.past(timeControl.cooldown)) {
+                console.log("Cooldown met: " + timeControl.name + "!")
                 const whenRemove = table.get(timeControl.name)
                 if (whenRemove) await whenRemove()
                 await repository.remove(timeControl.entityId)
+            }
+            else {
+                console.log("Cooldown of " + timeControl.name + "not met...")
             }
         }
     }
