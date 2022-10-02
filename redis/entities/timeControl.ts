@@ -48,7 +48,7 @@ export default {
         await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
-        const all = await repository.search().all()
+        const all = await repository.search().returnAll()
         console.log(all)
 
         all.forEach(async timeControl => {
