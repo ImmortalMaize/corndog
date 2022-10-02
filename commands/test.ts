@@ -6,6 +6,7 @@ import utils from "../utils";
 export default new ReadableCommand(
     new SlashCommandBuilder()
         .setName("test")
+        .setDescription("Test my features... -w-")
         .addSubcommand(
             subcommand => subcommand
                 .setName("time")
