@@ -7,12 +7,12 @@ interface TimeControl {
     cooldown: Date,
 }
 type TimeTable = Map<string, () => Promise<any>>
-class TimeControl extends Entity { }
+class TimeControl extends Entity {}
 const schema = new Schema(
     TimeControl,
     {
-        name: { type: "string" },
-        cooldown: { type: "date" }
+        name: {type: "string"},
+        cooldown: {type: "date"}
     },
     {
         dataStructure: "JSON"
@@ -22,7 +22,7 @@ const schema = new Schema(
 export default {
     async generate(form: TimeControl) {
         await client.open(process.env.REDIS_URL)
-
+        
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         const timeControl: TimeControl = repository.createEntity()
 
@@ -37,10 +37,12 @@ export default {
         await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
+        await repository.createIndex()
+
         const timeControlId: string = await repository.search().where("name").equals(name).return.firstId()
 
         await repository.remove(timeControlId)
-
+        
         await client.close()
     },
     async check(table: TimeTable) {
@@ -48,10 +50,11 @@ export default {
         await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
-        const all = await repository.search().returnAll()
-        console.log(all)
+        await repository.createIndex()
 
-        all.forEach(async timeControl => {
+        const all = await repository.search().all()
+
+        for (const timeControl of all) {
             if (utils.time.past(timeControl.cooldown)) {
                 console.log("Cooldown met: " + timeControl.name + "!")
                 const whenRemove = table.get(timeControl.name)
@@ -61,6 +64,6 @@ export default {
             else {
                 console.log("Cooldown of " + timeControl.name + "not met...")
             }
-        })
+        }
     }
 }
