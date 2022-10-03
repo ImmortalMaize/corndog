@@ -75,10 +75,7 @@ timeControl.resume(new Map([
 
         const commands = channels.get(timeControl.channel) as TextChannel
 
-        const interaction = (await commands.messages.fetch()).get(timeControl.message).interaction as ChatInputCommandInteraction
-        interaction.followUp({
-            content: "Did it work?",
-            ephemeral: true
-        })
+        const message = (await commands.messages.fetch()).get(timeControl.message)
+        console.log(message)
     }]
 ])) 
