@@ -21,10 +21,10 @@ export default new ReadableCommand(
 
         //@ts-ignore
         timeControl.generate({
-            channel: interaction.channel.id,
+            channel: interaction.channelId,
             message: interaction.id,
             name: "test",
-            cooldown: utils.time.goForth(1, "minute").toDate()
+            cooldown: utils.time.goForth(10, "seconds").toDate()
         })
 
         const checks = setInterval(() => {
