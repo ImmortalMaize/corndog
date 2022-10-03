@@ -24,7 +24,7 @@ export default new ReadableCommand(
             channel: interaction.channelId,
             message: (await interaction.fetchReply()).id,
             name: "test",
-            cooldown: utils.time.goForth(10, "seconds").toDate()
+            cooldown: utils.time.goForth(1, "minute").toDate()
         })
 
         const checks = setInterval(() => {
