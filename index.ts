@@ -70,7 +70,8 @@ getEvents()
 
 timeControl.resume(new Map([
     ["test", async (timeControl) => {
-        const commands = (await client.guilds.cache.get(config.guildId).fetch()).channels.cache.get(timeControl.channel) as TextChannel
+        const guild = (await client.guilds.cache.get(config.guildId).fetch())
+        const commands = (await guild.channels.fetch()).get(timeControl.channel) as TextChannel
         const interaction = (await commands.messages.fetch()).get(timeControl.message).interaction as ChatInputCommandInteraction
         interaction.followUp({
             content: "Did it work?",
