@@ -6,7 +6,7 @@ import utils from "../utils";
 export default new ReadableCommand(
     new SlashCommandBuilder()
         .setName("test")
-        .setDescription("Test my features... -w-")
+        .setDescription("Test my features~ -w-")
         .addSubcommand(
             subcommand => subcommand
                 .setName("time")
@@ -31,7 +31,7 @@ export default new ReadableCommand(
             timeControl.check("test", async () => {
                 interaction.followUp({
                     content: "Time controls seem to be normal!",
-                    ephemeral: true
+                    ephemeral: false
                 })
                 clearInterval(checks)
             })
