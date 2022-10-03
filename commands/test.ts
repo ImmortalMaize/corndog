@@ -16,7 +16,7 @@ export default new ReadableCommand(
         const reply = await interaction.reply(
             {
                 content: "Testing time controls now! Expect a message in a minute!",
-                ephemeral: true
+                ephemeral: false
             })
 
         //@ts-ignore
@@ -31,7 +31,7 @@ export default new ReadableCommand(
             timeControl.check("test", async () => {
                 interaction.followUp({
                     content: "Time controls seem to be normal!",
-                    ephemeral: false
+                    ephemeral: true
                 })
                 clearInterval(checks)
             })
