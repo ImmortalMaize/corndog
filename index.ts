@@ -5,6 +5,7 @@ import path from 'node:path'
 env.config()
 
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js"
+import { timeControl } from "./redis/entities"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
@@ -64,3 +65,5 @@ async function getEvents() {
 }
 
 getEvents()
+
+timeControl.resume(new Map()) 

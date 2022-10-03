@@ -11,7 +11,7 @@ export default new ReadableCommand(
             subcommand => subcommand
                 .setName("time")
                 .setDescription("Test time controls")
-        ),        
+        ),
     async (interaction: ChatInputCommandInteraction) => {
         interaction.reply(
             {
@@ -26,15 +26,13 @@ export default new ReadableCommand(
         })
 
         const checks = setInterval(() => {
-            timeControl.check(new Map([
-                ["test", async () => {
-                    interaction.followUp({
-                        content: "Time controls seem to be normal!",
-                        ephemeral: true
+            timeControl.check("test", async () => {
+                interaction.followUp({
+                    content: "Time controls seem to be normal!",
+                    ephemeral: true
                 })
                 clearInterval(checks)
-                }]
-            ])) 
+            })
         }, 1000)
 
     })
