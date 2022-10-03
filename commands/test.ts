@@ -21,6 +21,8 @@ export default new ReadableCommand(
 
         //@ts-ignore
         timeControl.generate({
+            channel: interaction.channel.id,
+            message: interaction.id,
             name: "test",
             cooldown: utils.time.goForth(1, "minute").toDate()
         })

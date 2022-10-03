@@ -4,8 +4,10 @@ import path from 'node:path'
 
 env.config()
 
-import { Client, Collection, GatewayIntentBits, Partials } from "discord.js"
+import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction } from "discord.js"
 import { timeControl } from "./redis/entities"
+import { channels, config } from "./config"
+import interactionCreate from "./events/interactionCreate"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
@@ -66,4 +68,13 @@ async function getEvents() {
 
 getEvents()
 
-timeControl.resume(new Map()) 
+timeControl.resume(new Map([
+    ["test", async (timeControl) => {
+        const commands = (await client.guilds.cache.get(config.guildId).fetch()).channels.cache.get(timeControl.channel) as TextChannel
+        const interaction = (await commands.messages.fetch()).get(timeControl.message).interaction as ChatInputCommandInteraction
+        interaction.followUp({
+            content: "Did it work?",
+            ephemeral: true
+        })
+    }]
+])) 
