@@ -22,7 +22,7 @@ export default new ReadableCommand(
         //@ts-ignore
         timeControl.generate({
             channel: interaction.channelId,
-            message: reply.id,
+            message: (await interaction.fetchReply()).id,
             name: "test",
             cooldown: utils.time.goForth(10, "seconds").toDate()
         })
