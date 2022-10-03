@@ -17,7 +17,7 @@ export default new ReadableEvent(
                 const commands = channels.get(timeControl.channel) as TextChannel
         
                 const interaction = (await commands.messages.fetch()).get(timeControl.message).interaction as ChatInputCommandInteraction
-                interaction.followUp("Time control resumption looks good too!")
+                console.log(interaction)
             }]
         ]))
     },
