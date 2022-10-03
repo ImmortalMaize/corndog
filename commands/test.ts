@@ -13,7 +13,7 @@ export default new ReadableCommand(
                 .setDescription("Test time controls")
         ),
     async (interaction: ChatInputCommandInteraction) => {
-        interaction.reply(
+        const reply = await interaction.reply(
             {
                 content: "Testing time controls now! Expect a message in a minute!",
                 ephemeral: true
@@ -22,7 +22,7 @@ export default new ReadableCommand(
         //@ts-ignore
         timeControl.generate({
             channel: interaction.channelId,
-            message: interaction.id,
+            message: reply.id,
             name: "test",
             cooldown: utils.time.goForth(10, "seconds").toDate()
         })
