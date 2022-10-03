@@ -31,6 +31,8 @@ export default {
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         const timeControl: TimeControl = repository.createEntity()
 
+        timeControl.channel = form.channel
+        timeControl.message = form.message
         timeControl.name = form.name
         timeControl.cooldown = form.cooldown
 
