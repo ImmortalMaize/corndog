@@ -31,7 +31,7 @@ export default new ReadableCommand(
             timeControl.check("test", async () => {
                 interaction.followUp({
                     content: "Time controls seem to be normal!",
-                    ephemeral: true
+                    ephemeral: false
                 })
                 clearInterval(checks)
             })

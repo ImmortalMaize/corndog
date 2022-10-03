@@ -27,7 +27,7 @@ export default new ReadableEvent('interactionCreate', async (interaction: Intera
         })
 
         interaction.reply({
-            ephemeral: false,
+            ephemeral: true,
             content: "Okay! I saved " + sauce + " as " + name + "! ^_^"
         })
     }
