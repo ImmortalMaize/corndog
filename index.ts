@@ -72,10 +72,8 @@ timeControl.resume(new Map([
     ["test", async (timeControl) => {
         const guild = (await client.guilds.cache.get(config.guildId).fetch())
         const channels = await guild.channels.fetch()
-        console.log(channels)
 
         const commands = channels.get(timeControl.channel) as TextChannel
-        console.log(commands)
 
         const interaction = (await commands.messages.fetch()).get(timeControl.message).interaction as ChatInputCommandInteraction
         interaction.followUp({
