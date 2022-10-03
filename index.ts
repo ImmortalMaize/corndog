@@ -67,15 +67,3 @@ async function getEvents() {
 }
 
 getEvents()
-
-timeControl.resume(new Map([
-    ["test", async (timeControl) => {
-        const guild = (await client.guilds.cache.get(config.guildId).fetch())
-        const channels = await guild.channels.fetch()
-
-        const commands = channels.get(timeControl.channel) as TextChannel
-
-        const message = (await commands.messages.fetch()).get(timeControl.message)
-        console.log(message)
-    }]
-])) 
