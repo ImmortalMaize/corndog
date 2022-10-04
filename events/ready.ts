@@ -9,7 +9,7 @@ export default new ReadableEvent(
     'ready', 
     async (client: Client) => {
         console.log("Woof! :3")
-        await redisClient.open()
+        await redisClient.open(process.env.REDIS_URL)
 
         const guild = (await client.guilds.cache.get(config.guildId).fetch())
         
