@@ -22,8 +22,6 @@ interface Fav {
 
 export default {
     generate: async (form: Fav) => {
-        await client.open(process.env.REDIS_URL)
-
         const repository = client.fetchRepository(schema)
         await repository.createIndex()
 
@@ -37,7 +35,6 @@ export default {
             already.sauce = form.sauce
 
             await repository.save(already)
-            await client.close()
 
             console.log("Bookmark edited!")
             return

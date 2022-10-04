@@ -54,7 +54,6 @@ export default {
     },
     async check(name: string, handler?: () => Promise<void>, logs?: boolean): Promise<boolean> {
         console.log("Checking time controls!")
-        await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         await repository.createIndex()
@@ -73,7 +72,6 @@ export default {
             if (handler) await handler()
 
             await repository.remove(timeControl.entityId)
-            await client.close()
 
             return true
         }
@@ -84,8 +82,6 @@ export default {
     },
 
     async resume(table: TimeTable) {
-        await client.open(process.env.REDIS_URL)
-
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         await repository.createIndex()
 
