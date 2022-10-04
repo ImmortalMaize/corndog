@@ -6,7 +6,7 @@ import utils from "../utils";
 import { userMention } from 'discord.js';
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks a member! >:3c").addUserOption(option => option.setName("member").setDescription("Member to be yoinked!").setRequired(true)), async (interaction: ChatInputCommandInteraction) => {
-    const check = await timeControl.check("yoink")
+    const check = await timeControl.check("yoink", undefined, true)
 
     if (check) {
         const user = interaction.options.getUser("member")
@@ -29,6 +29,9 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
             member.roles.remove(misc['some role idk'])
-        }), 1000)
+        }, false), 1000)
+    }
+    else {
+        interaction.reply("Someone has already been yoinked! QwQ")
     }
 })

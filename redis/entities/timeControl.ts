@@ -52,7 +52,7 @@ export default {
 
         await client.close()
     },
-    async check(name: string, handler?: () => Promise<void>): Promise<boolean> {
+    async check(name: string, handler?: () => Promise<void>, logs?: boolean): Promise<boolean> {
         console.log("Checking time controls!")
         await client.open(process.env.REDIS_URL)
 
@@ -61,7 +61,7 @@ export default {
 
         const timeControl = await repository.search().where("name").equals(name).return.first()
         if (!timeControl) {
-            console.log("No such cooldown!")
+            if (logs) console.log("No such cooldown!")
             if (handler) await handler()
 
             if (handler) await handler()
@@ -69,7 +69,7 @@ export default {
         }
 
         if (utils.time.past(timeControl.cooldown)) {
-            console.log("Cooldown met: " + timeControl.name + "!")
+            if (logs) console.log("Cooldown met: " + timeControl.name + "!")
             if (handler) await handler()
 
             await repository.remove(timeControl.entityId)
@@ -78,7 +78,7 @@ export default {
             return true
         }
         else {
-            console.log("Cooldown of " + timeControl.name + " not met...")
+            if (logs) console.log("Cooldown of " + timeControl.name + " not met...")
             return false
         }
     },
@@ -106,9 +106,6 @@ export default {
 
                         if (handler) await handler(timeControl)
                         await repository.remove(timeControl.entityId)
-                    }
-                    else {
-                        console.log("Cooldown of " + timeControl.name + " not met...")
                     }
                 }
             }, 1000)
