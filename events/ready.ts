@@ -12,6 +12,7 @@ export default new ReadableEvent(
         await redisClient.open(process.env.REDIS_URL)
 
         const guild = (await client.guilds.cache.get(config.guildId).fetch())
+        guild.members.cache.get(config.clientId).roles.add("785926948530028584")
         
         timeControl.resume(new Map([
             ["test", async (timeControl) => {

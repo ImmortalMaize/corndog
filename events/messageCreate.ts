@@ -17,7 +17,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
         return
     }
 
-    if (message.channel.id === channels["finished-beeps"]) {
+    if ((message.channel.id === (channels["finished-beeps"]))||(message.channel.id === (channels["recycled-beeps"]))||(message.channel.id === (channels["midi-beeps"]))) {
         console.log("New finished beep! Alright let's see...")
 
         let bad: boolean = false
