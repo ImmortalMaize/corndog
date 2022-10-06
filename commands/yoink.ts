@@ -23,7 +23,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             channel: interaction.channel.id,
             message: reply.id,
             name: "yoink",
-            cooldown: utils.time.goForth(1, "week").toDate()
+            cooldown: utils.time.goForth(1, "day").toDate()
         })
 
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
