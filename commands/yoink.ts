@@ -12,7 +12,10 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         const user = interaction.options.getUser("member")
         const member = (await interaction.guild.members.fetch()).get(user.id);
 
-        (await interaction.guild.roles.fetch()).get(misc["some role idk"]).members.clear()
+        (await interaction.guild.members.fetch()).each(async (member) => {
+            const role = misc["some role idk"]
+            if (member.roles.cache.has(role)) await member.roles.remove(role)
+        })
         await member.roles.add(misc['some role idk'])
         
         const reply = await interaction.reply({

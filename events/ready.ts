@@ -23,7 +23,10 @@ export default new ReadableEvent(
                 commands.send("Time control resumption looks good too!")
             }],
             ["yoink", async (timeControl) => {
-                (await guild.roles.fetch()).get(misc["some role idk"]).members.clear()
+                (await guild.members.fetch()).each(async (member) => {
+                    const role = misc["some role idk"]
+                    if (member.roles.cache.has(role)) await member.roles.remove(role)
+                })
             }]
         ]))
     },
