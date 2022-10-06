@@ -5,21 +5,21 @@ import { timeControl } from "../redis/entities";
 import utils from "../utils";
 import { userMention } from 'discord.js';
 
-export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks a member! >:3c").addUserOption(option => option.setName("member").setDescription("Member to be yoinked!").setRequired(true)), async (interaction: ChatInputCommandInteraction) => {
+export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks! >:3c"), async (interaction: ChatInputCommandInteraction) => {
     const check = await timeControl.check("yoink", undefined, true)
 
     if (check) {
-        const user = interaction.options.getUser("member")
-        const member = (await interaction.guild.members.fetch()).get(user.id);
+        const member = (await interaction.guild.members.fetch()).get(interaction.user.id);
+        const role = misc["some role idk"]
 
-        (await interaction.guild.members.fetch()).each(async (member) => {
-            const role = misc["some role idk"]
-            if (member.roles.cache.has(role)) await member.roles.remove(role)
-        })
-        await member.roles.add(misc['some role idk'])
+        interaction.guild.members.fetch()
+        .then(members => members.each(member => {
+            if (member.roles.cache.has(role)) member.roles.remove(role)
+        }))
+        .then(() => member.roles.add(role));
         
         const reply = await interaction.reply({
-            content: `${userMention(member.id)} got yoinked!`,
+            content: `${userMention(member.id)} yoinked it!`,
             ephemeral: false
         })
 
