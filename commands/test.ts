@@ -43,7 +43,7 @@ export default new ReadableCommand(
                 })
             }, 1000)
         }
-        if (interaction.options.getSubcommand() === "filter-users") {
+        if (interaction.options.getSubcommand() === "fix-users") {
             const members = await interaction.guild.members.fetch()
             const filteredMembers = members.filter(member => member.roles.cache.has("373936282893811723") && !member.roles.cache.has("235144257147502592"))
             filteredMembers.each(member => member.roles.add("235144257147502592").catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
