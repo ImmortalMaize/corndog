@@ -38,7 +38,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
         } else {
             console.log("There's a link... Okay.")
             if (!message.cleanContent.match(utils.hasSauce)?.every(
-                sauce => sauce.length < 50
+                sauce => sauce.length < 100
             )) {
                 console.log("The link is too long. BAD.")
                 bad = true
