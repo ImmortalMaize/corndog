@@ -11,30 +11,45 @@ export default new ReadableCommand(
             subcommand => subcommand
                 .setName("time")
                 .setDescription("Test time controls")
+        )
+        .addSubcommand(
+            subcommand => subcommand
+                .setName("filter-users")
+                .setDescription("Test time controls")
         ),
     async (interaction: ChatInputCommandInteraction) => {
-        const reply = await interaction.reply(
-            {
-                content: "Testing time controls now! Expect a message in a minute!",
-                ephemeral: false
-            })
-
-        //@ts-ignore
-        timeControl.generate({
-            channel: interaction.channelId,
-            message: (await interaction.fetchReply()).id,
-            name: "test",
-            cooldown: utils.time.goForth(1, "minute").toDate()
-        })
-
-        const checks = setInterval(() => {
-            timeControl.check("test", async () => {
-                interaction.followUp({
-                    content: "Time controls seem to be normal!",
+        if (interaction.options.getSubcommand() === "time") {
+            await interaction.reply(
+                {
+                    content: "Testing time controls now! Expect a message in a minute!",
                     ephemeral: false
                 })
-                clearInterval(checks)
-            })
-        }, 1000)
 
+            //@ts-ignore
+            timeControl.generate({
+                channel: interaction.channelId,
+                message: (await interaction.fetchReply()).id,
+                name: "test",
+                cooldown: utils.time.goForth(1, "minute").toDate()
+            })
+
+            const checks = setInterval(() => {
+                timeControl.check("test", async () => {
+                    interaction.followUp({
+                        content: "Time controls seem to be normal!",
+                        ephemeral: false
+                    })
+                    clearInterval(checks)
+                })
+            }, 1000)
+        }
+        if (interaction.options.getSubcommand() === "filter-users") {
+            const members = await interaction.guild.members.fetch()
+            const filteredMembers = members.filter(member => member.roles.cache.has("373936282893811723") && !member.roles.cache.has("235144257147502592"))
+            .map(member => member.user.username)
+            interaction.reply({
+                content: String(filteredMembers),
+                ephemeral: true
+            })
+        }
     })
