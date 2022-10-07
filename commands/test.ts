@@ -50,7 +50,7 @@ export default new ReadableCommand(
                 })
             }, 1000)
         }
-        
+
         if (interaction.options.getSubcommand() === "fix-users") {
             const members = await interaction.guild.members.fetch()
             const filteredMembers = members.filter(member => member.roles.cache.has("373936282893811723") && !member.roles.cache.has("235144257147502592"))
@@ -67,6 +67,6 @@ export default new ReadableCommand(
             const bb = members.filter(member => (member.roles.cache.has(roles.bb2)||member.roles.cache.has(roles.bb3)||member.roles.cache.has(roles.bb4)) && !member.roles.cache.has(roles.bb1))
             console.log("Fixing BB!")
             console.log(bb)
-            bb.each((member: GuildMember) => member.roles.add(roles.mb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+            bb.each((member: GuildMember) => member.roles.add(roles.bb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
         }
     })
