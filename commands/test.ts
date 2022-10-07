@@ -14,7 +14,7 @@ export default new ReadableCommand(
         )
         .addSubcommand(
             subcommand => subcommand
-                .setName("filter-users")
+                .setName("fix-users")
                 .setDescription("Test time controls")
         ),
     async (interaction: ChatInputCommandInteraction) => {
@@ -46,10 +46,6 @@ export default new ReadableCommand(
         if (interaction.options.getSubcommand() === "filter-users") {
             const members = await interaction.guild.members.fetch()
             const filteredMembers = members.filter(member => member.roles.cache.has("373936282893811723") && !member.roles.cache.has("235144257147502592"))
-            .map(member => member.user.username)
-            interaction.reply({
-                content: String(filteredMembers),
-                ephemeral: true
-            })
+            filteredMembers.each(member => member.roles.add("235144257147502592").catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
         }
     })
