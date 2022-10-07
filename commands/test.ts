@@ -68,5 +68,8 @@ export default new ReadableCommand(
             console.log("Fixing BB!")
             console.log(bb)
             bb.each((member: GuildMember) => member.roles.add(roles.bb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+
+            const noMb = members.filter(member => (!member.roles.cache.has(roles.mb2)&&!member.roles.cache.has(roles.mb3)&&!member.roles.cache.has(roles.mb4)) && member.roles.cache.has(roles.mb1))
+            noMb.each((member: GuildMember) => member.roles.remove(roles.mb1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username)))
         }
     })
