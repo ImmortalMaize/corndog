@@ -1,6 +1,6 @@
 import { Client, TextChannel, Interaction, ChatInputCommandInteraction } from 'discord.js';
 import { ReadableEvent } from '../classes';
-import { config, misc } from '../config';
+import { config, roles } from '../config';
 import { timeControl } from '../redis/entities';
 import redisClient from "../redis"
 import utils from '../utils/'
@@ -24,7 +24,7 @@ export default new ReadableEvent(
             }],
             ["yoink", async (timeControl) => {
                 (await guild.members.fetch()).each(async (member) => {
-                    const role = misc["some role idk"]
+                    const role = roles["some role idk"]
                     if (member.roles.cache.has(role)) await member.roles.remove(role)
                 })
             }]
