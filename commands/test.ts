@@ -1,6 +1,7 @@
 import { ReadableCommand } from "../classes";
-import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { timeControl } from "../redis/entities";
+import { roles } from "../config"
 import utils from "../utils";
 
 export default new ReadableCommand(
@@ -10,13 +11,19 @@ export default new ReadableCommand(
         .addSubcommand(
             subcommand => subcommand
                 .setName("time")
-                .setDescription("Test time controls")
+                .setDescription("Test time controls.")
         )
         .addSubcommand(
             subcommand => subcommand
                 .setName("fix-users")
-                .setDescription("Test time controls")
-        ),
+                .setDescription("Makes sure everyone has user roles.")
+        )
+        .addSubcommand(
+            subcommand => subcommand
+                .setName("fix-ascend")
+                .setDescription("Makes sure beepers have all roles of their ascension.")
+        )
+    ,
     async (interaction: ChatInputCommandInteraction) => {
         if (interaction.options.getSubcommand() === "time") {
             await interaction.reply(
@@ -47,5 +54,13 @@ export default new ReadableCommand(
             const members = await interaction.guild.members.fetch()
             const filteredMembers = members.filter(member => member.roles.cache.has("373936282893811723") && !member.roles.cache.has("235144257147502592"))
             filteredMembers.each(member => member.roles.add("235144257147502592").catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+        }
+        if (interaction.options.getSubcommand() === "fix-ascend") {
+            const members = await interaction.guild.members.fetch()
+            const mb = members.filter(member => (member.roles.cache.has(roles.mb2)||member.roles.cache.has(roles.mb3)||member.roles.cache.has(roles.mb4)) && !member.roles.cache.has(roles.mb1))      
+            mb.each((member: GuildMember) => member.roles.add(roles.mb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+
+            const bb = members.filter(member => (member.roles.cache.has(roles.bb2)||member.roles.cache.has(roles.bb3)||member.roles.cache.has(roles.bb4)) && !member.roles.cache.has(roles.bb1))
+            bb.each((member: GuildMember) => member.roles.add(roles.mb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
         }
     })

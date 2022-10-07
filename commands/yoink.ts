@@ -1,6 +1,6 @@
 import ReadableCommand from "../classes/ReadableCommand";
 import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType } from 'discord.js';
-import { misc } from "../config";
+import { roles } from "../config";
 import { timeControl } from "../redis/entities";
 import utils from "../utils";
 import { userMention } from 'discord.js';
@@ -10,7 +10,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
 
     if (check) {
         const member = (await interaction.guild.members.fetch()).get(interaction.user.id);
-        const role = misc["some role idk"]
+        const role = roles["some role idk"]
 
         interaction.guild.members.fetch()
         .then(members => members.each(member => {
@@ -33,7 +33,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
 
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
-            member.roles.remove(misc['some role idk'])
+            member.roles.remove(role)
         }, false), 1000)
     }
     else {

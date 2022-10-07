@@ -1,6 +1,6 @@
 import { ReadableEvent } from "../classes";
 import { MessageReaction, Message, User, TextChannel, EmbedBuilder, ColorResolvable, userMention, time } from "discord.js"
-import { picks, channels, config } from "../config"
+import { picks, roles, channels, config } from "../config"
 import { finishedBeep } from "../redis/entities"
 import utils from "../utils"
 
@@ -25,7 +25,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         const quota = count >= picks.quota
         const precedent = await finishedBeep.search("submission", reaction.message.id)
 
-        const reward = guild?.roles.cache.get(picks.reward)
+        const reward = guild?.roles.cache.get(roles.picked)
 
         const finishedBeeps = guild?.channels.cache.get(channels["bot-commands"]) as TextChannel
         const finishedPicks = guild?.channels.cache.get(channels["finished-picks"]) as TextChannel
