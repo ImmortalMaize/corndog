@@ -1,5 +1,5 @@
 import { ReadableCommand } from "../classes";
-import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, GuildMember } from 'discord.js';
+import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember } from 'discord.js';
 import { timeControl } from "../redis/entities";
 import { roles } from "../config"
 import utils from "../utils";
@@ -57,10 +57,14 @@ export default new ReadableCommand(
         }
         if (interaction.options.getSubcommand() === "fix-ascend") {
             const members = await interaction.guild.members.fetch()
-            const mb = members.filter(member => (member.roles.cache.has(roles.mb2)||member.roles.cache.has(roles.mb3)||member.roles.cache.has(roles.mb4)) && !member.roles.cache.has(roles.mb1))      
+            const mb = members.filter(member => (member.roles.cache.has(roles.mb2)||member.roles.cache.has(roles.mb3)||member.roles.cache.has(roles.mb4)) && !member.roles.cache.has(roles.mb1)) 
+            console.log("Fixing MB!")
+            console.log(mb)     
             mb.each((member: GuildMember) => member.roles.add(roles.mb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
 
             const bb = members.filter(member => (member.roles.cache.has(roles.bb2)||member.roles.cache.has(roles.bb3)||member.roles.cache.has(roles.bb4)) && !member.roles.cache.has(roles.bb1))
+            console.log("Fixing BB!")
+            console.log(bb)
             bb.each((member: GuildMember) => member.roles.add(roles.mb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
         }
     })
