@@ -17,7 +17,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .then(members => members.each(member => {
             if (member.roles.cache.has(role)) member.roles.remove(role)
         }))
-        .then(() => member.roles.add(role)).catch(() => replyContent = "You're unyoinkable...");
+        .then(() => member.roles.add(role)).catch(() => replyContent = "You can't yoink!");
         
         replyContent ??= `${userMention(member.id)} yoinked it!`
 
