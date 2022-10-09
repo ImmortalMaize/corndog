@@ -12,18 +12,16 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         let replyContent: string
         const member = (await interaction.guild.members.fetch()).get(interaction.user.id);
         const role = roles["some role idk"]
-
+        
+        try {
         interaction.guild.members.fetch()
         .then(members => members.each(member => {
             if (member.roles.cache.has(role)) member.roles.remove(role)
         }))
-        .then(() => member.roles.add(role)).catch(() => replyContent = "You can't yoink!");
-        if (replyContent) return;
-        
-        replyContent ??= `${userMention(member.id)} yoinked it!`
+        .then(() => member.roles.add(role))
 
         const reply = await interaction.reply({
-            content: replyContent,
+            content: `${userMention(member.id)} yoinked it!`,
             ephemeral: false
         })
 
@@ -34,6 +32,9 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             name: "yoink",
             cooldown: utils.time.goForth(1, "day").toDate()
         })
+    } catch {
+        interaction.reply("You can't yoink it! >:(")
+    }
 
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
