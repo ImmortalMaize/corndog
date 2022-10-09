@@ -9,6 +9,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
     const check = await timeControl.check("yoink", undefined, true)
 
     if (check) {
+        let replyContent: string
         const member = (await interaction.guild.members.fetch()).get(interaction.user.id);
         const role = roles["some role idk"]
 
@@ -16,10 +17,12 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .then(members => members.each(member => {
             if (member.roles.cache.has(role)) member.roles.remove(role)
         }))
-        .then(() => member.roles.add(role));
+        .then(() => member.roles.add(role)).catch(() => replyContent = "You're unyoinkable...");
         
+        replyContent ??= `${userMention(member.id)} yoinked it!`
+
         const reply = await interaction.reply({
-            content: `${userMention(member.id)} yoinked it!`,
+            content: replyContent,
             ephemeral: false
         })
 
