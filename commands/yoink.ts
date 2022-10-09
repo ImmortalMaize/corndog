@@ -18,6 +18,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             if (member.roles.cache.has(role)) member.roles.remove(role)
         }))
         .then(() => member.roles.add(role)).catch(() => replyContent = "You can't yoink!");
+        if (replyContent) return;
         
         replyContent ??= `${userMention(member.id)} yoinked it!`
 
