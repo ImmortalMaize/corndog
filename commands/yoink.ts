@@ -23,10 +23,13 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .catch(
             () => interaction.reply("It's unyoinkable...")
         )
-        .then(() => member.roles.add(role))
-        .catch(
-            () => interaction.reply("You can't yoink it! >:(")
+        .then(
+            () => member.roles.add(role)
+            .catch(
+                () => interaction.reply("You can't yoink it! >:(")
+            )
         )
+        
         .then(
             () => interaction.reply({
                 content: `${userMention(member.id)} yoinked it!`,
