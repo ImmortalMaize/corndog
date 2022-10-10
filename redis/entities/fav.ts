@@ -46,7 +46,6 @@ export default {
         fav.name = form.name
 
         await repository.save(fav)
-        await client.close()
 
         console.log("Bookmark created!")
         return
@@ -80,7 +79,6 @@ export default {
         .equals(user)
         .return.first().catch((reason => console.log(reason)))
 
-        await client.close()
         return results
     },
     all: async (user: string, offset: number) => {

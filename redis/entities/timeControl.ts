@@ -37,8 +37,6 @@ export default {
         timeControl.cooldown = form.cooldown
 
         await repository.save(timeControl)
-
-        await client.close()
     },
     async waste(name: string) {
         await client.open(process.env.REDIS_URL)
@@ -49,8 +47,6 @@ export default {
         const timeControlId: string = await repository.search().where("name").equals(name).return.firstId()
 
         await repository.remove(timeControlId)
-
-        await client.close()
     },
     async check(name: string, handler?: () => Promise<void>, logs?: boolean): Promise<boolean> {
         console.log("Checking time controls!")
