@@ -13,7 +13,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         
         let reply: InteractionResponse
 
-        try {
         interaction.guild.members.fetch()
         .then(
             members => members.each(member => {
@@ -44,9 +43,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
                 cooldown: utils.time.goForth(1, "day").toDate()
             })
         )
-    } catch {
-        interaction.reply("You can't yoink it! >:(")
-    }
+        
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
             member.roles.remove(role)
