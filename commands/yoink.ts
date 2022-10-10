@@ -12,7 +12,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         const role = roles["some role idk"]
         
         let reply: InteractionResponse
-        
+
         try {
         interaction.guild.members.fetch()
         .then(
@@ -23,28 +23,28 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .catch(
             () => interaction.reply("It's unyoinkable...")
         )
-        .then(async () => await member.roles.add(role))
+        .then(() => member.roles.add(role))
         .catch(
             () => interaction.reply("You can't yoink it! >:(")
         )
         .then(
-            async () => await interaction.reply({
+            () => interaction.reply({
                 content: `${userMention(member.id)} yoinked it!`,
                 ephemeral: false
             }
         ))
-
-        //@ts-ignore
-        await timeControl.generate({
-            channel: interaction.channel.id,
-            message: reply.id,
-            name: "yoink",
-            cooldown: utils.time.goForth(1, "day").toDate()
-        })
+        .then(
+            //@ts-ignore
+            () => timeControl.generate({
+                channel: interaction.channel.id,
+                message: reply.id,
+                name: "yoink",
+                cooldown: utils.time.goForth(1, "day").toDate()
+            })
+        )
     } catch {
         interaction.reply("You can't yoink it! >:(")
     }
-
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
             member.roles.remove(role)
