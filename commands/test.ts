@@ -45,7 +45,7 @@ export default new ReadableCommand(
                     interaction.followUp({
                         content: "Time controls seem to be normal!",
                         ephemeral: false
-                    })
+                    }, false)
                     clearInterval(checks)
                 })
             }, 1000)
