@@ -7,12 +7,12 @@ export default (
     count: number
 ) => {
     const member  = submission.guild.members.cache.get((submission.author as User).id)
-    const nickname = member?.nickname ?? member?.user.username ?? submission.author.username
-    const avatar = member?.avatarURL() ?? member?.user.avatarURL()
+    const nickname = member.nickname ?? member.user.username ?? submission.author.username
+    const avatar = member.avatarURL() ?? member.user.avatarURL()
     const sauce = submission.cleanContent.match(utils.hasSauce)
     const blurb = (sauce ? submission.cleanContent
-        ?.replaceAll(utils.hasSauce, "")
-        ?.replaceAll(/^\n$/gm, "")
+        .replaceAll(utils.hasSauce, "")
+        .replaceAll(/^\n$/gm, "")
         : submission.cleanContent) as string
 
     const colors = utils.colorScale(config.colors)
@@ -24,7 +24,7 @@ export default (
     .setColor(colors(Math.random()).hex() as ColorResolvable)
     .setDescription(blurb.length > 0 ? blurb : "undefined")
     .addFields(
-        {name: "Sauce 🎵", value: sauce?.join("\n") ?? "undefined", inline: true},
+        {name: "Sauce 🎵", value: sauce.join("\n") ?? "undefined", inline: true},
         {name: "Score 👌", value: String(count), inline: true}
     )
     .setFooter({

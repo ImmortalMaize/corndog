@@ -18,17 +18,17 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     }
 
     const guild = reaction.message.guild
-    const member = guild?.members.cache.get((reaction.message.author as User).id)
+    const member = guild.members.cache.get((reaction.message.author as User).id)
     if (reaction.emoji.name === utils.emojis.hand) {
-        const count = (await reaction.message.reactions.cache.get(utils.emojis.hand)?.users.fetch()).filter(user => user.id !== (member?.id ?? reaction.message.author.id) && user.id !== config.clientId).size
+        const count = (await reaction.message.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (member.id ?? reaction.message.author.id) && user.id !== config.clientId).size
         console.log('👌:' + count)
         const quota = count >= picks.quota
         const precedent = await finishedBeep.search("submission", reaction.message.id)
 
-        const reward = guild?.roles.cache.get(roles.picked)
+        const reward = guild.roles.cache.get(roles.picked)
 
-        const finishedBeeps = guild?.channels.cache.get(channels["bot-commands"]) as TextChannel
-        const finishedPicks = guild?.channels.cache.get(channels["finished-picks"]) as TextChannel
+        const finishedBeeps = guild.channels.cache.get(channels["bot-commands"]) as TextChannel
+        const finishedPicks = guild.channels.cache.get(channels["finished-picks"]) as TextChannel
 
         if (quota) {
             if (precedent) {
@@ -38,17 +38,17 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
                 const embed = utils.pickEmbed(reaction.message as Message, count)
                 const channel = await finishedPicks.messages.fetch()
-                channel.get(embedID)?.edit({
+                channel.get(embedID).edit({
                     embeds: [embed]
                 })
 
             } else {
                 console.log("Quota but no precedent!")
-                member?.roles.add(reward)
+                member.roles.add(reward)
 
                 const embed = utils.pickEmbed(reaction.message as Message, count)
                 const pick = await finishedPicks.send({
-                    content: `Congratulations ${userMention(member?.id ?? reaction.message.author.id)} on getting picked!`,
+                    content: `Congratulations ${userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
                     embeds: [embed]
                 })
 

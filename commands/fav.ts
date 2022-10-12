@@ -112,7 +112,7 @@ export default new ReadableCommand(
             const isPublic = interaction.options.getBoolean("public") ?? false
 
             //@ts-ignore
-            const sauce = (await fav.search(interaction.user.id, "name", name))?.toJSON().sauce
+            const sauce = (await fav.search(interaction.user.id, "name", name)).toJSON().sauce
             console.log(sauce)
 
             sauce
