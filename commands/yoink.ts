@@ -34,6 +34,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         )
         .then(
             () => {
+                console.log(member)
                 member.roles.add(role)
             }
         )
