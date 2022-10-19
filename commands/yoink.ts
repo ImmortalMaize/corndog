@@ -8,6 +8,7 @@ import { userMention } from 'discord.js';
 export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks! >:3c"), async (interaction: ChatInputCommandInteraction) => {
     const check = await timeControl.check("yoink", undefined, true)
     const user = interaction.user.id
+    console.log(user)
 
     if (check) {
         const member = (await interaction.guild.members.fetch()).get(user);
