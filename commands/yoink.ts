@@ -13,35 +13,39 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         
         let reply: InteractionResponse
 
-        const members = await interaction.guild.members.fetch()
-        members.each(member => {
+        interaction.guild.members.fetch()
+        .then(
+            members => members.each(member => {
                 if (member.roles.cache.has(role)) member.roles.remove(role)
-                .catch(
-                    () => interaction.reply("It's unyoinkable...")
-                )
-        }
+            })
         )
-        
-        if (interaction.reply) return;
-            member.roles.add(role)
-            .catch(
-                () => interaction.reply("You can't yoink it! >:(")
+        .catch(
+            () => interaction.reply("It's unyoinkable...")
+        )
+        .then(
+            async () => {
+                if (!interaction.reply) await member.roles.add(role)
+            }
+        )
+        .catch(
+                async () => await interaction.reply("You can't yoink it! >:(")
             )
-
-        if (interaction.reply) return;
-        interaction.reply({
+        .then(
+            async () => {
+                if (!interaction.reply)
+                await interaction.reply({
                 content: `${userMention(member.id)} yoinked it!`,
                 ephemeral: false
-            })
-        .then(
-            //@ts-ignore
-            () => timeControl.generate({
-                channel: interaction.channel.id,
-                message: reply.id,
-                name: "yoink",
-                cooldown: utils.time.goForth(1, "day").toDate()
-            })
-        )
+            }).then(
+                //@ts-ignore
+                () => timeControl.generate({
+                    channel: interaction.channel.id,
+                    message: reply.id,
+                    name: "yoink",
+                    cooldown: utils.time.goForth(1, "day").toDate()
+                })
+            )
+        })
         
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
