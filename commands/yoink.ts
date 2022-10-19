@@ -13,12 +13,14 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         
         let reply: InteractionResponse
 
-        interaction.guild.members.fetch()
+        interaction.guild.members
+        .fetch()
         .then(
             members => members.each(member => {
                 if (member.roles.cache.has(role)) try {
                     member.roles.remove(role)
-                } catch {
+                } catch (caught) {
+                    console.log(caught)
                     interaction.reply("It's unyoinkable...")
                 }
             })
@@ -27,7 +29,8 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             () => {
                 try {
                     member.roles.add(role) 
-                } catch {
+                } catch (caught) {
+                    console.log(caught)
                     interaction.reply("You can't yoink it! >:(")
                 }
             }
