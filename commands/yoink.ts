@@ -16,24 +16,30 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         interaction.guild.members.fetch()
         .then(
             members => members.each(member => {
-                if (member.roles.cache.has(role)) member.roles.remove(role)
+                if (member.roles.cache.has(role)) try {
+                    member.roles.remove(role)
+                } catch {
+                    interaction.reply("It's unyoinkable...")
+                }
             })
         )
-        .catch(
-            () => interaction.reply("It's unyoinkable...")
-        )
         .then(
-            () => member.roles.add(role) 
+            () => {
+                try {
+                    member.roles.add(role) 
+                } catch {
+                    interaction.reply("You can't yoink it! >:(")
+                }
+            }
         )
-        .catch(
-                () => interaction.reply("You can't yoink it! >:(")
-            )
-        .then(
-            () => interaction.reply({
+        
+
+        if (member.roles.cache.has(role))
+        interaction.reply({
                 content: `${userMention(member.id)} yoinked it!`,
                 ephemeral: false
             }
-        ))
+        )
         .then(
             //@ts-ignore
             () => timeControl.generate({
