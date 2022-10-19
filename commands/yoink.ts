@@ -16,6 +16,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
                 content: "You don't exist",
                 ephemeral: true
             })
+            return
         }
         const role = roles["some role idk"]
         
