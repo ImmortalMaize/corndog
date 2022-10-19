@@ -9,7 +9,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
     const check = await timeControl.check("yoink", undefined, true)
 
     if (check) {
-        const member = interaction.member as GuildMember
+        const member = interaction.member
         if (!member) {
             interaction.reply({
                 content: "You don't exist",
@@ -33,7 +33,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .then(
             () => {
                 console.log(member)
-                member.roles.add(role)
+                member instanceof GuildMember ? member.roles.add(role) : member.roles.push(role)
             }
         )
         .catch(
@@ -41,7 +41,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             )
         .then(
             () => interaction.reply({
-                content: `${userMention(member.id)} yoinked it!`,
+                content: `${userMention(member instanceof GuildMember ? member.id : member.user.id)} yoinked it!`,
                 ephemeral: false
             }
         ))
@@ -57,7 +57,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
-            member.roles.remove(role)
         }, false), 1000)
     }
     else {
