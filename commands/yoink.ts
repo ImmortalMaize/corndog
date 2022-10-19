@@ -29,7 +29,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             })
         )
         .catch(
-            () => interaction.reply("It's unyoinkable...")
+            async () => {interaction.reply("It's unyoinkable...")}
         )
         .then(
             () => {
@@ -41,19 +41,23 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
                 (caught) => {console.log(caught);interaction.reply("You can't yoink it! >:(")}
             )
         .then(
-            () => interaction.reply({
+            async () => {
+                reply = await interaction.reply({
                 content: `${userMention(member.user.id)} yoinked it!`,
                 ephemeral: false
             }
-        ))
+        )})
         .then(
-            //@ts-ignore
-            () => timeControl.generate({
+            
+            async () => {
+                //@ts-ignore
+                if (reply) await timeControl.generate({
                 channel: interaction.channel.id,
-                message: reply.id,
+                message: reply.id ?? "",
                 name: "yoink",
                 cooldown: utils.time.goForth(1, "day").toDate()
             })
+        }
         )
         
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
