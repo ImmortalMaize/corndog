@@ -23,29 +23,28 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             () => interaction.reply("It's unyoinkable...")
         )
         .then(
-            async () => {
-                if (!interaction.reply) await member.roles.add(role)
+            () => {
+                member.roles.add(role)
             }
         )
         .catch(
-                async () => await interaction.reply("You can't yoink it! >:(")
+                (caught) => {console.log(caught);interaction.reply("You can't yoink it! >:(")}
             )
         .then(
-            async () => {
-                if (!interaction.reply)
-                await interaction.reply({
+            () => interaction.reply({
                 content: `${userMention(member.id)} yoinked it!`,
                 ephemeral: false
-            }).then(
-                //@ts-ignore
-                () => timeControl.generate({
-                    channel: interaction.channel.id,
-                    message: reply.id,
-                    name: "yoink",
-                    cooldown: utils.time.goForth(1, "day").toDate()
-                })
-            )
-        })
+            }
+        ))
+        .then(
+            //@ts-ignore
+            () => timeControl.generate({
+                channel: interaction.channel.id,
+                message: reply.id,
+                name: "yoink",
+                cooldown: utils.time.goForth(1, "day").toDate()
+            })
+        )
         
         const interval = setInterval(async () => await timeControl.check("yoink", async () => {
             clearInterval(interval)
