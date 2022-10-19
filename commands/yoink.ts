@@ -7,10 +7,10 @@ import { userMention } from 'discord.js';
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks! >:3c"), async (interaction: ChatInputCommandInteraction) => {
     const check = await timeControl.check("yoink", undefined, true)
-    console.log(interaction.user)
-    
+    const user = interaction.user.id
+
     if (check) {
-        const member = (await interaction.guild.members.fetch()).get(interaction.user.id);
+        const member = (await interaction.guild.members.fetch()).get(user);
         if (!member) {
             interaction.reply({
                 content: "You don't exist",
