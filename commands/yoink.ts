@@ -20,7 +20,8 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         const role = roles["some role idk"]
         
         let reply: InteractionResponse
-
+        member instanceof GuildMember
+        
         interaction.guild.members.fetch()
         .then(
             members => members.each(mem => {
