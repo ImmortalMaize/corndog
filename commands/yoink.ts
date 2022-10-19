@@ -20,8 +20,8 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         const role = roles["some role idk"]
         
         let reply: InteractionResponse
-        member instanceof GuildMember
-        
+        console.log(member instanceof GuildMember)
+
         interaction.guild.members.fetch()
         .then(
             members => members.each(mem => {
@@ -42,7 +42,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             )
         .then(
             () => interaction.reply({
-                content: `${userMention(member instanceof GuildMember ? member.id : member.user.id)} yoinked it!`,
+                content: `${userMention(member.user.id)} yoinked it!`,
                 ephemeral: false
             }
         ))
