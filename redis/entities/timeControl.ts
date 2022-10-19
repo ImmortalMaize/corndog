@@ -49,7 +49,7 @@ export default {
         await repository.remove(timeControlId)
     },
     async check(name: string, handler?: () => Promise<void>, logs?: boolean): Promise<boolean> {
-        console.log("Checking time controls!")
+        if (logs) console.log("Checking time controls!")
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
         await repository.createIndex()

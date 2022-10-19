@@ -20,7 +20,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         const role = roles["some role idk"]
         
         let reply: InteractionResponse
-        console.log(member instanceof GuildMember)
 
         interaction.guild.members.fetch()
         .then(
@@ -33,7 +32,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         )
         .then(
             () => {
-                console.log(member)
                 member instanceof GuildMember ? member.roles.add(role) : member.roles.push(role)
             }
         )
