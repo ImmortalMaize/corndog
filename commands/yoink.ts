@@ -1,5 +1,5 @@
 import ReadableCommand from "../classes/ReadableCommand";
-import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType, InteractionResponse } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType, InteractionResponse, Guild, GuildMember } from 'discord.js';
 import { roles } from "../config";
 import { timeControl } from "../redis/entities";
 import utils from "../utils";
@@ -7,11 +7,9 @@ import { userMention } from 'discord.js';
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks! >:3c"), async (interaction: ChatInputCommandInteraction) => {
     const check = await timeControl.check("yoink", undefined, true)
-    const user = interaction.user.id
-    console.log(user)
 
     if (check) {
-        const member = (await interaction.guild.members.fetch()).get(user);
+        const member = interaction.member as GuildMember
         if (!member) {
             interaction.reply({
                 content: "You don't exist",
