@@ -9,6 +9,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
     const check = await timeControl.check("yoink", undefined, true)
     if (check) {
         const member = (await interaction.guild.members.fetch()).get(interaction.user.id);
+        console.log()
         const role = roles["some role idk"]
         
         let reply: InteractionResponse
