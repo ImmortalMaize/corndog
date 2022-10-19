@@ -15,8 +15,8 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
 
         interaction.guild.members.fetch()
         .then(
-            members => members.each(member => {
-                if (member.roles.cache.has(role)) member.roles.remove(role)
+            members => members.each(mem => {
+                if (mem.roles.cache.has(role)) mem.roles.remove(role)
             })
         )
         .catch(
