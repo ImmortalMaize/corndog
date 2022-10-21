@@ -4,6 +4,8 @@ import { ChatInputCommandInteraction } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
+        .setName("cornscript")
+        .setDescription("Converts a string to cornscript!")
         .addStringOption(
             option => option
                 .setName("string")
@@ -14,6 +16,7 @@ export default new ReadableCommand(
             option => option
                 .setName("public")
                 .setDescription("Do you want this to be public?")
+                .setRequired(false)
         ), async (interaction: ChatInputCommandInteraction) => {
             const string = interaction.options.getString("string")
             const isPublic = interaction.options.getBoolean("public")
