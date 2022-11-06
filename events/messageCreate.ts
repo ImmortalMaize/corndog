@@ -26,7 +26,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             bad = true
             await reply(message, "The character limit is 450 or under. Yours is " + message.cleanContent.length + "! > _<")
         }
-        if (message.cleanContent.match(/\n/gm).length >= 5) {
+        if (message.cleanContent.match(/\n/gm)?.length >= 5) {
             console.log("Message line breaks are bad.")
             bad = true
             await reply(message, "Too many line breaks! > _<")
