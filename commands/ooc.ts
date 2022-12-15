@@ -21,17 +21,20 @@ export default new ReadableCommand(
             .setRequired(false)
         ), async (interaction: ChatInputCommandInteraction) => {
             const user = interaction.options.getUser("user")
+            console.log("User: " + user.username)
+            
             const isPublic = interaction.options.getBoolean("public") ?? false
 
             const channel: TextChannel = Math.random() >= 0.5 ?
-                (interaction.guild.channels.cache.get(channels["off-topic"]) ?? await interaction.guild.channels.fetch(channels["off-topic"])) as TextChannel :
-                (interaction.guild.channels.cache.get(channels["off-topic-2"]) ?? await interaction.guild.channels.fetch(channels["off-topic-2"])) as TextChannel;
+                (await interaction.guild.channels.fetch(channels["off-topic"])) as TextChannel :
+                (await interaction.guild.channels.fetch(channels["off-topic-2"])) as TextChannel;
             console.log(`I choose ${channel.name}!`)
+
             const message = (await channel.messages.fetch()).filter(message => message.author.id === user.id).random()
             console.log(message ? "Message found: " + message.cleanContent : "No message found! :(")
             await interaction.reply({
                 content: message?.cleanContent ?? "Hm... I couldn't find any messages from that user. ;w;",
-                files: message.attachments.map(attachment => attachment.url),
+                files: message?.attachments.map(attachment => attachment.url),
                 ephemeral: !isPublic
             })
         })
