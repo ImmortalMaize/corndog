@@ -27,7 +27,7 @@ export default new ReadableCommand(
                 (interaction.guild.channels.cache.get(channels["off-topic"]) ?? await interaction.guild.channels.fetch(channels["off-topic"])) as TextChannel :
                 (interaction.guild.channels.cache.get(channels["off-topic-2"]) ?? await interaction.guild.channels.fetch(channels["off-topic-2"])) as TextChannel;
 
-            const message = (channel.messages.cache ?? await (channel as TextChannel).messages.fetch()).filter(message => message.author.id === user.id).random()
+            const message = (await channel.messages.fetch()).filter(message => message.author.id === user.id).random()
 
             await interaction.reply({
                 content: message.cleanContent,
