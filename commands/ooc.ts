@@ -30,7 +30,7 @@ export default new ReadableCommand(
                 (await interaction.guild.channels.fetch(channels["off-topic-2"])) as TextChannel;
             console.log(`I choose ${channel.name}!`)
 
-            const messages = await channel.messages.fetch()
+            const messages = await channel.messages.fetch({ limit: 10000})
             console.log(`Drawing from ${messages.size}!`)
 
             const message = messages.filter(message => message.author.id === user.id).random()
