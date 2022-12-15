@@ -46,6 +46,7 @@ async function getCommands() {
 
         // @ts-ignore
         client.commands.set(command.data.name, command);
+        console.log(`Loaded command ${command.data.name} ^~^`)
     }
 }
 
@@ -63,6 +64,7 @@ async function getEvents() {
         } else {
             client.on(event.name, (...args) => event.execute(...args));
         }
+        console.log(`Loaded event ${event.name} ^~^`)
     }
 }
 

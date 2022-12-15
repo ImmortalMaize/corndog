@@ -6,6 +6,8 @@ import { TextChannel } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
+        .setName("ooc")
+        .setDescription("Gets a message out of context from a member in the off-topic channels!")
         .addUserOption(
             option => option
             .setName("user")
