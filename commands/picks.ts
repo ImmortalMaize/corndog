@@ -3,6 +3,7 @@ import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction } from 'd
 import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
 import utils from "../utils"
+import { finishedBeep } from "../redis/entities";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -24,14 +25,16 @@ export default new ReadableCommand(
         .setDescription("Get finished picks for this year.")
     )
     , async (interaction: ChatInputCommandInteraction) => {
-        const finishedPicks = (await interaction.guild.channels.fetch()).get(channels["finished-beeps"]) as TextChannel
+        const finishedBeeps = (await interaction.guild.channels.fetch()).get(channels["finished-beeps"]) as TextChannel
         const scope = interaction.options.getSubcommand()
 
         const backWhen = utils.time.goBack(1, scope === "year" ? "year" : scope === "month" ? "month" : "week").unix()
-        const picks = (await finishedPicks.messages.fetch()).filter(message => message.createdTimestamp > backWhen).map(pick => pick)
+        const picks = await Promise.all(
+            (await finishedBeep.view()).map(async (beep) => await finishedBeeps.messages.fetch(beep.submission))
+        )
         const pickReactions = picks.map(pick => pick.reactions.cache.get(utils.emojis.hand).count).sort((a, b) => b-a)
 
-        console.log(pickReactions.slice(0, 5))
+        console.log(pickReactions.slice(0, 10))
 
         interaction.reply({
             content: "Check logs?",

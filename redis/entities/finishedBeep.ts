@@ -40,5 +40,15 @@ export default {
         .equals(value).return.first().catch((reason => console.log(reason)))
 
         return results
+    },
+    view: async () => {
+        const repository = client.fetchRepository(schema)
+        await repository.createIndex()
+
+        const results = await repository
+        .search()
+        .returnAll()
+
+        return results
     }
 }
