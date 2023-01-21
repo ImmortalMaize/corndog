@@ -61,7 +61,7 @@ export default new ReadableCommand(
             })
 
             const srcInput = new TextInputBuilder()
-            .setCustomId("source-input")
+            .setCustomId("sauce")
             .setLabel("Sauce")
             .setStyle(TextInputStyle.Short)
             .setPlaceholder("Where did you find the original?")
