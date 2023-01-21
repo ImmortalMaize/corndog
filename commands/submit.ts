@@ -1,10 +1,11 @@
 import { ReadableCommand } from "../classes";
-import { ActionRowBuilder, SelectMenuBuilder, SlashCommandBuilder } from 'discord.js';
+import { ActionRowBuilder, SelectMenuBuilder, SlashCommandBuilder, InteractionResponse } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ComponentType } from 'discord.js';
 import { ModalBuilder } from 'discord.js';
 import { TextInputBuilder } from 'discord.js';
 import { TextInputStyle } from 'discord.js';
+import { Message } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -63,7 +64,7 @@ export default new ReadableCommand(
                 //@ts-ignore
                 components: [categoriesActionRow],
                 ephemeral: true
-            })
+            }) as Message
 
             const srcInput = new TextInputBuilder()
                 .setCustomId("sourceInput")
@@ -75,7 +76,7 @@ export default new ReadableCommand(
             const srcRow = new ActionRowBuilder().addComponents(srcInput)
 
             const srcModal = new ModalBuilder()
-                .setCustomId("sourceModl")
+                .setCustomId("sourceModal")
                 .setTitle("Submission")
                 //@ts-ignore
                 .addComponents(srcRow)
@@ -88,9 +89,8 @@ export default new ReadableCommand(
                 interaction.awaitModalSubmit({
                     filter: (modal) => modal.customId === "sourceModal",
                     time: 20000 }).then(async (submission) => {
-                await submission.reply({
+                return await submission.reply({
                     content: "Submitted! ^w^",
-                    ephemeral: true
                 })
             })
             })
