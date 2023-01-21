@@ -8,55 +8,55 @@ import { TextInputStyle } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
-    .setName("submit")
-    .setDescription("Submit a beep to the sheet!")
-    .addStringOption(
-        option => option
-        .setName('title')
-        .setDescription('What is the title of your submission?')
-        .setRequired(true)
-    )
-    .addStringOption(option => option
-        .setName('submission')
-        .setDescription('What is the link to your submission?')
-        .setRequired(true)
-    )
-    
-    .addBooleanOption(
-        option => option
-        .setName('original')
-        .setDescription('Is this an original submission?')
-        .setRequired(true)
-    )
-    .addStringOption(option => option
-        .setName('collaborators')
-        .setDescription('Who did you collab with?')
-        .setRequired(false)
-    ),
+        .setName("submit")
+        .setDescription("Submit a beep to the sheet!")
+        .addStringOption(
+            option => option
+                .setName('title')
+                .setDescription('What is the title of your submission?')
+                .setRequired(true)
+        )
+        .addStringOption(option => option
+            .setName('submission')
+            .setDescription('What is the link to your submission?')
+            .setRequired(true)
+        )
+
+        .addBooleanOption(
+            option => option
+                .setName('original')
+                .setDescription('Is this an original submission?')
+                .setRequired(true)
+        )
+        .addStringOption(option => option
+            .setName('collaborators')
+            .setDescription('Who did you collab with?')
+            .setRequired(false)
+        ),
 
     async (interaction: ChatInputCommandInteraction) => {
 
-            const categories = [
-                { label: "Cover", value: "cover" },
-                { label: "Remix", value: "remix" },
-                { label: "Remake", value: "remake" },
-                { label: "Guided", value: "guided" },
-                { label: "Recycled", value: "recycled" },
-                { label: "Edit", value: "edit" },
-                { label: "Midi", value: "midi" }
-                ]
-            const categoriesActionRow = new ActionRowBuilder().addComponents(
-                new SelectMenuBuilder()
+        const categories = [
+            { label: "Cover", value: "cover" },
+            { label: "Remix", value: "remix" },
+            { label: "Remake", value: "remake" },
+            { label: "Guided", value: "guided" },
+            { label: "Recycled", value: "recycled" },
+            { label: "Edit", value: "edit" },
+            { label: "Midi", value: "midi" }
+        ]
+        const categoriesActionRow = new ActionRowBuilder().addComponents(
+            new SelectMenuBuilder()
                 .setCustomId("categories-select")
                 .setMinValues(1)
                 .setMaxValues(categories.length)
                 .setOptions(categories)
-            )
-            if (interaction.options.getBoolean("original")) {
-                await interaction.reply({
-                    content: "Cool!",
-                })
-            }
+        )
+        if (interaction.options.getBoolean("original")) {
+            await interaction.reply({
+                content: "Submitted! ^w^",
+            })
+        } else {
             const categoriesMenu = await interaction.reply({
                 content: "What categories does your submission fall under?",
                 //@ts-ignore
@@ -65,18 +65,18 @@ export default new ReadableCommand(
             })
 
             const srcInput = new TextInputBuilder()
-            .setCustomId("sauce")
-            .setLabel("Sauce")
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder("Where did you find the original?")
+                .setCustomId("sauce")
+                .setLabel("Sauce")
+                .setStyle(TextInputStyle.Short)
+                .setPlaceholder("Where did you find the original?")
 
             const srcRow = new ActionRowBuilder().addComponents(srcInput)
 
             const srcModal = new ModalBuilder()
-            .setCustomId("source-modal")
-            .setTitle("Submission")
-            //@ts-ignore
-            .addComponents(srcRow)
+                .setCustomId("source-modal")
+                .setTitle("Submission")
+                //@ts-ignore
+                .addComponents(srcRow)
 
 
             await categoriesMenu.awaitMessageComponent({
@@ -85,8 +85,11 @@ export default new ReadableCommand(
                 submission.showModal(srcModal)
             })
 
-            interaction.awaitModalSubmit({ time: 3600000}).then(submission => {submission.reply({
-                content: "Cool!",
-                ephemeral: true
-            })})
-        })
+            interaction.awaitModalSubmit({ time: 3600000 }).then(submission => {
+                submission.reply({
+                    content: "Submitted! ^w^",
+                    ephemeral: true
+                })
+            })
+        }
+    })
