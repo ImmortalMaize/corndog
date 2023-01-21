@@ -70,6 +70,7 @@ export default new ReadableCommand(
                 .setLabel("Sauce")
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder("Where did you find the original?")
+                .setRequired(true)
 
             const srcRow = new ActionRowBuilder().addComponents(srcInput)
 
@@ -86,8 +87,8 @@ export default new ReadableCommand(
                 submission.showModal(srcModal)
             })
 
-            interaction.awaitModalSubmit({ time: 3600000 }).then(submission => {
-                submission.reply({
+            interaction.awaitModalSubmit({ time: 3600000 }).then(async (submission) => {
+                await submission.reply({
                     content: "Submitted! ^w^",
                     ephemeral: true
                 })
