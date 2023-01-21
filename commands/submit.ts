@@ -55,6 +55,7 @@ export default new ReadableCommand(
         if (interaction.options.getBoolean("original")) {
             await interaction.reply({
                 content: "Submitted! ^w^",
+                ephemeral: true
             })
         } else {
             const categoriesMenu = await interaction.reply({
