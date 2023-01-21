@@ -85,7 +85,9 @@ export default new ReadableCommand(
                 componentType: ComponentType.SelectMenu,
             }).then(submission => {
                 submission.showModal(srcModal)
-                interaction.awaitModalSubmit({ time: 10000 }).then(async (submission) => {
+                interaction.awaitModalSubmit({
+                    filter: (modal) => modal.customId === "sourceModal",
+                    time: 3600000 }).then(async (submission) => {
                 await submission.reply({
                     content: "Submitted! ^w^",
                     ephemeral: true
