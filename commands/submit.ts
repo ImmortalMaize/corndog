@@ -17,16 +17,17 @@ export default new ReadableCommand(
         .setDescription('What is the link to your submission?')
         .setRequired(true)
     )
-    .addStringOption(option => option
-        .setName('collaborators')
-        .setDescription('Who did you collab with?')
-        .setRequired(false)
-    )
+    
     .addBooleanOption(
         option => option
         .setName('original')
         .setDescription('Is this an original submission?')
         .setRequired(true)
+    )
+    .addStringOption(option => option
+        .setName('collaborators')
+        .setDescription('Who did you collab with?')
+        .setRequired(false)
     ),
 
     async (interaction: ChatInputCommandInteraction) => {
@@ -34,6 +35,7 @@ export default new ReadableCommand(
                 new SelectMenuBuilder()
                 .setCustomId("categories")
                 .setMinValues(1)
+                .setMaxValues(7)
                 .setOptions([
                 { label: "Cover", value: "cover" },
                 { label: "Remix", value: "remix" },
@@ -45,7 +47,7 @@ export default new ReadableCommand(
                 ])
             )
             
-            interaction.reply({
+            const categoriesSelect = interaction.reply({
                 content: "What categories does your submission fall under?",
                 //@ts-ignore
                 components: [categories],
