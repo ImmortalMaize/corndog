@@ -1,6 +1,9 @@
 import { ReadableCommand } from "../classes";
 import { ActionRowBuilder, SelectMenuBuilder, SlashCommandBuilder } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
+import { ComponentType } from 'discord.js';
+import { ModalBuilder } from 'discord.js';
+import { TextInputBuilder } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -31,12 +34,8 @@ export default new ReadableCommand(
     ),
 
     async (interaction: ChatInputCommandInteraction) => {
-            const categories = new ActionRowBuilder().addComponents(
-                new SelectMenuBuilder()
-                .setCustomId("categories")
-                .setMinValues(1)
-                .setMaxValues(7)
-                .setOptions([
+
+            const categories = [
                 { label: "Cover", value: "cover" },
                 { label: "Remix", value: "remix" },
                 { label: "Remake", value: "remake" },
@@ -44,13 +43,44 @@ export default new ReadableCommand(
                 { label: "Recycled", value: "recycled" },
                 { label: "Edit", value: "edit" },
                 { label: "Midi", value: "midi" }
-                ])
+                ]
+            const categoriesActionRow = new ActionRowBuilder().addComponents(
+                new SelectMenuBuilder()
+                .setCustomId("categories-select")
+                .setMinValues(1)
+                .setMaxValues(categories.length)
+                .setOptions(categories)
             )
             
-            const categoriesSelect = interaction.reply({
+            const categoriesMenu = await interaction.reply({
                 content: "What categories does your submission fall under?",
                 //@ts-ignore
-                components: [categories],
+                components: [categoriesActionRow],
                 ephemeral: true
             })
+
+            const srcInput = new TextInputBuilder()
+            .setCustomId("source-input")
+            .setLabel("Sauce")
+            .setPlaceholder("Where did you find the original?")
+
+            const srcRow = new ActionRowBuilder().addComponents(srcInput)
+
+            const srcModal = new ModalBuilder()
+            .setCustomId("source-modal")
+            .setTitle("Submission")
+            //@ts-ignore
+            .addComponents(srcRow)
+
+
+            await categoriesMenu.awaitMessageComponent({
+                componentType: ComponentType.SelectMenu,
+            }).then(submission => {
+                submission.showModal(srcModal)
+            })
+
+            interaction.awaitModalSubmit({ time: 3600000}).then(submission => {submission.reply({
+                content: "Cool!",
+                ephemeral: true
+            })})
         })
