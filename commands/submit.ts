@@ -91,6 +91,7 @@ export default new ReadableCommand(
                     time: 20000 }).then(async (submission) => {
                 return await submission.reply({
                     content: "Submitted! ^w^",
+                    ephemeral: true
                 })
             })
             })
