@@ -4,6 +4,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { ComponentType } from 'discord.js';
 import { ModalBuilder } from 'discord.js';
 import { TextInputBuilder } from 'discord.js';
+import { TextInputStyle } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -62,6 +63,7 @@ export default new ReadableCommand(
             const srcInput = new TextInputBuilder()
             .setCustomId("source-input")
             .setLabel("Sauce")
+            .setStyle(TextInputStyle.Short)
             .setPlaceholder("Where did you find the original?")
 
             const srcRow = new ActionRowBuilder().addComponents(srcInput)
