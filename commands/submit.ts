@@ -84,9 +84,9 @@ export default new ReadableCommand(
 
             await categoriesMenu.awaitMessageComponent({
                 componentType: ComponentType.SelectMenu,
-            }).then(submission => {
+            }).then(async (submission) => {
                 submission.showModal(srcModal)
-                interaction.awaitModalSubmit({
+                return await interaction.awaitModalSubmit({
                     filter: (modal) => modal.customId === "sourceModal",
                     time: 5000 })
                 .then(async (submission) => {
