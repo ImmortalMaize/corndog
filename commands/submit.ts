@@ -88,21 +88,8 @@ export default new ReadableCommand(
                 submission.showModal(srcModal)
                 return await interaction.awaitModalSubmit({
                     filter: (modal) => modal.customId === "sourceModal",
-                    time: 360000 })
-                .then(async (submission) => {
-                return await submission.reply({
-                    content: "Submitted! ^w^",
-                    ephemeral: true
-                })
-                .catch(() => {
-                        return interaction.reply({
-                            content: "Whoops... please try again! ^~^",
-                            ephemeral: true
-                        })
-                })
+                    time: 5000 })
+                .then(submission => console.log(submission))
             })
-            })
-
-            
         }
     })
