@@ -75,7 +75,7 @@ export default new ReadableCommand(
             const srcRow = new ActionRowBuilder().addComponents(srcInput)
 
             const srcModal = new ModalBuilder()
-                .setCustomId("sourceModal")
+                .setCustomId("sourceModl")
                 .setTitle("Submission")
                 //@ts-ignore
                 .addComponents(srcRow)
@@ -87,7 +87,7 @@ export default new ReadableCommand(
                 submission.showModal(srcModal)
                 interaction.awaitModalSubmit({
                     filter: (modal) => modal.customId === "sourceModal",
-                    time: 3600000 }).then(async (submission) => {
+                    time: 20000 }).then(async (submission) => {
                 await submission.reply({
                     content: "Submitted! ^w^",
                     ephemeral: true
