@@ -52,7 +52,11 @@ export default new ReadableCommand(
                 .setMaxValues(categories.length)
                 .setOptions(categories)
             )
-            
+            if (interaction.options.getBoolean("original")) {
+                await interaction.reply({
+                    content: "Cool!",
+                })
+            }
             const categoriesMenu = await interaction.reply({
                 content: "What categories does your submission fall under?",
                 //@ts-ignore
