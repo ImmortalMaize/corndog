@@ -47,7 +47,7 @@ export default new ReadableCommand(
         ]
         const categoriesActionRow = new ActionRowBuilder().addComponents(
             new SelectMenuBuilder()
-                .setCustomId("categories-select")
+                .setCustomId("categoriesSelect")
                 .setMinValues(1)
                 .setMaxValues(categories.length)
                 .setOptions(categories)
@@ -66,7 +66,7 @@ export default new ReadableCommand(
             })
 
             const srcInput = new TextInputBuilder()
-                .setCustomId("sauce")
+                .setCustomId("sourceInput")
                 .setLabel("Sauce")
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder("Where did you find the original?")
@@ -75,7 +75,7 @@ export default new ReadableCommand(
             const srcRow = new ActionRowBuilder().addComponents(srcInput)
 
             const srcModal = new ModalBuilder()
-                .setCustomId("source-modal")
+                .setCustomId("sourceModal")
                 .setTitle("Submission")
                 //@ts-ignore
                 .addComponents(srcRow)
