@@ -1,9 +1,18 @@
 import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember } from 'discord.js';
 import { timeControl } from "../redis/entities";
-import { roles } from "../config"
+import { channels, roles } from "../config"
 import utils from "../utils";
+import { TextChannel } from 'discord.js';
 
+async function crawl (channel: TextChannel) {
+    const seen = new Set()
+    const messages = await channel.messages.fetch({ limit: 100 })
+    if (messages.size === 0) return
+    else {
+        const lowestId = messages.map(message => message.id).sort()[0]
+    }
+}
 export default new ReadableCommand(
     new SlashCommandBuilder()
         .setName("test")
@@ -22,6 +31,11 @@ export default new ReadableCommand(
             subcommand => subcommand
                 .setName("fix-ascend")
                 .setDescription("Makes sure beepers have all roles of their ascension.")
+        )
+        .addSubcommand(
+            subcommand => subcommand
+                .setName("bb-scraper")
+                .setDescription("Scrapes for Beep Bishop submissions.")
         )
     ,
     async (interaction: ChatInputCommandInteraction) => {
@@ -59,14 +73,49 @@ export default new ReadableCommand(
 
         if (interaction.options.getSubcommand() === "fix-ascend") {
             const members = await interaction.guild.members.fetch()
-            const mb = members.filter(member => (member.roles.cache.has(roles.mb2)||member.roles.cache.has(roles.mb3)||member.roles.cache.has(roles.mb4)) && !member.roles.cache.has(roles.mb1)) 
+            const mb = members.filter(member => (member.roles.cache.has(roles.mbl2)||member.roles.cache.has(roles.mbl3)||member.roles.cache.has(roles.mbl4))||member.roles.cache.has(roles.mbl1)) 
             console.log("Fixing MB!")
             console.log(mb)     
-            mb.each((member: GuildMember) => member.roles.add(roles.mb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+            mb.each((member: GuildMember) => {
+                if (member.roles.cache.has(roles.mbl4)) {
+                    member.roles.remove(roles.mbl3).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.mbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                }
 
-            const bb = members.filter(member => (member.roles.cache.has(roles.bb2)||member.roles.cache.has(roles.bb3)||member.roles.cache.has(roles.bb4)) && !member.roles.cache.has(roles.bb1))
+                if (member.roles.cache.has(roles.mbl3)) {
+                    member.roles.remove(roles.mbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                }
+
+                if (member.roles.cache.has(roles.mbl2)) {
+                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                }
+            })
+
+            const bb = members.filter(member => (member.roles.cache.has(roles.bbl2)||member.roles.cache.has(roles.bbl3)||member.roles.cache.has(roles.bbl4))||member.roles.cache.has(roles.bbl1))
             console.log("Fixing BB!")
             console.log(bb)
-            bb.each((member: GuildMember) => member.roles.add(roles.bb1).catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+            bb.each((member: GuildMember) => {
+                if (member.roles.cache.has(roles.bbl4)) {
+                    member.roles.remove(roles.bbl3).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.bbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                }
+
+                if (member.roles.cache.has(roles.bbl3)) {
+                    member.roles.remove(roles.bbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                }
+
+                if (member.roles.cache.has(roles.bbl2)) {
+                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                }
+            })
+        }
+
+        if (interaction.options.getSubcommand() === "bb-scraper") {
+            const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
+            const messages = await finishedBeeps.messages.fetch({ limit: 100 })
         }
     })
