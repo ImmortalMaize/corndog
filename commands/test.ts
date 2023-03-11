@@ -130,6 +130,10 @@ export default new ReadableCommand(
             const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
             const beeps = await finishedBeep.view()
             for (const beep of beeps) {
+                if (!beep.submission || !beep.embed) {
+                    await finishedBeep.waste(beep.entityId)
+                    continue
+                }
                 const submission = await finishedBeeps.messages.fetch(beep.submission)
                 const count = (await submission.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size
                 const date = submission.createdAt

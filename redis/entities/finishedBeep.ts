@@ -73,5 +73,11 @@ export default {
         }
         if (item.entityId) await repository.save(item)
         return item
+    },
+    "waste": async (id: string) => {
+        const repository = client.fetchRepository(schema)
+        await repository.createIndex()
+
+        repository.remove(id)
     }
 }
