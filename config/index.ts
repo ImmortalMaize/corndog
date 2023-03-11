@@ -4,6 +4,7 @@ import channels from "./channels.json"
 import redis from "./redis.json"
 import cooldowns from "./cooldowns.json"
 import roles from "./roles.json"
+import emotion from "../utils/emote/emotions.json"
 
 export {
     redis,
@@ -11,5 +12,6 @@ export {
     channels,
     picks,
     cooldowns,
-    roles
+    roles,
+    emotion
 }

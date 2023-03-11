@@ -29,10 +29,8 @@ export default new ReadableCommand(
         const scope = interaction.options.getSubcommand()
 
         const backWhen = utils.time.goBack(1, scope === "year" ? "year" : scope === "month" ? "month" : "week").unix()
-        const picks = await Promise.all(
-            (await finishedBeep.view()).map(async (beep) => await finishedBeeps.messages.fetch(beep.submission))
-        )
-        const pickReactions = picks.map(pick => pick.reactions.cache.get(utils.emojis.hand).count).sort((a, b) => b-a)
+        const picks = await finishedBeep.view()
+        const pickReactions = picks.sort((a, b) => b.count - a.count).filter(pick => pick.date.valueOf() > backWhen)
 
         console.log(pickReactions.slice(0, 10))
 
