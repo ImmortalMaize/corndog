@@ -135,15 +135,15 @@ export default new ReadableCommand(
                     return
             })
             for (const beep of beeps) {
-                console.log(beep.entityId)
                 if (!beep.count || !beep.date) {
-                    const submission = await finishedBeeps.messages.fetch(beep.submission)
+                    console.log("Fixing " + beep.entityId)
+                    const submission = await finishedBeeps.messages.fetch(beep.submission).catch(() => null)
                     if (!submission) {
                         console.log("Aaaand " + beep.submission + "is gone...")
                         await finishedBeep.waste(beep.entityId)
                         continue
                     }
-                    const count = (await submission.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size
+                    const count = (await submission.reactions.cache.get(utils.emojis.hand)?.users.fetch())?.filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size ?? 0
                     const date = submission.createdAt
                     await finishedBeep.amend(beep.entityId, [
                         ["count", count],
