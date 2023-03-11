@@ -150,6 +150,7 @@ export default new ReadableCommand(
                         ["count", count],
                         ["date", date]
                     ])
+                    if (index + 1 === beeps.length) console.log("Done! :D")
                 }
             }
         }
