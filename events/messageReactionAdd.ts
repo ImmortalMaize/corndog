@@ -27,7 +27,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
         const reward = guild.roles.cache.get(roles.picked)
 
-        const finishedBeeps = guild.channels.cache.get(channels["bot-commands"]) as TextChannel
+        const finishedBeeps = guild.channels.cache.get(channels["finished-beeps"]) as TextChannel
         const finishedPicks = guild.channels.cache.get(channels["finished-picks"]) as TextChannel
 
         if (quota) {
@@ -36,11 +36,17 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 const embedID = precedent.toJSON().embed
                 console.log(embedID)
 
-                const embed = utils.pickEmbed(reaction.message as Message, count)
-                const channel = await finishedPicks.messages.fetch()
-                channel.get(embedID).edit({
+                const embed = utils.pickEmbed(reaction.message as Message, count);
+                (await finishedPicks.messages.fetch(embedID))
+                .edit({
                     embeds: [embed]
                 })
+
+                finishedBeep.amend(precedent.entityId, [
+                    ["count", count]
+                ])
+
+                console.log("Amended ting; " + count)
 
             } else {
                 console.log("Quota but no precedent!")
@@ -56,7 +62,8 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 //@ts-ignore
                 await finishedBeep.generate({
                     submission: reaction.message.id,
-                    embed: pick.id
+                    embed: pick.id,
+                    count: count
                 })
                 console.log("Generated ting")
             }
