@@ -47,8 +47,9 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 member.roles.add(reward)
 
                 const embed = utils.pickEmbed(reaction.message as Message, count)
+                const old = utils.time.past(utils.time.goBack(1, "month").toDate())
                 const pick = await finishedPicks.send({
-                    content: `Congratulations ${userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
+                    content: `Congratulations ${old ? member.nickname ?? reaction.message.author.username : userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
                     embeds: [embed]
                 })
 
