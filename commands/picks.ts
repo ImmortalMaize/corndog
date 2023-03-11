@@ -30,9 +30,11 @@ export default new ReadableCommand(
         console.log(scope)
 
         const backWhen = utils.time.goBack(1, scope === "year" ? "year" : scope === "month" ? "month" : "week")
-        console.log("Going back to" + backWhen.month)
         const picks = await finishedBeep.view()
-        const pickReactions = picks.sort((a, b) => b.count - a.count).filter(pick => pick.date.valueOf() > backWhen.unix()).map(pick => pick.count)
+        const pickReactions = picks
+        .filter(pick => pick.date.valueOf() > backWhen.unix())
+        .sort((a, b) => b.count - a.count)
+        .map(pick => pick.count)
 
         console.log(pickReactions.slice(0, 10))
 
