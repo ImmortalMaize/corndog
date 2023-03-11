@@ -134,9 +134,10 @@ export default new ReadableCommand(
                     await finishedBeep.waste(beep.entityId)
                     return
             })
-            for (const beep of beeps) {
+            for (const [index, beep] of beeps.entries()) {
+                const percentage = Math.round((index / beeps.length) * 100)
                 if (!beep.count || !beep.date) {
-                    console.log("Fixing " + beep.entityId)
+                    console.log("(" + percentage + "%) Fixing " + beep.entityId + "...")
                     const submission = await finishedBeeps.messages.fetch(beep.submission).catch(() => null)
                     if (!submission) {
                         console.log("Aaaand " + beep.submission + "is gone...")
