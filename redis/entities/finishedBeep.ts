@@ -7,7 +7,8 @@ const schema = new Schema(
     {
         submission: { type: 'string' },
         embed: { type: 'string' },
-        count: { type: 'number' }
+        count: { type: 'number' },
+        date: { type: 'date' }
     },
     {
         dataStructure: 'JSON'
@@ -17,7 +18,8 @@ const schema = new Schema(
 interface FinishedBeepProps {
     submission: string,
     embed: string,
-    count: number
+    count: number,
+    date: Date
 }
 interface FinishedBeep extends Entity, FinishedBeepProps {
     
@@ -31,6 +33,7 @@ export default {
         finishedBeep.embed = form.embed
         finishedBeep.submission = form.submission
         finishedBeep.count = form.count
+        finishedBeep.date = form.date
 
         await repository.save(finishedBeep)
 
@@ -57,7 +60,7 @@ export default {
 
         return results
     },
-    amend: async (id: string, amendments: Array<[string, any]>) => {
+    amend: async (id: string, amendments: Array<[keyof FinishedBeepProps, any]>) => {
         const repository = client.fetchRepository(schema)
         await repository.createIndex()
 
@@ -65,6 +68,7 @@ export default {
         if (!item) return null
 
         for (const [key, value] of amendments) {
+            //@ts-ignore
             item[key] = value
         }
         await repository.save(item)

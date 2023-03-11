@@ -1,7 +1,7 @@
 import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember } from 'discord.js';
-import { timeControl } from "../redis/entities";
-import { channels, roles } from "../config"
+import { finishedBeep, timeControl } from "../redis/entities";
+import { channels, config, roles } from "../config"
 import utils from "../utils";
 import { TextChannel } from 'discord.js';
 
@@ -13,6 +13,7 @@ async function crawl (channel: TextChannel) {
         const lowestId = messages.map(message => message.id).sort()[0]
     }
 }
+
 export default new ReadableCommand(
     new SlashCommandBuilder()
         .setName("test")
@@ -36,6 +37,11 @@ export default new ReadableCommand(
             subcommand => subcommand
                 .setName("bb-scraper")
                 .setDescription("Scrapes for Beep Bishop submissions.")
+        )
+        .addSubcommand(
+            subcommand => subcommand
+                .setName("fix-records")
+                .setDescription("Updates Redis records with correct values!")
         )
     ,
     async (interaction: ChatInputCommandInteraction) => {
@@ -117,5 +123,20 @@ export default new ReadableCommand(
         if (interaction.options.getSubcommand() === "bb-scraper") {
             const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
             const messages = await finishedBeeps.messages.fetch({ limit: 100 })
+        }
+
+        if (interaction.options.getSubcommand() === "fix-records") {
+            console.log("Fixing the records! ^~^")
+            const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
+            const beeps = await finishedBeep.view()
+            for (const beep of beeps) {
+                const submission = await finishedBeeps.messages.fetch(beep.submission)
+                const count = (await submission.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size
+                const date = submission.createdAt
+                await finishedBeep.amend(beep.submission, [
+                    ["count", count],
+                    ["date", date]
+                ])
+            }
         }
     })

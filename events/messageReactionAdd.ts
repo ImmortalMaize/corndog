@@ -63,7 +63,8 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 await finishedBeep.generate({
                     submission: reaction.message.id,
                     embed: pick.id,
-                    count: count
+                    count: count,
+                    date: reaction.message.createdAt
                 })
                 console.log("Generated ting")
             }
