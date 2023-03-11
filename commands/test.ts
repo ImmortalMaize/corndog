@@ -133,7 +133,7 @@ export default new ReadableCommand(
                 const submission = await finishedBeeps.messages.fetch(beep.submission)
                 const count = (await submission.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size
                 const date = submission.createdAt
-                await finishedBeep.amend(beep.submission, [
+                await finishedBeep.amend(beep.entityId, [
                     ["count", count],
                     ["date", date]
                 ])

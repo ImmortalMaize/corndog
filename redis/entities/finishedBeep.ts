@@ -71,7 +71,7 @@ export default {
             //@ts-ignore
             item[key] = value
         }
-        await repository.save(item)
+        if (item.entityId) await repository.save(item)
         return item
     }
 }
