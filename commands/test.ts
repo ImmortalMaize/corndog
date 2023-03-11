@@ -129,18 +129,28 @@ export default new ReadableCommand(
             console.log("Fixing the records! ^~^")
             const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
             const beeps = await finishedBeep.view()
-            for (const beep of beeps) {
-                if (!beep.submission || !beep.embed) {
+            beeps.filter(beep => !beep.submission || !beep.embed).forEach(async beep => {
+                    console.log("Found a bastard! " + beep.entityId)
                     await finishedBeep.waste(beep.entityId)
-                    continue
+                    return
+            })
+            for (const beep of beeps) {
+                console.log(beep.entityId)
+                if (!beep.count || !beep.date) {
+                    const submission = await finishedBeeps.messages.fetch(beep.submission)
+                    if (!submission) {
+                        console.log("Aaaand " + beep.submission + "is gone...")
+                        await finishedBeep.waste(beep.entityId)
+                        continue
+                    }
+                    const count = (await submission.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size
+                    const date = submission.createdAt
+                    await finishedBeep.amend(beep.entityId, [
+                        ["count", count],
+                        ["date", date]
+                    ])
                 }
-                const submission = await finishedBeeps.messages.fetch(beep.submission)
-                const count = (await submission.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size
-                const date = submission.createdAt
-                await finishedBeep.amend(beep.entityId, [
-                    ["count", count],
-                    ["date", date]
-                ])
             }
         }
-    })
+    }
+)

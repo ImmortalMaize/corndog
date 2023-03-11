@@ -78,6 +78,6 @@ export default {
         const repository = client.fetchRepository(schema)
         await repository.createIndex()
 
-        repository.remove(id)
+        await repository.remove(id)
     }
 }
