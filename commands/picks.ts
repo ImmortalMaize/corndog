@@ -25,15 +25,14 @@ export default new ReadableCommand(
         .setDescription("Get finished picks for this year.")
     )
     , async (interaction: ChatInputCommandInteraction) => {
-        const finishedBeeps = (await interaction.guild.channels.fetch()).get(channels["finished-beeps"]) as TextChannel
         const scope = interaction.options.getSubcommand()
         console.log(scope)
 
-        const backWhen = utils.time.goBack(1, scope === "yearly" ? "year" : scope === "monthly" ? "month" : "week")
+        const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "days").unix()
         const picks = await finishedBeep.view()
-        console.log(picks.length)
+        console.log(backWhen)
         const pickReactions = picks
-        .filter(pick => pick.date.valueOf() > backWhen.unix())
+        .filter(pick => pick.date.valueOf() > backWhen)
         .sort((a, b) => b.count - a.count)
         .map(pick => pick.count)
 
