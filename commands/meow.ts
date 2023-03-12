@@ -7,7 +7,7 @@ export default new ReadableCommand(
     async (interaction: ChatInputCommandInteraction) => {
         const random = Math.floor(Math.random() * 100)
         console.log(random)
-        const response = random > 95 ? `Meow! ${utils.emote('cat')}` : `Non. ${utils.emote('neutral')}`
+        const response = (random > 95)||interaction.member.user.id === "143866772360134656" ? `Meow! ${utils.emote('cat')}` : `Non. ${utils.emote('neutral')}`
         await interaction.reply(`${response}`)
     }
 )
