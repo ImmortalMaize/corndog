@@ -32,7 +32,7 @@ export default new ReadableCommand(
         const picks = await finishedBeep.view()
         console.log(backWhen)
         const pickReactions = picks
-        .filter(pick => pick.date.valueOf() > backWhen)
+        .filter(pick => pick.date.valueOf() < backWhen)
         .sort((a, b) => b.count - a.count)
         .map(pick => pick.count)
 
