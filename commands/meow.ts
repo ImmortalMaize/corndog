@@ -5,7 +5,9 @@ import utils from "../utils";
 export default new ReadableCommand(
     new SlashCommandBuilder().setName('meow').setDescription('Meows back! :3'),
     async (interaction: ChatInputCommandInteraction) => {
-        const response = Math.floor(Math.random() * 100) < 95 ? `Meow! ${utils.emote('cat')}` :`Non. ${utils.emote('neutral')}`
+        const random = Math.floor(Math.random() * 100)
+        
+        const response = random > 95 ? `Meow! ${utils.emote('cat')}` : `Non. ${utils.emote('neutral')}`
         await interaction.reply(`${response}`)
     }
 )
