@@ -31,14 +31,16 @@ export default new ReadableCommand(
         const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "days")
         const picks = await finishedBeep.view()
         console.log(picks.length)
-        const filteredPicks = picks.filter(pick => pick.date.valueOf() > backWhen.unix())
+        const filteredPicks = picks.filter(pick => {
+            pick.date.toDateString()
+            return pick.date.valueOf() > backWhen.unix()
+        })
         console.log(filteredPicks.length)
         
         const pickReactions = filteredPicks.sort((a, b) => b.count - a.count)
         .map(pick => pick.count)
 
         console.log(pickReactions.slice(0, 10))
-
         interaction.reply({
             content: "Check logs?",
             ephemeral: true
