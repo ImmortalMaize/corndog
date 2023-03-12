@@ -41,7 +41,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .then(
             async () => {
                 reply = await interaction.reply({
-                content: `${userMention(member.user.id)} yoinked it! ${utils.emote("elated")}}`,
+                content: `${userMention(member.user.id)} yoinked it! ${utils.emote("elated")}`,
                 ephemeral: false
             }
         )})

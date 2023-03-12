@@ -3,8 +3,9 @@ import { ReadableCommand } from "../classes";
 import utils from "../utils";
 
 export default new ReadableCommand(
-    new SlashCommandBuilder().setName('woof').setDescription('Woofs back! :D'),
+    new SlashCommandBuilder().setName('meow').setDescription('Meows back! :3'),
     async (interaction: ChatInputCommandInteraction) => {
-        await interaction.reply(`No. ${utils.emote('malcontent')}`)
+        const response = Math.floor(Math.random() * 100) < 95 ? `Meow! ${utils.emote('cat')}` :`Non. ${utils.emote('neutral')}`
+        await interaction.reply(`${response}`)
     }
 )

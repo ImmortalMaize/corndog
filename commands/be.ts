@@ -15,11 +15,12 @@ export default new ReadableCommand(
             {name: "elated", value: "elated"},
             {name: "content", value: "content"},
             {name: "furry", value: "furry"},
-            {name: "malcontent", value: "malcontent"}
+            {name: "malcontent", value: "malcontent"},
+            {name: "neutral", value: "neutral"}
         )
     ),
     async (interaction: ChatInputCommandInteraction) => {
-        const emotion = interaction.options.getString("emotion") as "elated" | "content" | "furry" | "malcontent"
+        const emotion = interaction.options.getString("emotion") as "elated" | "content" | "furry" | "malcontent"|"neutral"
         interaction.reply(utils.emote(emotion))
     }
 )
