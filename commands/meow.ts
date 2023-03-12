@@ -11,7 +11,7 @@ export default new ReadableCommand(
         const randomMeow = meow[Math.floor(Math.random() * meow.length)]
         const random = Math.floor(Math.random() * 100)
         console.log(random)
-        const response = (random > 95)||interaction.member.user.id === "143866772360134656" ? `${randomMeow}! ${utils.emote('cat')}` : `${randomNo}. ${utils.emote('neutral')}`
+        const response = (random >= 80)||interaction.member.user.id === "143866772360134656" ? `${randomMeow}! ${utils.emote('cat')}` : `${randomNo}. ${utils.emote('neutral')}`
         await interaction.reply(`${response}`)
     }
 )
