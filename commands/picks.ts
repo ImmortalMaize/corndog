@@ -28,11 +28,11 @@ export default new ReadableCommand(
         const scope = interaction.options.getSubcommand()
         console.log(scope)
 
-        const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "days").unix()
+        const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "days")
         const picks = await finishedBeep.view()
-        console.log(backWhen)
+        console.log(backWhen.toDate())
         const pickReactions = picks
-        .filter(pick => pick.date.valueOf() < backWhen)
+        .filter(pick => pick.date.valueOf() > backWhen.unix())
         .sort((a, b) => b.count - a.count)
         .map(pick => pick.count)
 
