@@ -6,6 +6,9 @@ import RelativeTime from "dayjs/plugin/relativeTime"
 Day.extend(RelativeTime)
 
 export default {
+    convert: (time: Date) => {
+        return Day(time)
+    },
     now: () => {
         return Day()
     },

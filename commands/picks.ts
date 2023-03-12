@@ -28,12 +28,12 @@ export default new ReadableCommand(
         const scope = interaction.options.getSubcommand()
         console.log(scope)
 
-        const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "days")
+        const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "weeks")
         const picks = await finishedBeep.view()
         console.log(picks.length)
         const filteredPicks = picks.filter(pick => {
-            pick.date.toDateString()
-            return pick.date.valueOf() > backWhen.unix()
+            console.log(pick.date.toDateString())
+            return utils.time.convert(pick.date).unix() > backWhen.unix()
         })
         console.log(filteredPicks.length)
         
@@ -45,4 +45,5 @@ export default new ReadableCommand(
             content: "Check logs?",
             ephemeral: true
         })
+
     })
