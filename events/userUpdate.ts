@@ -4,7 +4,7 @@ import { member } from "../redis/entities/";
 
 export default new ReadableEvent("guildMemberUpdate", async (old: GuildMember, neuf: GuildMember) => {
     const newRoles = neuf.roles.cache.map(role => role.id)
-    const user = await member.search("id", neuf.id) ?? 
+    const user = await member.get("id", neuf.id) ?? 
     //@ts-ignore
     await member.generate({
         id: neuf.id,
@@ -12,7 +12,8 @@ export default new ReadableEvent("guildMemberUpdate", async (old: GuildMember, n
     })
 
     if (user) {
-        user.roles = newRoles
-        await member.save(user)
+        await member.amend(user.entityId, [
+            ["roles", newRoles]
+        ])
     }
 })
