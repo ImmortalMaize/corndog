@@ -27,6 +27,9 @@ export default {
     past: (date: Date) => {
         return Day().unix() >= Day(date).unix()
     },
+    compare: (date1: Date, date2: Date) => {
+	return Day(date1).unix() >= Day(date2).unix()
+    },
     goForth: (amount: number, unit: Day.ManipulateType) => {
         return Day().add(amount, unit)
     }
