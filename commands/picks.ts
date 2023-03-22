@@ -51,7 +51,7 @@ export default new ReadableCommand(
                         )
                         .addStringOption(
                             option => option
-                                .setName("unit of time")
+                                .setName("unit")
                                 .setDescription("What unit of time do you want to set the scope to?")
                                 .addChoices(
                                     { name: "years", value: "years" },
@@ -60,7 +60,6 @@ export default new ReadableCommand(
                                     { name: "days", value: "days" },
                                 )
                                 .setRequired(true)
-                                .setAutocomplete(true)
                         ))
         ),
     async (interaction: ChatInputCommandInteraction) => {
@@ -82,7 +81,7 @@ export default new ReadableCommand(
                     break;
                 case "scope":
                     const number = interaction.options.getInteger("number")
-                    const unit = interaction.options.getString("unit of time")
+                    const unit = interaction.options.getString("unit")
                     if (thisMember) {
                         await member.amend(thisMember.entityId, [
                             ["picks scope number", number],
