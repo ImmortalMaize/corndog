@@ -8,7 +8,9 @@ const schema = new Schema(
     {
         id: { type: 'string' },
         roles: { type: 'string[]' },
-        "picks pings": { type: 'boolean' }
+        "picks pings": { type: 'boolean' },
+        "picks scope number": { type: 'number' },
+        "picks scope unit": { type: 'string' }
     },
     {
         dataStructure: 'JSON'
@@ -19,6 +21,8 @@ interface MemberProps {
     id: string,
     roles: string[]
     "picks pings": boolean
+    "picks scope number": number
+    "picks scope unit": "days" | "weeks" | "months" | "years"
 }
 
 interface Member extends Entity, MemberProps {}

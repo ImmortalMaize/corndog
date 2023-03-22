@@ -1,7 +1,7 @@
 import { ReadableEvent } from "../classes";
 import { MessageReaction, Message, User, TextChannel, EmbedBuilder, ColorResolvable, userMention, time } from "discord.js"
 import { picks, roles, channels, config } from "../config"
-import { finishedBeep } from "../redis/entities"
+import { finishedBeep, member as memberInventory } from "../redis/entities"
 import utils from "../utils"
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
@@ -48,12 +48,16 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
             } else {
                 console.log("Quota but no precedent!")
+                const memberData = await memberInventory.get("id", member.id ?? reaction.message.author.id)
+                const scopeUnit: "years"|"months"|"weeks"|"days" = memberData ? memberData.toJSON()["picks scope unit"] : "month"
+                const scopeNumber = memberData ? memberData.toJSON()["picks scope number"] : 1
+                const pings: boolean = memberData ? memberData.toJSON()["picks pings"] : false
                 member.roles.add(reward)
 
                 const embed = utils.pickEmbed(reaction.message as Message, count)
-                const old = utils.time.compare(utils.time.goBack(1, "month").toDate(), reaction.message.createdAt)
+                const old = utils.time.compare(utils.time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
                 const pick = await finishedPicks.send({
-                    content: `Congratulations ${old ? member.nickname ?? reaction.message.author.username : userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
+                    content: `Congratulations ${old||!pings ? member.nickname ?? reaction.message.author.username : userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
                     embeds: [embed]
                 })
 

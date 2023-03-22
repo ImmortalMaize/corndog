@@ -36,7 +36,7 @@ export default class Inventory<Form> {
 
         return items
     }
-    public amend: (id: string, amendments: Array<[string, any]>) => Promise<Form & Entity|void> = async (id: string, amendments: Array<[string & keyof Form, any]>) => {
+    public amend: (id: string, amendments: Array<[string & keyof (Form & Entity), any]>) => Promise<Form & Entity|void> = async (id: string, amendments: Array<[string & keyof Form, any]>) => {
         const repository = this.client.fetchRepository(this.schema)
         await repository.createIndex()
 
@@ -44,7 +44,6 @@ export default class Inventory<Form> {
         if (!item) return null
 
         for (const [key, value] of amendments) {
-            //@ts-ignore
             item[key] = value
         }
         if (item.entityId) await repository.save(item)

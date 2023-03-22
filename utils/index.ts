@@ -4,6 +4,7 @@ import emojis from "./emojis"
 import time from "./time"
 import pickEmbed from './pickEmbed'
 import emote from "./emote"
+import numbers from "./numbers"
 
 export default {
     time,
@@ -11,5 +12,6 @@ export default {
     hasSauce,
     emojis,
     pickEmbed,
-    emote
+    emote,
+    numbers
 }
