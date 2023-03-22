@@ -5,6 +5,7 @@ import time from "./time"
 import pickEmbed from './pickEmbed'
 import emote from "./emote"
 import numbers from "./numbers"
+import woof from "./woof"
 
 export default {
     time,
@@ -13,5 +14,6 @@ export default {
     emojis,
     pickEmbed,
     emote,
-    numbers
+    numbers,
+    woof
 }

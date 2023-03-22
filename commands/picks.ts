@@ -74,13 +74,13 @@ export default new ReadableCommand(
                             ["picks pings", bool]
                         ])
                         interaction.reply({
-                            content: `Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
+                            content: `${utils.woof()}! Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
                             ephemeral: true
                         })
                     }
                     break;
                 case "scope":
-                    const number = interaction.options.getInteger("number")
+                    const number = Math.abs(interaction.options.getInteger("number"))
                     const unit = interaction.options.getString("unit")
                     if (thisMember) {
                         await member.amend(thisMember.entityId, [
@@ -89,7 +89,7 @@ export default new ReadableCommand(
                         ])
 
                         interaction.reply({
-                            content: `You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
+                            content: `${utils.woof()}! You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
                             ephemeral: true
                         })
                     }
