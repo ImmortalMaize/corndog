@@ -23,11 +23,9 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         const count = (await reaction.message.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (member.id ?? reaction.message.author.id) && user.id !== config.clientId).size
         console.log('👌:' + count)
         const quota = count >= picks.quota
-        const precedent = await finishedBeep.search("submission", reaction.message.id)
+        const precedent = await finishedBeep.get("submission", reaction.message.id)
 
         const reward = guild.roles.cache.get(roles.picked)
-
-        const finishedBeeps = guild.channels.cache.get(channels["finished-beeps"]) as TextChannel
         const finishedPicks = guild.channels.cache.get(channels["finished-picks"]) as TextChannel
 
         if (quota) {

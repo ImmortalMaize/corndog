@@ -1,4 +1,5 @@
 import { Entity, Schema, Repository } from 'redis-om'
+import { Inventory } from '../classes'
 import client from '../index'
 
 class Member extends Entity { }
@@ -6,45 +7,20 @@ const schema = new Schema(
     Member,
     {
         id: { type: 'string' },
-        roles: { type: 'string[]' }
+        roles: { type: 'string[]' },
+        "picks pings": { type: 'boolean' }
     },
     {
         dataStructure: 'JSON'
     }
 )
 
-interface Member {
+interface MemberProps {
     id: string,
     roles: string[]
+    "picks pings": boolean
 }
 
-export default {
-    generate: async (form: Member) => {
-        const repository: Repository<Member> = client.fetchRepository(schema)
-        const member: Member = repository.createEntity()
+interface Member extends Entity, MemberProps {}
 
-        member.id = form.id
-        member.roles = form.roles
-
-        await repository.save(member)
-
-        console.log("Did it work?")
-    },
-    search: async (key: keyof Member, value: string) => {
-        const repository = client.fetchRepository(schema)
-        await repository.createIndex()
-
-        const results = await repository
-        .search()
-        .where(key)
-        .equals(value).return.first().catch((reason => console.log(reason)))
-
-        return results
-    },
-    save: async (member: Member) => {
-        const repository = client.fetchRepository(schema)
-        await repository.createIndex()
-
-        await repository.save(member)
-    }
-}
+export default new Inventory(client, schema) as Inventory<MemberProps>
