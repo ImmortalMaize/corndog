@@ -1,7 +1,6 @@
 import { Entity, Schema, Repository } from 'redis-om';
 import utils from '../../utils';
 import client from "../index"
-import Inventory from './../classes/Inventory';
 
 interface TimeControl {
     channel: string,
@@ -26,6 +25,19 @@ const schema = new Schema(
 )
 
 export default {
+    async generate(form: TimeControl) {
+        await client.open(process.env.REDIS_URL)
+
+        const repository: Repository<TimeControl> = client.fetchRepository(schema)
+        const timeControl: TimeControl = repository.createEntity()
+
+        timeControl.channel = form.channel
+        timeControl.message = form.message
+        timeControl.name = form.name
+        timeControl.cooldown = form.cooldown
+
+        await repository.save(timeControl)
+    },
     async waste(name: string) {
         await client.open(process.env.REDIS_URL)
 

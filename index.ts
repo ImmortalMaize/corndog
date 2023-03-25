@@ -5,9 +5,7 @@ import path from 'node:path'
 env.config()
 
 import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction } from "discord.js"
-import { timeControl } from "./redis/entities"
-import { channels, config } from "./config"
-import interactionCreate from "./events/interactionCreate"
+import utils from "./utils"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
@@ -46,7 +44,7 @@ async function getCommands() {
 
         // @ts-ignore
         client.commands.set(command.data.name, command);
-        console.log(`Loaded command ${command.data.name} ^~^`)
+        console.log(`Loaded command ${command.data.name} ${utils.emote("content")}`)
     }
 }
 
