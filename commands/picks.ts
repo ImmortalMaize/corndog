@@ -4,6 +4,7 @@ import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
 import utils from "../utils"
 import { finishedBeep, member } from "../redis/entities";
+import { EmbedBuilder } from 'discord.js';
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -111,11 +112,11 @@ export default new ReadableCommand(
             console.log(filteredPicks.length)
 
             const pickReactions = filteredPicks.sort((a, b) => b.count - a.count)
-                .map(pick => pick.count)
 
+            const embed = new EmbedBuilder().setAuthor({name: "#1 - Maize", iconURL: "https://cdn.discordapp.com/guilds/235138363131166728/users/143866772360134656/avatars/a_8080c2462fe831a7494d8d7146a2d41b.gif?size=4096"}).setDescription("penis lol")
             console.log(pickReactions.slice(0, 10))
             interaction.reply({
-                content: "Check logs?",
+                embeds: [embed],
                 ephemeral: true
             })
         }
