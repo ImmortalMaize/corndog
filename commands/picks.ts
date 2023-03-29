@@ -117,7 +117,7 @@ export default new ReadableCommand(
             .setDescription("penis lol").setFields({name: "Sauce", value: "hibu.com apache.org comcast.net businesswire.com theguardian.com", inline: false}, {name: "Score", value: "42", inline: true}, {name: "Date", value: "04-27-2002", inline: true})
             console.log(pickReactions.slice(0, 10))
             interaction.reply({
-                embeds: [embed],
+                embeds: [embed, embed, embed],
                 ephemeral: true
             })
         }
