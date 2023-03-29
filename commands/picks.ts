@@ -113,7 +113,8 @@ export default new ReadableCommand(
 
             const pickReactions = filteredPicks.sort((a, b) => b.count - a.count)
 
-            const embed = new EmbedBuilder().setAuthor({name: "#1 - Maize", iconURL: "https://cdn.discordapp.com/guilds/235138363131166728/users/143866772360134656/avatars/a_8080c2462fe831a7494d8d7146a2d41b.gif?size=4096"}).setDescription("penis lol")
+            const embed = new EmbedBuilder().setAuthor({name: "#1 - Maize", iconURL: "https://cdn.discordapp.com/guilds/235138363131166728/users/143866772360134656/avatars/a_8080c2462fe831a7494d8d7146a2d41b.gif?size=4096"})
+            .setDescription("penis lol").setFields({name: "Sauce", value: "hibu.com apache.org comcast.net businesswire.com theguardian.com", inline: false}, {name: "Score", value: "42", inline: true}, {name: "Date", value: "04-27-2002"})
             console.log(pickReactions.slice(0, 10))
             interaction.reply({
                 embeds: [embed],
