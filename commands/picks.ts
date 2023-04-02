@@ -75,7 +75,7 @@ export default new ReadableCommand(
                             ["picks pings", bool]
                         ])
                         interaction.reply({
-                            content: `${utils.woof()}! Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
+                            content: `${utils.meow()}! Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
                             ephemeral: true
                         })
                     }
@@ -90,7 +90,7 @@ export default new ReadableCommand(
                         ])
 
                         interaction.reply({
-                            content: `${utils.woof()}! You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
+                            content: `${utils.meow()}! You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
                             ephemeral: true
                         })
                     }
@@ -117,7 +117,7 @@ export default new ReadableCommand(
             .setDescription("penis lol").setFields({name: "Sauce", value: "hibu.com apache.org comcast.net businesswire.com theguardian.com", inline: false}, {name: "Score", value: "42", inline: true}, {name: "Date", value: "04-27-2002", inline: true})
             console.log(pickReactions.slice(0, 10))
             interaction.reply({
-                embeds: [embed, embed, embed],
+                embeds: [embed, embed],
                 ephemeral: true
             })
         }

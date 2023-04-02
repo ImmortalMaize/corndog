@@ -41,7 +41,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .then(
             async () => {
                 reply = await interaction.reply({
-                content: `${utils.woof()}! ${userMention(member.user.id)} yoinked it! ${utils.emote("elated")}`,
+                content: `${utils.meow()}! ${userMention(member.user.id)} yoinked it! ${utils.emote("elated")}`,
                 ephemeral: false
             }
         )})
@@ -63,6 +63,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         }, false), 1000)
     }
     else {
-        interaction.reply(`${utils.woof()}! Someone already yoinked it! ${utils.emote("malcontent")}`)
+        interaction.reply(`${utils.meow()}! Someone already yoinked it! ${utils.emote("malcontent")}`)
     }
 })
