@@ -18,6 +18,7 @@ export default new ReadableCommand(
         }
         const reply = await interaction.reply({ content: `You dug a hole at spot ${spot}!`, ephemeral: true })
 
+        //@ts-ignore
         timeControl.generate({
             channel: interaction.channelId,
             message: reply.id,
