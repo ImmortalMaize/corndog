@@ -2,7 +2,7 @@ import { Entity, Schema, Repository } from 'redis-om';
 import utils from '../../utils';
 import client from "../index"
 
-interface TimeControlProps {
+interface TimeControl {
     channel: string,
     message: string,
     name: string,
@@ -10,16 +10,14 @@ interface TimeControlProps {
 }
 
 type TimeTable = Map<string, (timeControl: TimeControl) => Promise<void>>
-
-interface TimeControl extends Entity, TimeControlProps {}
-class TimeControl {}
+class TimeControl extends Entity { }
 const schema = new Schema(
     TimeControl,
     {
         channel: { type: "string" },
         message: { type: "string" },
         name: { type: "string" },
-        cooldown: { type: "date" },
+        cooldown: { type: "date" }
     },
     {
         dataStructure: "JSON"
@@ -27,7 +25,7 @@ const schema = new Schema(
 )
 
 export default {
-    async generate(form: TimeControlProps) {
+    async generate(form: TimeControl) {
         await client.open(process.env.REDIS_URL)
 
         const repository: Repository<TimeControl> = client.fetchRepository(schema)
