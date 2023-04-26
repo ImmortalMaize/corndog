@@ -20,7 +20,7 @@ export default new ReadableCommand(
             return
         }
         if (spotsMap.has(spot)) {
-            const image = new AttachmentBuilder("../assets/" + spotsMap.get(spot) + ".png")
+            const image = new AttachmentBuilder("../assets/1a.png")
             await interaction.reply({ content: `
             You spend a couple of minutes digging as far down as you can, eventually reaching something you can't dig through with your hands. This is as far down as you can go. 
 
