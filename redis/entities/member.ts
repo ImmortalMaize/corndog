@@ -8,6 +8,7 @@ const schema = new Schema(
     {
         id: { type: 'string' },
         roles: { type: 'string[]' },
+        dug: { type: 'string[]'},
         "picks pings": { type: 'boolean' },
         "picks scope number": { type: 'number' },
         "picks scope unit": { type: 'string' }
@@ -20,6 +21,7 @@ const schema = new Schema(
 interface MemberProps {
     id: string,
     roles: string[]
+    dug: number[]
     "picks pings": boolean
     "picks scope number": number
     "picks scope unit": "days" | "weeks" | "months" | "years"

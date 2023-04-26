@@ -5,6 +5,7 @@ import redis from "./redis.json"
 import cooldowns from "./cooldowns.json"
 import roles from "./roles.json"
 import emotion from "../utils/emote/emotions.json"
+import spots from "./spots.json"
 
 export {
     redis,
@@ -13,5 +14,6 @@ export {
     picks,
     cooldowns,
     roles,
-    emotion
+    emotion,
+    spots
 }

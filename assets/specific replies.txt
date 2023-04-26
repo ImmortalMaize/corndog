@@ -1,0 +1,65 @@
+For all of the numbers listed below, display this first initial response, then the image.
+"You spend a couple of minutes digging as far down as you can, eventually reaching something you can’t dig through with your hands. This is as far down as you can go. 
+
+Lying there, at the bottom of the hole you’ve dug, is a small sliver of paper, which seems to be a damaged image…"
+Responses
+37: Image 1
+42: 1a
+70: Image 2
+77: Image 3
+126: 4a
+127: Image 4
+151: Image 5
+164: Image 6
+168: c3
+214: Image 7
+229: Image 8
+256: Image 9
+280: Image 10
+297: 2a
+300: Image 11
+321: Image 12
+337: Image 13
+351: b2
+363: Image 14
+388: Image 15
+405: Image 16
+427: Image 17
+459: b3
+460: b4
+507: Image 18
+531: Image 19
+552: b1
+562: c1
+569: Image 20
+571: Image 21
+575: Image 22
+578: Image 23
+585: image 24
+596: image 25
+612:image 26
+639: image 27
+657: a3
+670: Image 28
+707: Image 29
+709: Image 30
+736: Image 31
+739: Image 32
+768: Image 33
+773: Image 34
+778: Image 35
+785: c2
+799: Image 36
+820: Image 37
+829: Image 38
+865: Image 39
+867: Image 40
+884: Image 41
+889: Image 42
+902: c4
+925: Image 43
+950: Image 44
+951: Image 45
+970: Image 46
+973: Image 47
+991: Image 48
