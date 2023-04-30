@@ -37,11 +37,11 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
         }
 
         //@ts-ignore
-        timeControl.generate({
+        /*timeControl.generate({
             channel: interaction.channelId,
             message: "",
             cooldown: utils.time.goForth(3, "hours").toDate(),
             name: "dig_" + interaction.user.id,
-        })
+        })*/
     }
 )
