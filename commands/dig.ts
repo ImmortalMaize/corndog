@@ -33,7 +33,7 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
         }
         else {
             const randomFail = fails[Math.floor(Math.random() * fails.length)]
-            await interaction.reply({ content: randomFail, ephemeral: true })
+            await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: true })
         }
 
         //@ts-ignore
