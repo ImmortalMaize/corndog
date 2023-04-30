@@ -9,10 +9,12 @@ export default new ReadableCommand(
     new SlashCommandBuilder().setName('dig').setDescription('Dig a hole').addIntegerOption(option => option.setName('spot').setDescription('The spot you want to dig').setRequired(true)),
     async (interaction: ChatInputCommandInteraction) => {
         const spot = Math.abs(interaction.options.getInteger('spot'))
-        const user = (await member.get("id", interaction.user.id) ?? await member.generate({ id: interaction.user.id }))
+        let user = (await member.get("id", interaction.user.id))
+        if (!user) user = await member.generate({ id: interaction.user.id })
+        if (!user.dug) user.dug = []
+        
         const ready = await timeControl.check("dig_" + interaction.user.id)
         
-        //@ts-ignore
         if (user.dug.includes(spot)) {
             await interaction.reply({ content: `You've already dug that spot!`, ephemeral: true })
             return
@@ -44,10 +46,8 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
             
         }
 
-        //@ts-ignore
-        member.amend(user.id, ["dug", user.dug.push(spot)])
+        member.amend(user.id, [["dug", user.dug.push(spot)]])
 
-        //@ts-ignore
         /*timeControl.generate({
             channel: interaction.channelId,
             message: "",
