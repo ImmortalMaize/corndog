@@ -38,13 +38,15 @@ You spend a couple of minutes digging as far down as you can, eventually reachin
 
 Lying there, at the bottom of the hole you've dug, is a small sliver of paper, which seems to be a damaged image…`,
             files: [image], ephemeral: true })
+            member.amend(user.id, [["dug", user.dug.concat([spot])]])
         }
         else {
             const randomFail = fails[Math.floor(Math.random() * fails.length)]
-            await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: true })   
+            await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: true })
+            member.amend(user.id, [["dug", user.dug.concat([spot])]])   
         }
-        user.dug.push(spot)
-        member.amend(user.id, [["dug", user.dug]])
+        
+        
 
         /*timeControl.generate({
             channel: interaction.channelId,
