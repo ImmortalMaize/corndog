@@ -20,11 +20,11 @@ const schema = new Schema(
 
 interface MemberProps {
     id: string,
-    roles: string[]
-    dug: number[]
-    "picks pings": boolean
-    "picks scope number": number
-    "picks scope unit": "days" | "weeks" | "months" | "years"
+    roles?: string[]
+    dug?: number[]
+    "picks pings"?: boolean
+    "picks scope number"?: number
+    "picks scope unit"?: "days" | "weeks" | "months" | "years"
 }
 
 interface Member extends Entity, MemberProps {}

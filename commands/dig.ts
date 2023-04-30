@@ -9,10 +9,16 @@ export default new ReadableCommand(
     new SlashCommandBuilder().setName('dig').setDescription('Dig a hole').addIntegerOption(option => option.setName('spot').setDescription('The spot you want to dig').setRequired(true)),
     async (interaction: ChatInputCommandInteraction) => {
         const spot = Math.abs(interaction.options.getInteger('spot'))
-        const user = member.get("id", interaction.user.id)
+        const user = (await member.get("id", interaction.user.id) ?? await member.generate({ id: interaction.user.id }))
         const ready = await timeControl.check("dig_" + interaction.user.id)
+        
+        //@ts-ignore
+        if (user.dug.includes(spot)) {
+            await interaction.reply({ content: `You've already dug that spot!`, ephemeral: true })
+            return
+        }
         if (interaction.channelId !== channels["action"]) {
-            await interaction.reply({ content: `You try digging in <#${interaction.channelId}>... only to realize there's no ground to dig! Maybe you should redirect your efforts to <#${channels["action"]}>. ${utils.emote("neutral")}`, ephemeral: true })
+            await interaction.reply({ content: `You try digging in <#${interaction.channelId}>... only to realize there's no ground to dig! Maybe you should dig in to <#${channels["action"]}>. ${utils.emote("neutral")}`, ephemeral: true })
             return
         }
         if (!ready) {
@@ -34,7 +40,12 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
         else {
             const randomFail = fails[Math.floor(Math.random() * fails.length)]
             await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: true })
+
+            
         }
+
+        //@ts-ignore
+        member.amend(user.id, ["dug", user.dug.push(spot)])
 
         //@ts-ignore
         /*timeControl.generate({
