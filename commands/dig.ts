@@ -2,7 +2,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder } f
 import { ReadableCommand } from "../classes";
 import { member, timeControl } from "../redis/entities";
 import utils from '../utils';
-import { spots } from './../config'
+import { spots, fails, channels } from './../config'
 
 const spotsMap = new Map<number, string>(spots as Array<[number, string]>)
 export default new ReadableCommand(
@@ -11,6 +11,10 @@ export default new ReadableCommand(
         const spot = Math.abs(interaction.options.getInteger('spot'))
         const user = member.get("id", interaction.user.id)
         const ready = await timeControl.check("dig_" + interaction.user.id)
+        if (interaction.channelId !== channels["action"]) {
+            await interaction.reply({ content: `You try digging in <#${interaction.channelId}>... only to realize there's no ground to dig! Maybe you should redirect your efforts to <#${channels["action"]}>. ${utils.emote("neutral")}`, ephemeral: true })
+            return
+        }
         if (!ready) {
             await interaction.reply({ content: `You're too tired to dig!`, ephemeral: true })
             return
@@ -26,14 +30,16 @@ You spend a couple of minutes digging as far down as you can, eventually reachin
 
 Lying there, at the bottom of the hole you've dug, is a small sliver of paper, which seems to be a damaged image…`,
             files: [image], ephemeral: true })
-            return
         }
-        const reply = await interaction.reply({ content: `You dug a hole at spot ${spot}!`, ephemeral: true })
+        else {
+            const randomFail = fails[Math.floor(Math.random() * fails.length)]
+            await interaction.reply({ content: randomFail, ephemeral: true })
+        }
 
         //@ts-ignore
         timeControl.generate({
             channel: interaction.channelId,
-            message: reply.id,
+            message: "",
             cooldown: utils.time.goForth(3, "hours").toDate(),
             name: "dig_" + interaction.user.id,
         })
