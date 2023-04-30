@@ -20,11 +20,11 @@ export default new ReadableCommand(
             return
         }
         if (spotsMap.has(spot)) {
-            const image = new AttachmentBuilder("assets/1a.png")
+            const image = new AttachmentBuilder("assets/" + spotsMap.get(spot) + ".png")
             await interaction.reply({ content: `
-            You spend a couple of minutes digging as far down as you can, eventually reaching something you can't dig through with your hands. This is as far down as you can go. 
+You spend a couple of minutes digging as far down as you can, eventually reaching something you can't dig through with your hands. This is as far down as you can go. 
 
-            Lying there, at the bottom of the hole you've dug, is a small sliver of paper, which seems to be a damaged image…`,
+Lying there, at the bottom of the hole you've dug, is a small sliver of paper, which seems to be a damaged image…`,
             files: [image], ephemeral: true })
             return
         }
