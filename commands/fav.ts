@@ -87,7 +87,7 @@ export default new ReadableCommand(
             })
 
             await interaction.reply({
-                content: utils.meow() + "! I saved " + sauce + " as " + name + "! " + utils.emote("elated"),
+                content: utils.woof() + "! I saved " + sauce + " as " + name + "! " + utils.emote("elated"),
                 ephemeral: true
             })
             return
@@ -104,7 +104,7 @@ export default new ReadableCommand(
             })
 
             await interaction.reply({
-                content: utils.meow() + "! I saved your " + sauce.contentType + " attachment as " + name + "! " + utils.emote("elated"),
+                content: utils.woof() + "! I saved your " + sauce.contentType + " attachment as " + name + "! " + utils.emote("elated"),
                 ephemeral: true
             })
         }
@@ -132,7 +132,7 @@ export default new ReadableCommand(
 
             await fav.waste(interaction.user.id, name)
             await interaction.reply({
-                content: `${utils.meow()}! I cleared the bookmark named ${name}!`,
+                content: `${utils.woof()}! I cleared the bookmark named ${name}!`,
                 ephemeral: true
             })
         }
@@ -151,7 +151,7 @@ export default new ReadableCommand(
             .addFields(results)
 
             interaction.reply({
-                content: `${utils.meow()}! Here are your bookmarks!`,
+                content: `${utils.woof()}! Here are your bookmarks!`,
                 embeds: [embed],
                 ephemeral: true
             })

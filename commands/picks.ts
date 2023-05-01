@@ -75,7 +75,7 @@ export default new ReadableCommand(
                             ["picks pings", bool]
                         ])
                         interaction.reply({
-                            content: `${utils.meow()}! Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
+                            content: `${utils.woof()}! Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
                             ephemeral: true
                         })
                     }
@@ -90,7 +90,7 @@ export default new ReadableCommand(
                         ])
 
                         interaction.reply({
-                            content: `${utils.meow()}! You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
+                            content: `${utils.woof()}! You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
                             ephemeral: true
                         })
                     }
