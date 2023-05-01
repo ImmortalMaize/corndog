@@ -21,7 +21,7 @@ const schema = new Schema(
 interface MemberProps {
     id: string,
     roles?: string[]
-    dug?: number[]
+    dug?: string[]
     "picks pings"?: boolean
     "picks scope number"?: number
     "picks scope unit"?: "days" | "weeks" | "months" | "years"

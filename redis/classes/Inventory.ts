@@ -46,6 +46,7 @@ export default class Inventory<Form> {
         for (const [key, value] of amendments) {
             item[key] = value
         }
+
         if (item.entityId) await repository.save(item)
         return item
     }

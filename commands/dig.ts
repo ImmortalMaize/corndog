@@ -15,7 +15,7 @@ export default new ReadableCommand(
         
         const ready = await timeControl.check("dig_" + interaction.user.id)
         
-        if (user.dug.includes(spot)) {
+        if (user.dug.includes(spot.toString())) {
             await interaction.reply({ content: `You've already dug that spot!`, ephemeral: true })
             return
         }
@@ -37,22 +37,24 @@ export default new ReadableCommand(
 You spend a couple of minutes digging as far down as you can, eventually reaching something you can't dig through with your hands. This is as far down as you can go. 
 
 Lying there, at the bottom of the hole you've dug, is a small sliver of paper, which seems to be a damaged image…`,
-            files: [image], ephemeral: true })
-            member.amend(user.id, [["dug", user.dug.concat([spot])]])
+            files: [image], ephemeral: false })
+            member.amend(user.id, [["dug", user.dug.concat([spot.toString()])]])
         }
+
         else {
             const randomFail = fails[Math.floor(Math.random() * fails.length)]
-            await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: true })
-            member.amend(user.id, [["dug", user.dug.concat([spot])]])   
+            await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: false })
+            const newDug = user.dug.concat([spot.toString()])
+            
+            await member.amend(user.entityId, [["dug", newDug]])   
         }
-        
-        
 
-        /*timeControl.generate({
+        //@ts-ignore
+        timeControl.generate({
             channel: interaction.channelId,
             message: "",
             cooldown: utils.time.goForth(3, "hours").toDate(),
             name: "dig_" + interaction.user.id,
-        })*/
+        })
     }
 )
