@@ -105,5 +105,11 @@ export default {
         else {
             console.log("Time controls are clear.")
         }
+    },
+    async get (name: string): Promise<TimeControl> {
+        const repository: Repository<TimeControl> = client.fetchRepository(schema)
+        await repository.createIndex()
+
+        return await repository.search().where("name").equals(name).return.first()
     }
 }

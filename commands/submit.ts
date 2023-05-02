@@ -1,5 +1,5 @@
 import { ReadableCommand } from "../classes";
-import { ActionRowBuilder, SelectMenuBuilder, SlashCommandBuilder, InteractionResponse } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ComponentType } from 'discord.js';
 import { ModalBuilder } from 'discord.js';
@@ -47,7 +47,7 @@ export default new ReadableCommand(
             { label: "Midi", value: "midi" }
         ]
         const categoriesActionRow = new ActionRowBuilder().addComponents(
-            new SelectMenuBuilder()
+            new StringSelectMenuBuilder()
                 .setCustomId("categoriesSelect")
                 .setMinValues(1)
                 .setMaxValues(categories.length)
@@ -67,7 +67,7 @@ export default new ReadableCommand(
             }) as Message
 
             const srcInput = new TextInputBuilder()
-                .setCustomId("sourceInput")
+                .setCustomId("sauce")
                 .setLabel("Sauce")
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder("Where did you find the original?")
@@ -83,13 +83,13 @@ export default new ReadableCommand(
 
 
             await categoriesMenu.awaitMessageComponent({
-                componentType: ComponentType.SelectMenu,
+                componentType: ComponentType.StringSelect,
             }).then(async (submission) => {
                 submission.showModal(srcModal)
-                return await interaction.awaitModalSubmit({
+                return interaction.awaitModalSubmit({
                     filter: (modal) => modal.customId === "sourceModal",
-                    time: 5000 })
-                .then(submission => console.log(submission))
+                    time: 10000 })
+                .then(submission => interaction.editReply({content: "Try again!"}))
             })
         }
     })

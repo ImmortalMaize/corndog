@@ -1,4 +1,5 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { time } from "@discordjs/formatters"
 import { ReadableCommand } from "../classes";
 import { member, timeControl } from "../redis/entities";
 import utils from '../utils';
@@ -10,13 +11,14 @@ export default new ReadableCommand(
     async (interaction: ChatInputCommandInteraction) => {
         const spot = Math.abs(interaction.options.getInteger('spot'))
         let user = (await member.get("id", interaction.user.id))
-        if (!user) user = await member.generate({ id: interaction.user.id })
+        if (!user) user = await member.generate({ id: interaction.user.id, dug: [] })
         if (!user.dug) user.dug = []
         
-        const ready = await timeControl.check("dig_" + interaction.user.id)
+        const cooldown = await timeControl.get("dig_" + interaction.user.id)
+        const ready = !cooldown
         
         if (user.dug.includes(spot.toString())) {
-            await interaction.reply({ content: `You've already dug that spot!`, ephemeral: true })
+            await interaction.reply({ content: `You've already dug that spot!`, ephemeral: false })
             return
         }
         if (interaction.channelId !== channels["action"]) {
@@ -24,11 +26,11 @@ export default new ReadableCommand(
             return
         }
         if (!ready) {
-            await interaction.reply({ content: `You're too tired to dig!`, ephemeral: true })
+            await interaction.reply({ content: `You're too tired to dig! Try digging ${time(cooldown.cooldown, "R")}! ${utils.emote('malcontent')}`, ephemeral: false })
             return
         }
         if (spot > 1000 || spot < 1) {
-            await interaction.reply({ content: `You can't dig that spot!`, ephemeral: true })
+            await interaction.reply({ content: `You can't dig that spot!`, ephemeral: false })
             return
         }
         if (spotsMap.has(spot)) {
