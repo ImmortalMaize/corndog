@@ -55,7 +55,7 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
         timeControl.generate({
             channel: interaction.channelId,
             message: "",
-            cooldown: utils.time.goForth(1, "hours").toDate(),
+            cooldown: utils.time.goForth(1, "minute").toDate(),
             name: "dig_" + interaction.user.id,
         })
     }
