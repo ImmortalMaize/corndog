@@ -3,7 +3,7 @@ import { time } from "@discordjs/formatters"
 import { ReadableCommand } from "../classes";
 import { member, timeControl } from "../redis/entities";
 import utils from '../utils';
-import { spots, fails, channels } from './../config'
+import { spots, fails, channels } from '../config'
 
 const spotsMap = new Map<number, string>(spots as Array<[number, string]>)
 export default new ReadableCommand(
