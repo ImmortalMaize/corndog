@@ -7,6 +7,9 @@ import emote from "./emote"
 import numbers from "./numbers"
 import woof from "./woof"
 import meow from "./meow"
+import enumerate from "./enumerate"
+import getMentions from "./getMentions"
+import startsWithVowel from "./startsWithVowel"
 
 export default {
     time,
@@ -17,5 +20,8 @@ export default {
     emote,
     numbers,
     woof,
-    meow
+    meow,
+    enumerate,
+    getMentions,
+    startsWithVowel
 }

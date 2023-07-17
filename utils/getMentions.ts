@@ -1,0 +1,1 @@
+export default (string: string = "") => string ? Array.from(string.matchAll(/<@\d+>/gm)).map(match => match[0]) : []

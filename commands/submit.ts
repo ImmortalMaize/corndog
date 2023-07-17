@@ -1,11 +1,13 @@
 import { ReadableCommand } from "../classes";
-import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse, hyperlink, hideLinkEmbed } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ComponentType } from 'discord.js';
 import { ModalBuilder } from 'discord.js';
 import { TextInputBuilder } from 'discord.js';
 import { TextInputStyle } from 'discord.js';
 import { Message } from 'discord.js';
+import utils from "../utils";
+import isURL from 'is-url'
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -36,7 +38,16 @@ export default new ReadableCommand(
         ),
 
     async (interaction: ChatInputCommandInteraction) => {
-
+        if (!isURL(interaction.options.getString("submission"))) {
+            interaction.reply({
+                content: `No seriously... where's the sauce? ${utils.emote("neutral")}`,
+                ephemeral: true
+            })
+            return
+        }
+        let selectedCategories = ["original"]
+        const collaborators = utils.getMentions(interaction.options.getString("collaborators"))
+        console.log(collaborators)
         const categories = [
             { label: "Cover", value: "cover" },
             { label: "Remix", value: "remix" },
@@ -53,11 +64,14 @@ export default new ReadableCommand(
                 .setMaxValues(categories.length)
                 .setOptions(categories)
         )
+        const submissionMessage = (selected: string[]) => `${utils.woof()}! You submitted ${utils.startsWithVowel(selected[0]) ? "an" : "a"} ${utils.enumerate(selected)} ${(hyperlink("beep", hideLinkEmbed(interaction.options.getString("submission"))))} titled ${interaction.options.getString("title")}${collaborators.length > 0 ? `, in collaboration with ${utils.enumerate(collaborators, true)}!` : "!"
+            } ${utils.emote("elated")}`
         if (interaction.options.getBoolean("original")) {
             await interaction.reply({
-                content: "Submitted! ^w^",
+                content: submissionMessage(selectedCategories),
                 ephemeral: true
             })
+            console.log(selectedCategories)
         } else {
             const categoriesMenu = await interaction.reply({
                 content: "What categories does your submission fall under?",
@@ -85,11 +99,19 @@ export default new ReadableCommand(
             await categoriesMenu.awaitMessageComponent({
                 componentType: ComponentType.StringSelect,
             }).then(async (submission) => {
+                selectedCategories = submission.values
                 submission.showModal(srcModal)
-                return interaction.awaitModalSubmit({
-                    filter: (modal) => modal.customId === "sourceModal",
-                    time: 10000 })
-                .then(submission => interaction.editReply({content: "Try again!"}))
             })
+                .then(() => interaction.awaitModalSubmit({
+                    filter: (modal) => modal.customId === "sourceModal",
+                    time: 10000
+                })
+                    .then(submission => {
+                        submission.reply({
+                            content: submissionMessage(selectedCategories),
+                            ephemeral: true
+                        })
+                        console.log(selectedCategories)
+                    }))
         }
     })
