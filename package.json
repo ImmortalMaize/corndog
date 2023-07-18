@@ -24,6 +24,7 @@
     "start": "ts-node index.ts",
     "woof": "nodemon index.ts",
     "commands": "ts-node commands.ts",
+    "sleep": "ts-node sleep.ts",
     "build": "",
     "postinstall": ""
   }
