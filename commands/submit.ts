@@ -1,5 +1,5 @@
 import { ReadableCommand } from "../classes";
-import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse, hyperlink, hideLinkEmbed } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse, hyperlink, hideLinkEmbed, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ComponentType } from 'discord.js';
 import { ModalBuilder } from 'discord.js';
@@ -24,7 +24,6 @@ export default new ReadableCommand(
             .setDescription('What is the link to your submission?')
             .setRequired(true)
         )
-
         .addBooleanOption(
             option => option
                 .setName('original')
@@ -36,7 +35,6 @@ export default new ReadableCommand(
             .setDescription('Who did you collab with?')
             .setRequired(false)
         ),
-
     async (interaction: ChatInputCommandInteraction) => {
         if (!isURL(interaction.options.getString("submission"))) {
             interaction.reply({
@@ -64,13 +62,23 @@ export default new ReadableCommand(
                 .setMaxValues(categories.length)
                 .setOptions(categories)
         )
-        const submissionMessage = (selected: string[]) => `${utils.woof()}! You submitted ${utils.startsWithVowel(selected[0]) ? "an" : "a"} ${utils.enumerate(selected)} ${(hyperlink("beep", hideLinkEmbed(interaction.options.getString("submission"))))} titled ${interaction.options.getString("title")}${collaborators.length > 0 ? `, in collaboration with ${utils.enumerate(collaborators, true)}!` : "!"
-            } ${utils.emote("elated")}`
+
+        const undoActionRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+            .setCustomId("undo")
+            .setLabel("Undo")
+            .setStyle(ButtonStyle.Primary)
+        )
+        const submissionMessage = (selected: string[]) => (
+            {
+                content: `${utils.woof()}! You submitted ${utils.startsWithVowel(selected[0]) ? "an" : "a"} ${utils.enumerate(selected)} ${(hyperlink("beep", hideLinkEmbed(interaction.options.getString("submission"))))} titled ${interaction.options.getString("title")}${collaborators.length > 0 ? `, in collaboration with ${utils.enumerate(collaborators, true)}!` : "!"
+            } ${utils.emote("elated")}
+            
+            Made a mistake? Click the button below to undo your submission!`,
+        component: undoActionRow})
+
         if (interaction.options.getBoolean("original")) {
-            await interaction.reply({
-                content: submissionMessage(selectedCategories),
-                ephemeral: true
-            })
+            await interaction.reply(submissionMessage(selectedCategories))
             console.log(selectedCategories)
         } else {
             const categoriesMenu = await interaction.reply({
@@ -107,10 +115,7 @@ export default new ReadableCommand(
                     time: 10000
                 })
                     .then(submission => {
-                        submission.reply({
-                            content: submissionMessage(selectedCategories),
-                            ephemeral: true
-                        })
+                        interaction.editReply(submissionMessage(selectedCategories))
                         console.log(selectedCategories)
                     }))
         }
