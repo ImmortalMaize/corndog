@@ -17,7 +17,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     }
 
     const guild = reaction.message.guild
-    const member = guild.members.cache.get((reaction.message.author as User).id)
+    const member = guild.members.cache.get((reaction.message.author as User)?.id)
     if (reaction.emoji.name === utils.emojis.hand) {
         const count = (await reaction.message.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => { if (user?.id) return user.id !== (member?.id ?? reaction.message.author.id ) && user.id !== config.clientId; else return false}).size
         console.log('👌:' + count)
