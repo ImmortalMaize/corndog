@@ -54,7 +54,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
         if (bad) {
             message.react(utils.emojis.question)
             setTimeout(
-                async () => await message.delete(), 8000
+                async () => await message.delete().catch(() => console.log("No message to delete!")), 8000
             )
         } else {
             message.react(utils.emojis.hand)

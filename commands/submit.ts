@@ -1,5 +1,5 @@
 import { ReadableCommand } from "../classes";
-import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse, hyperlink, hideLinkEmbed, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, SlashCommandBuilder, InteractionResponse, hyperlink, hideLinkEmbed, ButtonBuilder, ButtonStyle, InteractionReplyOptions, ModalSubmitInteraction } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ComponentType } from 'discord.js';
 import { ModalBuilder } from 'discord.js';
@@ -8,6 +8,7 @@ import { TextInputStyle } from 'discord.js';
 import { Message } from 'discord.js';
 import utils from "../utils";
 import isURL from 'is-url'
+import google from "../google";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -20,7 +21,7 @@ export default new ReadableCommand(
                 .setRequired(true)
         )
         .addStringOption(option => option
-            .setName('submission')
+            .setName('sauce')
             .setDescription('What is the link to your submission?')
             .setRequired(true)
         )
@@ -36,51 +37,69 @@ export default new ReadableCommand(
             .setRequired(false)
         ),
     async (interaction: ChatInputCommandInteraction) => {
-        if (!isURL(interaction.options.getString("submission"))) {
+        const sauce = interaction.options.getString("sauce")
+        const title = interaction.options.getString("title")
+        const collaborators = utils.getMentions(interaction.options.getString("collaborators"))
+        
+        let selectedCategories = ["original"]
+        if (!isURL(sauce)) {
             interaction.reply({
                 content: `No seriously... where's the sauce? ${utils.emote("neutral")}`,
                 ephemeral: true
             })
             return
         }
-        let selectedCategories = ["original"]
-        const collaborators = utils.getMentions(interaction.options.getString("collaborators"))
-        console.log(collaborators)
-        const categories = [
-            { label: "Cover", value: "cover" },
-            { label: "Remix", value: "remix" },
-            { label: "Remake", value: "remake" },
-            { label: "Guided", value: "guided" },
-            { label: "Recycled", value: "recycled" },
-            { label: "Edit", value: "edit" },
-            { label: "Midi", value: "midi" }
-        ]
-        const categoriesActionRow = new ActionRowBuilder().addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId("categoriesSelect")
-                .setMinValues(1)
-                .setMaxValues(categories.length)
-                .setOptions(categories)
-        )
 
-        const undoActionRow = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
+        const replyToSubmission = async (interaction: ChatInputCommandInteraction|ModalSubmitInteraction) => {
+        
+        const undoButton = new ButtonBuilder()
             .setCustomId("undo")
             .setLabel("Undo")
             .setStyle(ButtonStyle.Primary)
-        )
-        const submissionMessage = (selected: string[]) => (
-            {
-                content: `${utils.woof()}! You submitted ${utils.startsWithVowel(selected[0]) ? "an" : "a"} ${utils.enumerate(selected)} ${(hyperlink("beep", hideLinkEmbed(interaction.options.getString("submission"))))} titled ${interaction.options.getString("title")}${collaborators.length > 0 ? `, in collaboration with ${utils.enumerate(collaborators, true)}!` : "!"
-            } ${utils.emote("elated")}
+        const undoActionRow = new ActionRowBuilder().addComponents(
+            undoButton)
+            const reply = await interaction.reply({
+                content: `${utils.woof()}! You submitted ${utils.startsWithVowel(selectedCategories[0]) ? "an" : "a"} ${utils.enumerate(selectedCategories)} ${(hyperlink("beep", hideLinkEmbed(sauce)))} titled ${title}${collaborators.length > 0 ? `, in collaboration with ${utils.enumerate(collaborators, true)}!` : "!"
+                    } ${utils.emote("elated")}\n\nMade a mistake? Click the button below to undo your submission!`,
+                //@ts-ignore
+                components: [undoActionRow],
+                ephemeral: true
+            })
             
-            Made a mistake? Click the button below to undo your submission!`,
-        component: undoActionRow})
+            reply.awaitMessageComponent({
+                componentType: ComponentType.Button,
+                time: utils.time.duration({ days: 1 })
+            }).then((undo) => {
+                interaction.deleteReply()
+                undo.reply({
+                    content: `Submission cancelled. You may resubmit your beep! ${utils.emote("furry")}`,
+                    ephemeral: true
+                })
+            })
+        }
 
         if (interaction.options.getBoolean("original")) {
-            await interaction.reply(submissionMessage(selectedCategories))
+            await google.write("Sheet1!A1", [["test"]])
+            await replyToSubmission(interaction)
             console.log(selectedCategories)
         } else {
+            const categories = [
+                { label: "Cover", value: "cover" },
+                { label: "Remix", value: "remix" },
+                { label: "Remake", value: "remake" },
+                { label: "Guided", value: "guided" },
+                { label: "Recycled", value: "recycled" },
+                { label: "Edit", value: "edit" },
+                { label: "Midi", value: "midi" }
+            ]
+            const categoriesActionRow = new ActionRowBuilder().addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId("categoriesSelect")
+                    .setMinValues(1)
+                    .setMaxValues(categories.length)
+                    .setOptions(categories)
+            )
+
             const categoriesMenu = await interaction.reply({
                 content: "What categories does your submission fall under?",
                 //@ts-ignore
@@ -115,7 +134,8 @@ export default new ReadableCommand(
                     time: 10000
                 })
                     .then(submission => {
-                        interaction.editReply(submissionMessage(selectedCategories))
+                        interaction.deleteReply()
+                        replyToSubmission(submission)
                         console.log(selectedCategories)
                     }))
         }

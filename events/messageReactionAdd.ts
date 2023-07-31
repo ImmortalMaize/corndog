@@ -8,7 +8,6 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     if (!(reaction.message.channel.id === channels["finished-beeps"])) {
         return
     }
-    console.log("New beep!")
     if (reaction.partial) {
         try {
             await reaction.fetch()
@@ -20,7 +19,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     const guild = reaction.message.guild
     const member = guild.members.cache.get((reaction.message.author as User).id)
     if (reaction.emoji.name === utils.emojis.hand) {
-        const count = (await reaction.message.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== (member.id ?? reaction.message.author.id) && user.id !== config.clientId).size
+        const count = (await reaction.message.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => { if (user?.id) return user.id !== (member?.id ?? reaction.message.author.id ) && user.id !== config.clientId; else return false}).size
         console.log('👌:' + count)
         const quota = count >= picks.quota
         const precedent = await finishedBeep.get("submission", reaction.message.id)
@@ -79,3 +78,4 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         }
     }
 })
+
