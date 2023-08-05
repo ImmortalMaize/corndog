@@ -1,5 +1,5 @@
 import { ReadableEvent } from "../classes"
-import { Message } from 'discord.js';
+import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
 import utils from "../utils";
 import { TextChannel, userMention } from 'discord.js';
@@ -7,10 +7,13 @@ import { TextChannel, userMention } from 'discord.js';
 export default new ReadableEvent("messageCreate", async (message: Message) => {
     const reply = async (message: Message, content: string) => {
         const botCommands = (await message.guild.channels.fetch()).get(channels["bot-commands"]) as TextChannel
-        const reply = await botCommands.send(userMention(message.author.id) + content)
+        const reply = await botCommands.send({
+            content: userMention(message.author.id) + content,
+            // embeds: [new EmbedBuilder().setDescription(message.content).setAuthor({ name: message.author.username, iconURL: message.author.avatarURL()})]
+        })
         setTimeout(async () => {
-            await reply.delete()
-        }, 8000)
+            await reply?.delete()
+        }, 20000)
     }
 
     if (message.author.id === config.clientId) {
@@ -26,7 +29,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             bad = true
             await reply(message, "The character limit is 450 or under. Yours is " + message.cleanContent.length + "! > _<")
         }
-        if (message.cleanContent.match(/\n/gm)?.length >= 5) {
+        if (message.cleanContent.match(/\n/gm)?.length >= 5 && !(message.channel.id === (channels["recycled-beeps"]))) {
             console.log("Message line breaks are bad.")
             bad = true
             await reply(message, "Too many line breaks! > _<")

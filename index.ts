@@ -6,6 +6,7 @@ env.config()
 
 import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction } from "discord.js"
 import utils from "./utils"
+import { ReadableEvent } from "./classes"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
@@ -56,11 +57,11 @@ async function getEvents() {
 
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file)
-        const event = (await import(filePath)).default
+        const event = (await import(filePath)).default as ReadableEvent
         if (event.once) {
             client.once(event.name, (...args) => event.execute(...args));
         } else {
-            client.on(event.name, (...args) => event.execute(...args));
+            client.on(event.name, (...args) => event.execute(...args).catch((error: Error) => console.log(error)));
         }
         console.log(`Loaded event ${event.name} ^~^`)
     }

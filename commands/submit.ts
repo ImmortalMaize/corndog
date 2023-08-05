@@ -8,7 +8,6 @@ import { TextInputStyle } from 'discord.js';
 import { Message } from 'discord.js';
 import utils from "../utils";
 import isURL from 'is-url'
-import google from "../google";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -79,7 +78,6 @@ export default new ReadableCommand(
         }
 
         if (interaction.options.getBoolean("original")) {
-            await google.write("Sheet1!A1", [["test"]])
             await replyToSubmission(interaction)
             console.log(selectedCategories)
         } else {
