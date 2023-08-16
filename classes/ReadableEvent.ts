@@ -1,5 +1,3 @@
-import { Client } from 'discord.js';
-
 export default class ReadableEvent {
     constructor(
         public name: string,

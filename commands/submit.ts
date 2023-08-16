@@ -8,6 +8,7 @@ import { TextInputStyle } from 'discord.js';
 import { Message } from 'discord.js';
 import utils from "../utils";
 import isURL from 'is-url'
+import { request } from "undici";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()

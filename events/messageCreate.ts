@@ -3,6 +3,7 @@ import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
 import utils from "../utils";
 import { TextChannel, userMention } from 'discord.js';
+import { request } from "undici";
 
 export default new ReadableEvent("messageCreate", async (message: Message) => {
     const reply = async (message: Message, content: string) => {
@@ -60,7 +61,21 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
                 async () => await message.delete().catch(() => console.log("No message to delete!")), 8000
             )
         } else {
+            const m = message.cleanContent.match(utils.hasSauce)[0]
             message.react(utils.emojis.hand)
+            request('http://localhost:3000/content/beep/', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "sauce": m,
+                    "discordId": message.id,
+                    "authors": [message.author.id],
+                    "sheets": ["community"],
+                    "basedOn": []
+                })
+            })
         }
     }
 })

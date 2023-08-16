@@ -3,6 +3,7 @@ import { MessageReaction, Message, User, TextChannel, EmbedBuilder, ColorResolva
 import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
 import utils from "../utils"
+import { request } from "undici";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (!(reaction.message.channel.id === channels["finished-beeps"])) {
@@ -27,6 +28,21 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         const reward = guild.roles.cache.get(roles.picked)
         const finishedPicks = guild.channels.cache.get(channels["finished-picks"]) as TextChannel
 
+        const m = reaction.message.cleanContent.match(utils.hasSauce)[0]
+        console.log(m)
+        request('http://localhost:3000/content/beep/', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "sauce": m,
+                    "discordId": reaction.message.id,
+                    "authors": [reaction.message.author.id],
+                    "sheets": ["community"],
+                    "basedOn": []
+                })
+            })
         if (quota) {
             if (precedent) {
                 console.log("Quota and precedent met!")
@@ -56,7 +72,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 const embed = utils.pickEmbed(reaction.message as Message, count)
                 const old = utils.time.compare(utils.time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
                 const pick = await finishedPicks.send({
-                    content: `Congratulations ${old||!pings ? member.nickname ?? reaction.message.author.username : userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
+                    content: `Congratulations ${!pings ? member.nickname ?? reaction.message.author.username : userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
                     embeds: [embed]
                 })
 
