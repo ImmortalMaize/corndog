@@ -31,7 +31,7 @@
     "woof": "nodemon index.ts",
     "commands": "ts-node commands.ts",
     "sleep": "ts-node sleep.ts",
-    "build": "",
+    "build": "npx tsc",
     "postinstall": ""
   }
 }
