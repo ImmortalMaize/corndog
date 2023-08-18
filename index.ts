@@ -36,11 +36,12 @@ const client = new Client({
 const { CLIENT_TOKEN } = process.env
 
 client.login(CLIENT_TOKEN)
+const extension = __filename.split(".").pop() === '.ts' ? '.ts' : '.js'
 
 // @ts-ignore
 client.commands = new Collection(); client.app = app
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(extension));
 
 async function getCommands() {
     for (const file of commandFiles) {
@@ -57,7 +58,7 @@ getCommands()
 
 async function getEvents() {
     const eventsPath = path.join(__dirname, 'events');
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.ts'));
+    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(extension));
 
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file)
@@ -75,7 +76,7 @@ getEvents()
 
 async function getRoutes() {
     const routesPath = path.join(__dirname, 'routes');
-    const routeFiles = fs.readdirSync(routesPath).filter(file => file.endsWith('.ts'));
+    const routeFiles = fs.readdirSync(routesPath).filter(file => file.endsWith(extension));
 
     for (const file of routeFiles) {
         const filePath = path.join(routesPath, file)
@@ -84,6 +85,7 @@ async function getRoutes() {
         for (const handler in route.handlers) {
             iRoute[handler](route.handlers[handler])
         }
+        
         const methods = Object.keys(route.handlers).map(method => `"${method.toUpperCase()}"`)
         console.log(`Loaded method${methods.length > 1 ? "s": ""} ${utils.enumerate(methods, true)} for route "${route.path}" ${utils.emote("content")}`)
     }
@@ -91,8 +93,7 @@ async function getRoutes() {
 
 getRoutes()
 
-const port = 1000
+const port = 5000
 app.listen(port, () => {
     console.log(`Listening on port ${port}! Hello world! ${utils.emote("elated")}`)
 })
-
