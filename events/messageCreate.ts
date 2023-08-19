@@ -63,7 +63,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
         } else {
             const m = message.cleanContent.match(utils.hasSauce)[0]
             message.react(utils.emojis.hand)
-            request('http://localhost:3000/content/beep/', {
+            request('http://data.beepbox.net/content/beep/', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

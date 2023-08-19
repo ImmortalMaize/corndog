@@ -28,21 +28,28 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         const reward = guild.roles.cache.get(roles.picked)
         const finishedPicks = guild.channels.cache.get(channels["finished-picks"]) as TextChannel
 
-        const m = reaction.message.cleanContent.match(utils.hasSauce)[0]
-        console.log(m)
-        request('http://localhost:3000/content/beep/', {
+        const link = reaction.message.cleanContent.match(utils.hasSauce)[0]
+        console.log(link)
+        const blurb = (link ? reaction.message.cleanContent
+            .replaceAll(utils.hasSauce, "")
+            .replaceAll(/^\n$/gm, "")
+            : reaction.message.cleanContent) as string
+        const response = await request('http://localhost:3000/content/beep/' + reaction.message.id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "sauce": m,
-                    "discordId": reaction.message.id,
+                    "sauce": link,
                     "authors": [reaction.message.author.id],
-                    "sheets": ["community"],
+                    "sheets": [{
+                        name: "community",
+                        caption: blurb
+                    }],
                     "basedOn": []
                 })
             })
+        console.log(response.body)
         if (quota) {
             if (precedent) {
                 console.log("Quota and precedent met!")

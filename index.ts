@@ -36,7 +36,7 @@ const client = new Client({
 const { CLIENT_TOKEN } = process.env
 
 client.login(CLIENT_TOKEN)
-const extension = __filename.split(".").pop() === '.ts' ? '.ts' : '.js'
+const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'
 
 // @ts-ignore
 client.commands = new Collection(); client.app = app
@@ -85,7 +85,7 @@ async function getRoutes() {
         for (const handler in route.handlers) {
             iRoute[handler](route.handlers[handler])
         }
-        
+
         const methods = Object.keys(route.handlers).map(method => `"${method.toUpperCase()}"`)
         console.log(`Loaded method${methods.length > 1 ? "s": ""} ${utils.enumerate(methods, true)} for route "${route.path}" ${utils.emote("content")}`)
     }
