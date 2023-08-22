@@ -62,6 +62,13 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             )
         } else {
             const m = message.cleanContent.match(utils.hasSauce)[0]
+            const mergeAuthor = await request('http://localhost:3000/content/user/' + message.author.id, {
+            method: 'PUT',
+            headers: {},
+            body: JSON.stringify({
+                username: message.author.username
+            })
+        })
             message.react(utils.emojis.hand)
             request('http://data.beepbox.net/content/beep/', {
                 method: 'PUT',

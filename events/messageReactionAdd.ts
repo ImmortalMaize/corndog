@@ -34,7 +34,14 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             .replaceAll(utils.hasSauce, "")
             .replaceAll(/^\n$/gm, "")
             : reaction.message.cleanContent) as string
-        const response = await request('http://localhost:3000/content/beep/' + reaction.message.id, {
+        const mergeAuthor = await request('http://localhost:3000/content/user/' + reaction.message.author.id, {
+            method: 'PUT',
+            headers: {},
+            body: JSON.stringify({
+                username: reaction.message.author.username
+            })
+        })
+        const createBeep = await request('http://localhost:3000/content/beep/' + reaction.message.id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -49,7 +56,18 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                     "basedOn": []
                 })
             })
-        console.log(response.body)
+        const mergeLiker = await request('http://localhost:3000/content/user/' + user.id, {
+            method: 'PUT',
+            headers: {},
+            body: JSON.stringify({
+                username: user.username
+            })
+        })
+        const likeBeep = await request('http://localhost:3000/content/beep/' + reaction.message.id + '/liked_by/' + user.id, {
+            method: 'POST',
+            headers: {},
+            body: JSON.stringify({})
+        })
         if (quota) {
             if (precedent) {
                 console.log("Quota and precedent met!")
