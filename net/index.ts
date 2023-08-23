@@ -1,0 +1,1 @@
+export { likeBeep } from './likeBeep'

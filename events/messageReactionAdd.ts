@@ -3,7 +3,7 @@ import { MessageReaction, Message, User, TextChannel, EmbedBuilder, ColorResolva
 import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
 import utils from "../utils"
-import { request } from "undici";
+import { likeBeep } from "../net";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (!(reaction.message.channel.id === channels["finished-beeps"])) {
@@ -16,6 +16,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             console.log("Uuuuh...")
         }
     }
+
 
     const guild = reaction.message.guild
     const member = guild.members.cache.get((reaction.message.author as User)?.id)
@@ -30,44 +31,9 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
         const link = reaction.message.cleanContent.match(utils.hasSauce)[0]
         console.log(link)
-        const blurb = (link ? reaction.message.cleanContent
-            .replaceAll(utils.hasSauce, "")
-            .replaceAll(/^\n$/gm, "")
-            : reaction.message.cleanContent) as string
-        const mergeAuthor = await request('http://localhost:3000/content/user/' + reaction.message.author.id, {
-            method: 'PUT',
-            headers: {},
-            body: JSON.stringify({
-                username: reaction.message.author.username
-            })
-        })
-        const createBeep = await request('http://localhost:3000/content/beep/' + reaction.message.id, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "sauce": link,
-                    "authors": [reaction.message.author.id],
-                    "sheets": [{
-                        name: "community",
-                        caption: blurb
-                    }],
-                    "basedOn": []
-                })
-            })
-        const mergeLiker = await request('http://localhost:3000/content/user/' + user.id, {
-            method: 'PUT',
-            headers: {},
-            body: JSON.stringify({
-                username: user.username
-            })
-        })
-        const likeBeep = await request('http://localhost:3000/content/beep/' + reaction.message.id + '/liked_by/' + user.id, {
-            method: 'POST',
-            headers: {},
-            body: JSON.stringify({})
-        })
+        const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message
+        likeBeep(message as Message, member?.user ?? reaction.message.author, reaction.message.author as User)
+
         if (quota) {
             if (precedent) {
                 console.log("Quota and precedent met!")

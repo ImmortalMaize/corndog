@@ -10,6 +10,8 @@ import meow from "./meow"
 import enumerate from "./enumerate"
 import getMentions from "./getMentions"
 import startsWithVowel from "./startsWithVowel"
+import getLink from "./getLink"
+import getBlurb from "./getBlurb"
 
 export default {
     time,
@@ -23,5 +25,7 @@ export default {
     meow,
     enumerate,
     getMentions,
-    startsWithVowel
+    startsWithVowel,
+    getLink,
+    getBlurb
 }
