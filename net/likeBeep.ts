@@ -4,22 +4,22 @@ import utils from "../utils"
 
 export const likeBeep = async (message: Message, liker: User, author: User) => {
 	const blurb = utils.getBlurb(message)
-	const link = utils.getLink(message)[0]
+	const link = utils.getLink(message)[0] 
 	const { DATA_URL } = process.env
-	await request(DATA_URL + '/content/user/' + message.author.id, {
+    const contentType = { 'Content-Type': 'application/json' }
+	await request(DATA_URL + 'content/user/' + message.author.id, {
             method: 'PUT',
-            headers: {
-            	'Content-Type': 'application/json'
-            },
+            headers: contentType,
             body: JSON.stringify({
                 username: author.username
             })
+        }).then(() => {
+            console.log("Author " + author.id + " merged.")
         })
-        await request(DATA_URL + '/content/beep/' + message.id, {
+
+        await request(DATA_URL + 'content/beep/' + message.id, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: contentType,
                 body: JSON.stringify({
                     "sauce": link,
                     "authors": [author.id],
@@ -29,21 +29,23 @@ export const likeBeep = async (message: Message, liker: User, author: User) => {
                     }],
                     "basedOn": []
                 })
+            }).then(() => {
+                console.log("Beep " + message.id + " merged.")
             })
-        await request(DATA_URL + '/content/user/' + liker.id, {
+        await request(DATA_URL + 'content/user/' + liker.id, {
             method: 'PUT',
-            headers: {
-            	'Content-Type': 'application/json'
-            },
+            headers: contentType,
             body: JSON.stringify({
                 username: liker.username
             })
+        }).then(() => {
+            console.log("Liker " + liker.id + " merged.")
         })
-        return await request(DATA_URL + '/content/beep/' + message.id + '/liked_by/' + liker.id, {
+        return await request(DATA_URL + 'content/beep/' + message.id + '/liked_by/' + liker.id, {
             method: 'POST',
-            headers: {
-            	'Content-Type': 'application/json'
-            },
+            headers: contentType,
             body: JSON.stringify({})
+        }).then(() => {
+            console.log("Liker " + liker.id + " liked beep " + message.id + ".");
         })
 }
