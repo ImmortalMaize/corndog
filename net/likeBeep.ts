@@ -22,6 +22,7 @@ export const likeBeep = async (message: Message, liker: User, author: User) => {
                 headers: contentType,
                 body: JSON.stringify({
                     "sauce": link,
+                    "published": Date.now(),
                     "authors": [author.id],
                     "sheets": [{
                         name: "community",
