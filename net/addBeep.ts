@@ -4,7 +4,8 @@ import utils from "../utils";
 
 export const addBeep = async (message: Message) => {
 			const {DATA_URL} = process.env
-			const link = message.cleanContent.match(utils.hasSauce)[0]
+			const link = utils.getLink(message)[0]
+            const blurb = utils.getBlurb(message)
             await request('http://localhost:3000/content/user/' + message.author.id, {
             method: 'PUT',
             headers: {},
@@ -23,7 +24,10 @@ export const addBeep = async (message: Message) => {
                     "published": Date.now(),
                     "discordId": message.id,
                     "authors": [message.author.id],
-                    "sheets": ["community"],
+                    "sheets": [{
+                        name: "community",
+                        caption: blurb
+                    }],
                     "basedOn": []
                 })
             })

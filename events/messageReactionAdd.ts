@@ -1,5 +1,5 @@
 import { ReadableEvent } from "../classes";
-import { MessageReaction, Message, User, TextChannel, EmbedBuilder, ColorResolvable, userMention, time } from "discord.js"
+import { MessageReaction, Message, User, TextChannel, userMention} from "discord.js"
 import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
 import utils from "../utils"
@@ -32,7 +32,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         const link = reaction.message.cleanContent.match(utils.hasSauce)[0]
         console.log(link)
         const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message
-        likeBeep(message as Message, member?.user ?? reaction.message.author, reaction.message.author as User)
+        likeBeep(message as Message, user, reaction.message.author)
 
         if (quota) {
             if (precedent) {
