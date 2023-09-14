@@ -6,7 +6,7 @@ export const addBeep = async (message: Message) => {
 			const {DATA_URL} = process.env
 			const link = utils.getLink(message)[0]
             const blurb = utils.getBlurb(message)
-            await request('http://localhost:3000/content/user/' + message.author.id, {
+            await request(DATA_URL + 'content/user/' + message.author.id, {
             method: 'PUT',
             headers: {},
             body: JSON.stringify({
@@ -21,7 +21,7 @@ export const addBeep = async (message: Message) => {
                 },
                 body: JSON.stringify({
                     "sauce": link,
-                    "published": Date.now(),
+                    "published": message.createdAt,
                     "discordId": message.id,
                     "authors": [message.author.id],
                     "sheets": [{

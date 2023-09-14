@@ -5,6 +5,7 @@ import { TextChannel } from 'discord.js';
 import utils from "../utils"
 import { finishedBeep, member } from "../redis/entities";
 import { EmbedBuilder } from 'discord.js';
+import getPicks from "../net/getPicks";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -99,26 +100,6 @@ export default new ReadableCommand(
             }
         }
         else {
-            const scope = interaction.options.getSubcommand()
-            console.log(scope)
-
-            const backWhen = utils.time.goBack(1, scope === "yearly" ? "years" : scope === "monthly" ? "months" : "weeks")
-            const picks = await finishedBeep.view()
-            console.log(picks.length)
-            const filteredPicks = picks.filter(pick => {
-                console.log(pick.date.toDateString())
-                return utils.time.convert(pick.date).unix() > backWhen.unix()
-            })
-            console.log(filteredPicks.length)
-
-            const pickReactions = filteredPicks.sort((a, b) => b.count - a.count)
-
-            const embed = new EmbedBuilder().setAuthor({name: "#1 - Maize", iconURL: "https://cdn.discordapp.com/guilds/235138363131166728/users/143866772360134656/avatars/a_8080c2462fe831a7494d8d7146a2d41b.gif?size=4096"})
-            .setDescription("penis lol").setFields({name: "Sauce", value: "hibu.com apache.org comcast.net businesswire.com theguardian.com", inline: false}, {name: "Score", value: "42", inline: true}, {name: "Date", value: "04-27-2002", inline: true})
-            console.log(pickReactions.slice(0, 10))
-            interaction.reply({
-                embeds: [embed, embed],
-                ephemeral: true
-            })
+            await getPicks()
         }
     })

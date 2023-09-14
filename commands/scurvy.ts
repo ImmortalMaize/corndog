@@ -55,7 +55,7 @@ export default new ReadableCommand(new SlashCommandBuilder()
 									method: 'PATCH',
 									headers: contentType,
 									body: JSON.stringify({
-										username
+										username,
 									})
 								})
 							}).then(async () => await interaction.editReply({
