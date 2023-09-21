@@ -32,5 +32,8 @@ export default {
     },
     goForth: (amount: number, unit: Day.ManipulateType) => {
         return Day().add(amount, unit)
+    },
+    startOf: (unit:Day.ManipulateType) => {
+        return Day().startOf(unit)
     }
 }

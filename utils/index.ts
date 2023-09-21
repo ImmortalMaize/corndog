@@ -12,6 +12,7 @@ import getMentions from "./getMentions"
 import startsWithVowel from "./startsWithVowel"
 import getLink from "./getLink"
 import getBlurb from "./getBlurb"
+import trunk from "./trunk"
 
 export default {
     time,
@@ -27,5 +28,6 @@ export default {
     getMentions,
     startsWithVowel,
     getLink,
-    getBlurb
+    getBlurb,
+    trunk
 }

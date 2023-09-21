@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommand
 import { request } from "undici";
 import { ReadableCommand } from "../classes";
 import { likeBeep, update } from "../net";
+import { users } from '../config'
 import utils from "../utils";
 
 export default new ReadableCommand(new SlashCommandBuilder()
@@ -27,8 +28,9 @@ export default new ReadableCommand(new SlashCommandBuilder()
 					.setDescription("Make sure publication dates are up to date!")
 			)
 	), async (interaction: ChatInputCommandInteraction) => {
-		const { MAIZE, DATA_URL } = process.env
-		if (interaction.user.id !== MAIZE) {
+		const { DATA_URL } = process.env
+		const { maize } = users
+		if (interaction.user.id !== maize) {
 			await interaction.reply({
 				content: `You're not Maize! ${utils.emote("malcontent")}`,
 				ephemeral: true
@@ -51,7 +53,7 @@ export default new ReadableCommand(new SlashCommandBuilder()
 						case "users":
 							await update("user", async (user) => {
 								const { username } = await interaction.client.users.fetch(user.discordId)
-								request(endpoint + 'user/primary/' + user.discordId, {
+								await request(endpoint + 'user/primary/' + user.discordId, {
 									method: 'PATCH',
 									headers: contentType,
 									body: JSON.stringify({

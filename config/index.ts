@@ -7,6 +7,7 @@ import roles from "./roles.json"
 import emotion from "../utils/emote/emotions.json"
 import spots from "./spots.json"
 import fails from "./fails.json"
+import users from "./users.json"
 
 export {
     redis,
@@ -17,5 +18,6 @@ export {
     roles,
     emotion,
     spots,
-    fails
+    fails,
+    users
 }
