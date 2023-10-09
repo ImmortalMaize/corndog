@@ -1,11 +1,11 @@
 import { Message } from "discord.js";
 import { request } from "undici";
-import utils from "../utils";
+import { getLink, getBlurb, emojis } from "../utils";
 
 export const addBeep = async (message: Message) => {
 			const {DATA_URL} = process.env
-			const link = utils.getLink(message)[0]
-            const blurb = utils.getBlurb(message)
+			const link = getLink(message)[0]
+            const blurb = getBlurb(message)
             await request(DATA_URL + 'content/user/' + message.author.id, {
             method: 'PUT',
             headers: {},
@@ -13,7 +13,7 @@ export const addBeep = async (message: Message) => {
                 username: message.author.username
             })
         })
-            message.react(utils.emojis.hand)
+            message.react(emojis.hand)
             await request(DATA_URL + 'content/beep/', {
                 method: 'PUT',
                 headers: {

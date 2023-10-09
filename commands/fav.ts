@@ -2,7 +2,7 @@ import { ReadableCommand } from "../classes";
 import { ActionRowBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle, ChatInputCommandInteraction, Attachment } from 'discord.js';
 import { fav } from "../redis/entities";
 import { EmbedBuilder } from 'discord.js';
-import utils from "../utils";
+import { woof, emote } from "../utils";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -86,7 +86,7 @@ export default new ReadableCommand(
             })
 
             await interaction.reply({
-                content: utils.woof() + "! I saved " + sauce + " as " + name + "! " + utils.emote("elated"),
+                content: woof() + "! I saved " + sauce + " as " + name + "! " + emote("elated"),
                 ephemeral: true
             })
             return
@@ -103,7 +103,7 @@ export default new ReadableCommand(
             })
 
             await interaction.reply({
-                content: utils.woof() + "! I saved your " + sauce.contentType + " attachment as " + name + "! " + utils.emote("elated"),
+                content: woof() + "! I saved your " + sauce.contentType + " attachment as " + name + "! " + emote("elated"),
                 ephemeral: true
             })
         }
@@ -131,7 +131,7 @@ export default new ReadableCommand(
 
             await fav.waste(interaction.user.id, name)
             await interaction.reply({
-                content: `${utils.woof()}! I cleared the bookmark named ${name}!`,
+                content: `${woof()}! I cleared the bookmark named ${name}!`,
                 ephemeral: true
             })
         }
@@ -150,7 +150,7 @@ export default new ReadableCommand(
             .addFields(results)
 
             interaction.reply({
-                content: `${utils.woof()}! Here are your bookmarks!`,
+                content: `${woof()}! Here are your bookmarks!`,
                 embeds: [embed],
                 ephemeral: true
             })

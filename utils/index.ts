@@ -1,33 +1,16 @@
-import colorScale from "./colorScale"
-import hasSauce from "./hasSauce"
-import emojis from "./emojis"
-import time from "./time"
-import pickEmbed from './pickEmbed'
-import emote from "./emote"
-import numbers from "./numbers"
-import woof from "./woof"
-import meow from "./meow"
-import enumerate from "./enumerate"
-import getMentions from "./getMentions"
-import startsWithVowel from "./startsWithVowel"
-import getLink from "./getLink"
-import getBlurb from "./getBlurb"
-import trunk from "./trunk"
-
-export default {
-    time,
-    colorScale,
-    hasSauce,
-    emojis,
-    pickEmbed,
-    emote,
-    numbers,
-    woof,
-    meow,
-    enumerate,
-    getMentions,
-    startsWithVowel,
-    getLink,
-    getBlurb,
-    trunk
-}
+export { colorScale } from "./colorScale"
+export { hasSauce } from "./hasSauce"
+export { emojis } from "./emojis"
+export { time } from "./time"
+export { pickEmbed } from './pickEmbed'
+export { emote } from "./emote"
+export { numbers } from "./numbers"
+export { woof } from "./woof"
+export { meow } from "./meow"
+export { enumerate } from "./enumerate"
+export { getMentions } from "./getMentions"
+export { startsWithVowel } from "./startsWithVowel"
+export { getLink } from "./getLink"
+export { getBlurb } from "./getBlurb"
+export { trunk } from "./trunk"
+export { tracer } from "./tracer"

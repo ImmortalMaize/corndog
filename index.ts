@@ -6,7 +6,7 @@ import express from 'express'
 env.config()
 
 import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction } from "discord.js"
-import utils from "./utils"
+import { emote, tracer, enumerate } from "./utils"
 import { ReadableEvent } from "./classes"
 import ReadableRoute from "./classes/ReadableRoute"
 
@@ -50,11 +50,27 @@ async function getCommands() {
 
         // @ts-ignore
         client.commands.set(command.data.name, command);
-        console.log(`Loaded command ${command.data.name} ${utils.emote("content")}`)
+        tracer.build(`Loaded command ${command.data.name} ${emote("content")}`)
     }
 }
 
 getCommands()
+
+const menusPath = path.join(__dirname, 'menus');
+const menuFiles = fs.readdirSync(menusPath).filter(file => file.endsWith(extension));
+
+async function getMenus() {
+    for (const file of menuFiles) {
+        const filePath = path.join(menusPath, file);
+        const menu = (await import(filePath)).default
+
+        // @ts-ignore
+        client.commands.set(menu.data.name, menu);
+        tracer.build(`Loaded menu ${menu.data.name} ${emote("content")}`)
+    }
+}
+
+getMenus()
 
 async function getEvents() {
     const eventsPath = path.join(__dirname, 'events');
@@ -66,9 +82,9 @@ async function getEvents() {
         if (event.once) {
             client.once(event.name, (...args) => event.execute(...args));
         } else {
-            client.on(event.name, (...args) => event.execute(...args).catch((error: Error) => console.log(error)));
+            client.on(event.name, (...args) => event.execute(...args).catch((error: Error) => void tracer.error(error)));
         }
-        console.log(`Loaded event ${event.name} ${utils.emote("content")}`)
+        tracer.build(`Loaded event ${event.name} ${emote("content")}`)
     }
 }
 
@@ -87,7 +103,7 @@ async function getRoutes() {
         }
 
         const methods = Object.keys(route.handlers).map(method => `"${method.toUpperCase()}"`)
-        console.log(`Loaded method${methods.length > 1 ? "s": ""} ${utils.enumerate(methods, true)} for route "${route.path}" ${utils.emote("content")}`)
+        tracer.build(`Loaded method${methods.length > 1 ? "s": ""} ${enumerate(methods, true)} for route "${route.path}" ${emote("content")}`)
     }
 }
 
@@ -95,5 +111,5 @@ getRoutes()
 
 const port = 5000
 app.listen(port, () => {
-    console.log(`Listening on port ${port}! Hello world! ${utils.emote("elated")}`)
+    tracer.build(`Listening on port ${port}! Hello world! ${emote("elated")}`)
 })

@@ -3,7 +3,7 @@ import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction } from 'd
 import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
-import utils from '../utils';
+import {pickEmbed, emojis} from '../utils';
 
 export default new ReadableCommand(
     new SlashCommandBuilder().setName("random").setDescription("Gets random beep.").addBooleanOption(
@@ -18,8 +18,8 @@ export default new ReadableCommand(
         const messages = (await finishedBeeps.messages.fetch())
         const randomBeep = messages.random()
         const randomBeepAuthor = (await interaction.guild.members.fetch()).get(randomBeep.author.id)
-        const count = (await randomBeep.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => user.id !== randomBeepAuthor.id && user.id !== config.clientId).size
-        const embed = utils.pickEmbed(randomBeep, count)
+        const count = (await randomBeep.reactions.cache.get(emojis.hand).users.fetch()).filter(user => user.id !== randomBeepAuthor.id && user.id !== config.clientId).size
+        const embed = pickEmbed(randomBeep, count)
         interaction.reply({
             content: "Here's a beep by " + (randomBeepAuthor.nickname ?? randomBeep.author.username) + "!",
             embeds: [embed],

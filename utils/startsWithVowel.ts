@@ -1,1 +1,1 @@
-export default (string: string) => string[0] === "a" || string[0] === "e" || string[0] === "i" || string[0] === "o" || string[0] === "u" || string[0] === "A" || string[0] === "E" || string[0] === "I" || string[0] === "O" || string[0] === "U"
+export const startsWithVowel = (string: string) => string[0] === "a" || string[0] === "e" || string[0] === "i" || string[0] === "o" || string[0] === "u" || string[0] === "A" || string[0] === "E" || string[0] === "I" || string[0] === "O" || string[0] === "U"

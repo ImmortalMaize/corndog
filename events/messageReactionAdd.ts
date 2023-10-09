@@ -2,7 +2,7 @@ import { ReadableEvent } from "../classes";
 import { MessageReaction, Message, User, TextChannel, userMention} from "discord.js"
 import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
-import utils from "../utils"
+import { time, pickEmbed, emojis,hasSauce} from "../utils"
 import { likeBeep } from "../net";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
@@ -19,9 +19,9 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
 
     const guild = reaction.message.guild
-    const member = guild.members.cache.get((reaction.message.author as User)?.id)
-    if (reaction.emoji.name === utils.emojis.hand) {
-        const count = (await reaction.message.reactions.cache.get(utils.emojis.hand).users.fetch()).filter(user => { if (user?.id) return user.id !== (member?.id ?? reaction.message.author.id ) && user.id !== config.clientId; else return false}).size
+    const member = (guild.members.cache.get((reaction.message.author as User)?.id)) ?? (await guild.members.fetch((reaction.message.author as User)?.id))
+    if (reaction.emoji.name === emojis.hand) {
+        const count = (await reaction.message.reactions.cache.get(emojis.hand).users.fetch()).filter(user => { if (user?.id) return user.id !== (member?.id ?? reaction.message.author.id ) && user.id !== config.clientId; else return false}).size
         console.log('👌:' + count)
         const quota = count >= picks.quota
         const precedent = await finishedBeep.get("submission", reaction.message.id)
@@ -29,7 +29,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         const reward = guild.roles.cache.get(roles.picked)
         const finishedPicks = guild.channels.cache.get(channels["finished-picks"]) as TextChannel
 
-        const link = reaction.message.cleanContent.match(utils.hasSauce)[0]
+        const link = reaction.message.cleanContent.match(hasSauce)[0]
         console.log(link)
         const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message
         likeBeep(message as Message, user, reaction.message.author)
@@ -40,7 +40,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 const embedID = precedent.toJSON().embed
                 console.log(embedID)
 
-                const embed = utils.pickEmbed(reaction.message as Message, count);
+                const embed = pickEmbed(reaction.message as Message, count);
                 (await finishedPicks.messages.fetch(embedID))
                 .edit({
                     embeds: [embed]
@@ -60,8 +60,8 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
                 const pings: boolean = memberData ? memberData.toJSON()["picks pings"] : false
                 member.roles.add(reward)
 
-                const embed = utils.pickEmbed(reaction.message as Message, count)
-                const old = utils.time.compare(utils.time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
+                const embed = pickEmbed(reaction.message as Message, count)
+                const old = time.compare(time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
                 const pick = await finishedPicks.send({
                     content: `Congratulations ${!pings ? (member.nickname ?? reaction.message.author.username) : userMention(member.id ?? reaction.message.author.id)} on getting picked!`,
                     embeds: [embed]

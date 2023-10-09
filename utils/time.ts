@@ -5,7 +5,7 @@ Day.extend(duration)
 import RelativeTime from "dayjs/plugin/relativeTime"
 Day.extend(RelativeTime)
 
-export default {
+export const time = {
     convert: (time: Date) => {
         return Day(time)
     },

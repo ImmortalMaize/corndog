@@ -6,9 +6,8 @@ import { ModalBuilder } from 'discord.js';
 import { TextInputBuilder } from 'discord.js';
 import { TextInputStyle } from 'discord.js';
 import { Message } from 'discord.js';
-import utils from "../utils";
-import isURL from 'is-url'
-import { request } from "undici";
+import {emote, woof, startsWithVowel, getMentions, enumerate, time } from "../utils";
+import isURL from "is-url"
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -39,12 +38,12 @@ export default new ReadableCommand(
     async (interaction: ChatInputCommandInteraction) => {
         const sauce = interaction.options.getString("sauce")
         const title = interaction.options.getString("title")
-        const collaborators = utils.getMentions(interaction.options.getString("collaborators"))
+        const collaborators = getMentions(interaction.options.getString("collaborators"))
         
         let selectedCategories = ["original"]
         if (!isURL(sauce)) {
             interaction.reply({
-                content: `No seriously... where's the sauce? ${utils.emote("neutral")}`,
+                content: `No seriously... where's the sauce? ${emote("neutral")}`,
                 ephemeral: true
             })
             return
@@ -59,8 +58,8 @@ export default new ReadableCommand(
         const undoActionRow = new ActionRowBuilder().addComponents(
             undoButton)
             const reply = await interaction.reply({
-                content: `${utils.woof()}! You submitted ${utils.startsWithVowel(selectedCategories[0]) ? "an" : "a"} ${utils.enumerate(selectedCategories)} ${(hyperlink("beep", hideLinkEmbed(sauce)))} titled ${title}${collaborators.length > 0 ? `, in collaboration with ${utils.enumerate(collaborators, true)}!` : "!"
-                    } ${utils.emote("elated")}\n\nMade a mistake? Click the button below to undo your submission!`,
+                content: `${woof()}! You submitted ${startsWithVowel(selectedCategories[0]) ? "an" : "a"} ${enumerate(selectedCategories)} ${(hyperlink("beep", hideLinkEmbed(sauce)))} titled ${title}${collaborators.length > 0 ? `, in collaboration with ${enumerate(collaborators, true)}!` : "!"
+                    } ${emote("elated")}\n\nMade a mistake? Click the button below to undo your submission!`,
                 //@ts-ignore
                 components: [undoActionRow],
                 ephemeral: true
@@ -68,11 +67,11 @@ export default new ReadableCommand(
             
             reply.awaitMessageComponent({
                 componentType: ComponentType.Button,
-                time: utils.time.duration({ days: 1 })
+                time: time.duration({ days: 1 })
             }).then((undo) => {
                 interaction.deleteReply()
                 undo.reply({
-                    content: `Submission cancelled. You may resubmit your beep! ${utils.emote("furry")}`,
+                    content: `Submission cancelled. You may resubmit your beep! ${emote("furry")}`,
                     ephemeral: true
                 })
             })

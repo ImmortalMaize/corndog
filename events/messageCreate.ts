@@ -1,9 +1,8 @@
 import { ReadableEvent } from "../classes"
 import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
-import utils from "../utils";
+import { hasSauce, emojis} from "../utils";
 import { TextChannel, userMention } from 'discord.js';
-import { request } from "undici";
 import { addBeep } from "../net";
 
 export default new ReadableEvent("messageCreate", async (message: Message) => {
@@ -36,13 +35,13 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             bad = true
             await reply(message, "Too many line breaks! > _<")
         }
-        if (!message.cleanContent.match(utils.hasSauce)) {
+        if (!message.cleanContent.match(hasSauce)) {
             console.log("No link = bad!")
             bad = true
             await reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
         } else {
             console.log("There's a link... Okay.")
-            if (!message.cleanContent.match(utils.hasSauce).every(
+            if (!message.cleanContent.match(hasSauce).every(
                 sauce => sauce.length < 100
             )) {
                 console.log("The link is too long. BAD.")
@@ -57,7 +56,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             reply(message, "Shorten your link(s)...! > _<")
         }
         if (bad) {
-            message.react(utils.emojis.question)
+            message.react(emojis.question)
             setTimeout(
                 async () => await message.delete().catch(() => console.log("No message to delete!")), 8000
             )

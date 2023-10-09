@@ -1,5 +1,5 @@
 import { ReadableCommand } from "../classes";
-import { SlashCommandBuilder, Interaction, codeBlock } from 'discord.js';
+import { SlashCommandBuilder, codeBlock } from 'discord.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 
 export default new ReadableCommand(

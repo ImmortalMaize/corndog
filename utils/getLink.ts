@@ -1,4 +1,4 @@
 import { Message } from "discord.js";
-import utils from ".";
+import { hasSauce } from ".";
 
-export default (message: Message) => message.cleanContent.match(utils.hasSauce)
+export const getLink = (message: Message) => message.cleanContent.match(hasSauce)

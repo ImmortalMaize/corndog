@@ -2,7 +2,7 @@ import ReadableCommand from "../classes/ReadableCommand";
 import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType, InteractionResponse, Guild, GuildMember } from 'discord.js';
 import { roles } from "../config";
 import { timeControl } from "../redis/entities";
-import utils from "../utils";
+import { woof, emote, time } from "../utils";
 import { userMention } from 'discord.js';
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks! >:3c"), async (interaction: ChatInputCommandInteraction) => {
@@ -41,7 +41,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         .then(
             async () => {
                 reply = await interaction.reply({
-                content: `${utils.woof()}! ${userMention(member.user.id)} yoinked it! ${utils.emote("elated")}`,
+                content: `${woof()}! ${userMention(member.user.id)} yoinked it! ${emote("elated")}`,
                 ephemeral: false
             }
         )})
@@ -53,7 +53,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
                 channel: interaction.channel.id,
                 message: reply.id ?? "",
                 name: "yoink",
-                cooldown: utils.time.goForth(1, "day").toDate()
+                cooldown: time.goForth(1, "day").toDate()
             })
         }
         )
@@ -63,6 +63,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
         }, false), 1000)
     }
     else {
-        interaction.reply(`${utils.woof()}! Someone already yoinked it! ${utils.emote("malcontent")}`)
+        interaction.reply(`${woof()}! Someone already yoinked it! ${emote("malcontent")}`)
     }
 })

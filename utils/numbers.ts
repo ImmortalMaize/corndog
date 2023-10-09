@@ -1,4 +1,4 @@
-export default (number: number) => {
+export const numbers = (number: number) => {
     switch (number) {
         case 0: return "no";
         case 1: return "one";

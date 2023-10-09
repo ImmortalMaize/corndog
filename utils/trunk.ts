@@ -1,4 +1,4 @@
-export default (str: string, num: number) => {
+export const trunk = (str: string, num: number) => {
   const pattern = /<a?:\w+:\d+>/gm
   const matches = Array.from(str.match(pattern) ?? [])
   console.log(matches)

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, Message, ChatInputCommandInteraction } from "discord.js";
 import { ReadableCommand } from "../classes";
-import utils from "../utils";
+import { meow, emote } from "../utils";
 
 export default new ReadableCommand(
     new SlashCommandBuilder().setName('meow').setDescription('Uuugh... >_>'),
@@ -9,7 +9,7 @@ export default new ReadableCommand(
         const randomNo = no[Math.floor(Math.random() * no.length)]
         const random = Math.floor(Math.random() * 100)
         console.log(random)
-        const response = (random >= 80)||interaction.member.user.id === "143866772360134656" ? `${utils.meow()}! ${utils.emote('cat')}` : `${randomNo}. ${utils.emote('neutral')}`
+        const response = (random >= 80)||interaction.member.user.id === "143866772360134656" ? `${meow()}! ${emote('cat')}` : `${randomNo}. ${emote('neutral')}`
         await interaction.reply(`${response}`)
     }
 )

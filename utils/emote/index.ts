@@ -7,6 +7,6 @@ interface Emotions {
     neutral: Array<string>,
     cat: Array<string>,
 }
-export default (emotion: keyof Emotions) => {
+export const emote = (emotion: keyof Emotions) => {
     return emotions[emotion][Math.floor(Math.random() * emotions[emotion].length)]
 }

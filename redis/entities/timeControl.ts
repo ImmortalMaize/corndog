@@ -1,5 +1,5 @@
 import { Entity, Schema, Repository } from 'redis-om';
-import utils from '../../utils';
+import { time } from '../../utils';
 import client from "../index"
 
 interface TimeControl {
@@ -63,7 +63,7 @@ export default {
             return true
         }
 
-        if (utils.time.past(timeControl.cooldown)) {
+        if (time.past(timeControl.cooldown)) {
             if (logs) console.log("Cooldown met: " + timeControl.name + "!")
             if (handler) await handler()
 
@@ -92,7 +92,7 @@ export default {
                     return
                 }
                 for (const timeControl of timeControls) {
-                    if (utils.time.past(timeControl.cooldown)) {
+                    if (time.past(timeControl.cooldown)) {
                         console.log("Cooldown met: " + timeControl.name + "!")
                         const handler = table.get(timeControl.name)
 

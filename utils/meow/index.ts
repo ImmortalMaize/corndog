@@ -1,5 +1,5 @@
 import meows from './meows.json';
 
-export default () => {
+export const meow = () => {
     return meows[Math.floor(Math.random() * meows.length)];
 };

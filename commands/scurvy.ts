@@ -3,7 +3,7 @@ import { request } from "undici";
 import { ReadableCommand } from "../classes";
 import { likeBeep, update } from "../net";
 import { users } from '../config'
-import utils from "../utils";
+import { emote } from "../utils";
 
 export default new ReadableCommand(new SlashCommandBuilder()
 	.setName("scurvy")
@@ -32,7 +32,7 @@ export default new ReadableCommand(new SlashCommandBuilder()
 		const { maize } = users
 		if (interaction.user.id !== maize) {
 			await interaction.reply({
-				content: `You're not Maize! ${utils.emote("malcontent")}`,
+				content: `You're not Maize! ${emote("malcontent")}`,
 				ephemeral: true
 			})
 			return

@@ -1,6 +1,6 @@
 import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
-import utils from "../utils";
+import { emote } from "../utils";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -21,6 +21,6 @@ export default new ReadableCommand(
     ),
     async (interaction: ChatInputCommandInteraction) => {
         const emotion = interaction.options.getString("emotion") as "elated" | "content" | "furry" | "malcontent"|"neutral"
-        interaction.reply(utils.emote(emotion))
+        interaction.reply(emote(emotion))
     }
 )

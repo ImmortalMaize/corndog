@@ -2,7 +2,7 @@ import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from 'discord.js';
 import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
-import utils from "../utils"
+import {woof, emote, numbers, trunk} from "../utils"
 import { member } from "../redis/entities";
 import getPicks from "../net/getPicks";
 import { ManipulateType } from "dayjs";
@@ -76,7 +76,7 @@ export default new ReadableCommand(
                             ["picks pings", bool]
                         ])
                         interaction.reply({
-                            content: `${utils.woof()}! Set pings to ${bool ? "on" : "off"}! ${utils.emote("elated")}`,
+                            content: `${woof()}! Set pings to ${bool ? "on" : "off"}! ${emote("elated")}`,
                             ephemeral: true
                         })
                     }
@@ -92,7 +92,7 @@ export default new ReadableCommand(
                         ])
 
                         interaction.reply({
-                            content: `${utils.woof()}! You won't get pings for picks older than ${utils.numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${utils.emote("elated")}`,
+                            content: `${woof()}! You won't get pings for picks older than ${numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${emote("elated")}`,
                             ephemeral: true
                         })
                     }
@@ -117,7 +117,7 @@ export default new ReadableCommand(
                 const pick = slicedPicks[num]
                 
                 const { author, score, sauce, caption, published } = pick
-                const trunkedCaption = utils.trunk(caption.split("\n")[0], 30)
+                const trunkedCaption = trunk(caption.split("\n")[0], 30)
                 const datePublished = `${published.day.low}-${published.month.low}-${published.year.low}`
                 
                 leaderboard += `${+num + 1}. **[${datePublished}]** ${author} – ${trunkedCaption} with ${score.low} likes! (<${sauce}>)\n`

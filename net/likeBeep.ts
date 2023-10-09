@@ -1,10 +1,10 @@
 import { Message, User } from "discord.js"
 import { request } from "undici"
-import utils from "../utils"
+import {getBlurb, getLink} from "../utils"
 
 export const likeBeep = async (message: Message, liker: User, author: User) => {
-	const blurb = utils.getBlurb(message)
-	const link = utils.getLink(message)[0] 
+	const blurb = getBlurb(message)
+	const link = getLink(message)[0] 
 	const { DATA_URL } = process.env
     const contentType = { 'Content-Type': 'application/json' }
 	await request(DATA_URL + 'content/user/' + message.author.id, {

@@ -20,9 +20,22 @@ async function getCommands() {
 	}
 }
 
+const menusPath = path.join(__dirname, 'menus');
+const menuFiles = fs.readdirSync(menusPath).filter(file => file.endsWith('.ts'));
+
+async function getMenus() {
+	for (const file of menuFiles) {
+		const filePath = path.join(menusPath, file);
+		await import(filePath).then(menu => {
+			commands.push(menu.default.data.toJSON())
+		})
+	}
+}
+
 
 async function deployCommands() {
 await getCommands()
+await getMenus()
 const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN as string);
 
 

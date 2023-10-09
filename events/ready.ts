@@ -3,7 +3,6 @@ import { ReadableEvent } from '../classes';
 import { config, roles } from '../config';
 import { timeControl } from '../redis/entities';
 import redisClient from "../redis"
-import utils from '../utils/'
 
 export default new ReadableEvent(
     'ready', 

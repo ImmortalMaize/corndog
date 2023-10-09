@@ -1,13 +1,13 @@
 import { ManipulateType } from "dayjs"
 import { request } from "undici"
 import { config, picks } from "../../config"
-import utils from "../../utils"
+import { time } from "../../utils"
 
 export default async function getPicks(period: ManipulateType) {
 	const { DATA_URL } = process.env
 	const { clientId } = config
 	const { quota } = picks
-	const thisPeriod = utils.time.startOf(period)
+	const thisPeriod = time.startOf(period)
 
 	const query = `
 	MATCH (b: Beep) WHERE b.published > date({year: ${thisPeriod.year()}, month: ${thisPeriod.month()+1}, day: ${thisPeriod.date()}})

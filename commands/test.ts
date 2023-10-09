@@ -2,17 +2,17 @@ import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember } from 'discord.js';
 import { finishedBeep, timeControl } from "../redis/entities";
 import { channels, config, roles } from "../config"
-import utils from "../utils";
+import {time, emojis} from "../utils";
 import { TextChannel } from 'discord.js';
 
-async function crawl (channel: TextChannel) {
-    const seen = new Set()
-    const messages = await channel.messages.fetch({ limit: 100 })
-    if (messages.size === 0) return
-    else {
-        const lowestId = messages.map(message => message.id).sort()[0]
-    }
-}
+// async function crawl (channel: TextChannel) {
+//     const seen = new Set()
+//     const messages = await channel.messages.fetch({ limit: 100 })
+//     if (messages.size === 0) return
+//     else {
+//         const lowestId = messages.map(message => message.id).sort()[0]
+//     }
+// }
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
@@ -57,7 +57,7 @@ export default new ReadableCommand(
                 channel: interaction.channelId,
                 message: (await interaction.fetchReply()).id,
                 name: "test",
-                cooldown: utils.time.goForth(1, "minute").toDate()
+                cooldown: time.goForth(1, "minute").toDate()
             })
 
             const checks = setInterval(() => {
@@ -144,7 +144,7 @@ export default new ReadableCommand(
                         await finishedBeep.waste(beep.entityId)
                         continue
                     }
-                    const count = (await submission.reactions.cache.get(utils.emojis.hand)?.users.fetch())?.filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size ?? 0
+                    const count = (await submission.reactions.cache.get(emojis.hand)?.users.fetch())?.filter(user => user.id !== (submission.author.id) && user.id !== config.clientId).size ?? 0
                     const date = submission.createdAt
                     await finishedBeep.amend(beep.entityId, [
                         ["count", count],
