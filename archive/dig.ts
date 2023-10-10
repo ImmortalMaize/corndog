@@ -2,7 +2,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder } f
 import { time } from "@discordjs/formatters"
 import { ReadableCommand } from "../classes";
 import { member, timeControl } from "../redis/entities";
-import utils from '../utils';
+import {time as utilsTime, emote} from '../utils';
 import { spots, fails, channels } from '../config'
 
 const spotsMap = new Map<number, string>(spots as Array<[number, string]>)
@@ -22,11 +22,11 @@ export default new ReadableCommand(
             return
         }
         if (interaction.channelId !== channels["action"]) {
-            await interaction.reply({ content: `You try digging in <#${interaction.channelId}>... only to realize there's no ground to dig! Maybe you should dig in to <#${channels["action"]}>. ${utils.emote("neutral")}`, ephemeral: true })
+            await interaction.reply({ content: `You try digging in <#${interaction.channelId}>... only to realize there's no ground to dig! Maybe you should dig in to <#${channels["action"]}>. ${emote("neutral")}`, ephemeral: true })
             return
         }
         if (!ready) {
-            await interaction.reply({ content: `You're too tired to dig! Try digging ${time(cooldown.cooldown, "R")}! ${utils.emote('malcontent')}`, ephemeral: false })
+            await interaction.reply({ content: `You're too tired to dig! Try digging ${time(cooldown.cooldown, "R")}! ${emote('malcontent')}`, ephemeral: false })
             return
         }
         if (spot > 1000 || spot < 1) {
@@ -45,7 +45,7 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
 
         else {
             const randomFail = fails[Math.floor(Math.random() * fails.length)]
-            await interaction.reply({ content: randomFail + " " + utils.emote("malcontent"), ephemeral: false })
+            await interaction.reply({ content: randomFail + " " + emote("malcontent"), ephemeral: false })
             const newDug = user.dug.concat([spot.toString()])
             
             await member.amend(user.entityId, [["dug", newDug]])   
@@ -55,7 +55,7 @@ Lying there, at the bottom of the hole you've dug, is a small sliver of paper, w
         timeControl.generate({
             channel: interaction.channelId,
             message: "",
-            cooldown: utils.time.goForth(1, "minute").toDate(),
+            cooldown: utilsTime.goForth(1, "minute").toDate(),
             name: "dig_" + interaction.user.id,
         })
     }
