@@ -8,7 +8,7 @@ const transport = (data) => {
   console.log(data.output)
 
   const file = LOGS + `/${Day().format('DDMMYY')}.txt`
-  fs.existsSync(file) || fs.open(file, 'w', err => console.error(err))
+  fs.existsSync(file) || fs.writeFileSync(file, '')
   fs.createWriteStream(file, {
     flags: 'a',
     encoding: 'utf8',
