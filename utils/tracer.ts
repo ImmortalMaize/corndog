@@ -6,7 +6,10 @@ import Day from 'dayjs'
 const { LOGS } = process.env
 const transport = (data) => {
   console.log(data.output)
-  fs.createWriteStream(LOGS + `/${Day().format('DDMMYY')}.txt`, {
+
+  const file = LOGS + `/${Day().format('DDMMYY')}.txt`
+  fs.existsSync(file) || fs.open(file, 'w', err => console.error(err))
+  fs.createWriteStream(file, {
     flags: 'a',
     encoding: 'utf8',
     mode: 0o666
