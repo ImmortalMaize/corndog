@@ -3,23 +3,7 @@ import colors from 'colors'
 import fs from 'fs'
 import Day from 'dayjs'
 
-const { LOGS } = process.env
-const transport = (data) => {
-  console.log(data.output)
-
-  const file = LOGS + `/${Day().format('DDMMYY')}.txt`
-  fs.existsSync(file) || fs.writeFileSync(file, '')
-  fs.createWriteStream(file, {
-    flags: 'a',
-    encoding: 'utf8',
-    mode: 0o666
-  })
-    .write(data.output + '\n')
-}
-
-
 export const tracer = instance.colorConsole({
-  transport,
   methods: ['log', 'trace', 'debug', 'info', 'warn', 'error', 'build', 'command', 'event', "woof", "control"],
   format: [
     "🌽🐶🌭 {{timestamp}} » [{{title}}] {{message}} " + colors.dim("(/{{file}}:{{line}})"),
