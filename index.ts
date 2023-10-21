@@ -9,13 +9,21 @@ import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInput
 import { emote, tracer, enumerate } from "./utils"
 import { ReadableEvent } from "./classes"
 import ReadableRoute from "./classes/ReadableRoute"
+import socket from "./socket"
+import { Socket } from "socket.io-client"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
 
 const app = express()
 
-const client = new Client({
+interface Corndog extends Client {
+    commands?: Collection<string, ChatInputCommandInteraction>
+    app?: express.Application
+    socket?: Socket
+}
+
+const corndog: Corndog = new Client({
     intents: [
         Guilds,
         GuildMessageReactions,
@@ -31,15 +39,14 @@ const client = new Client({
         Reaction,
         User
     ]
-});
+})
 
 const { CLIENT_TOKEN } = process.env
 
-client.login(CLIENT_TOKEN)
+corndog.login(CLIENT_TOKEN)
 const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'
 
-// @ts-ignore
-client.commands = new Collection(); client.app = app
+corndog.commands = new Collection(); corndog.app = app; corndog.socket = socket()
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(extension));
 
@@ -49,7 +56,7 @@ async function getCommands() {
         const command = (await import(filePath)).default
 
         // @ts-ignore
-        client.commands.set(command.data.name, command);
+        corndog.commands.set(command.data.name, command);
         tracer.build(`Loaded command ${command.data.name} ${emote("content")}`)
     }
 }
@@ -65,7 +72,7 @@ async function getMenus() {
         const menu = (await import(filePath)).default
 
         // @ts-ignore
-        client.commands.set(menu.data.name, menu);
+        corndog.commands.set(menu.data.name, menu);
         tracer.build(`Loaded menu ${menu.data.name} ${emote("content")}`)
     }
 }
@@ -80,9 +87,9 @@ async function getEvents() {
         const filePath = path.join(eventsPath, file)
         const event = (await import(filePath)).default as ReadableEvent
         if (event.once) {
-            client.once(event.name, (...args) => event.execute(...args));
+            corndog.once(event.name, (...args) => event.execute(...args));
         } else {
-            client.on(event.name, (...args) => event.execute(...args).catch((error: Error) => void tracer.error(error)));
+            corndog.on(event.name, (...args) => event.execute(...args).catch((error: Error) => void tracer.error(error)));
         }
         tracer.build(`Loaded event ${event.name} ${emote("content")}`)
     }
