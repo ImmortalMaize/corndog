@@ -3,7 +3,7 @@ import { request } from "undici";
 import { ReadableCommand } from "../classes";
 import { likeBeep, update } from "../net";
 import { users } from '../config'
-import { emote } from "../utils";
+import { emote, time, tracer } from "../utils";
 
 export default new ReadableCommand(new SlashCommandBuilder()
 	.setName("scurvy")
@@ -27,9 +27,10 @@ export default new ReadableCommand(new SlashCommandBuilder()
 					.setName("dates")
 					.setDescription("Make sure publication dates are up to date!")
 			)
-	), async (interaction: ChatInputCommandInteraction) => {
+	), async (interaction: ChatInputCommandInteraction, corndog) => {
 		const { DATA_URL } = process.env
 		const { maize } = users
+		const { socket } = corndog
 		if (interaction.user.id !== maize) {
 			await interaction.reply({
 				content: `You're not Maize! ${emote("malcontent")}`,
@@ -46,28 +47,15 @@ export default new ReadableCommand(new SlashCommandBuilder()
 			await interaction.deferReply({
 				ephemeral: true
 			})
-
+			const finishedBeeps = ((await interaction.guild.channels.fetch("283697671741374465")) as TextChannel).messages
 			switch (subcommandGroup) {
 				case "update":
 					switch (subcommand) {
 						case "users":
-							await update("user", async (user) => {
-								const { username } = await interaction.client.users.fetch(user.discordId)
-								await request(endpoint + 'user/primary/' + user.discordId, {
-									method: 'PATCH',
-									headers: contentType,
-									body: JSON.stringify({
-										username,
-									})
-								})
-							}).then(async () => await interaction.editReply({
-								content: "Done!",
-
-							}))
+							
 							break;
 						case "likes":
 							await update("beep", async (beep) => {
-								const finishedBeeps = ((await interaction.guild.channels.fetch("283697671741374465")) as TextChannel).messages
 								const message: Message = await finishedBeeps.fetch(beep.discordId).catch(() => null)
 								if (message) {
 									const likers = await message.reactions.cache.get("👌")?.users.fetch()
@@ -84,28 +72,40 @@ export default new ReadableCommand(new SlashCommandBuilder()
 							}).then(async () => interaction.editReply({ content: "Done!" }))
 							break;
 						case "dates":
-							const finishedBeeps = ((await interaction.guild.channels.fetch("283697671741374465")) as TextChannel).messages
-							await update("beep", async (beep) => {
-
-								const found = await finishedBeeps.fetch(beep.discordId).catch(() => null)
-								if (found) {
-									const { createdAt } = found
-									await request(endpoint + 'beep/primary/' + beep.discordId, {
-										method: 'PATCH',
-										headers: contentType,
-										body: JSON.stringify({
-											published: createdAt
-										})
-									})
-									console.log(`${beep.discordId} done!`)
-								}
-								else console.log(`${beep.discordId} missing!`)
-
-							}).then(async () => {
-								await interaction.editReply({
-									content: "Done!",
+							try {
+								const label = "Beep"
+								const property = "published"
+								const index = "discordId"
+								socket.emit("findBrokenNodes", {
+									label,
+									property,
+									index
 								})
-							})
+								socket.once("foundBrokenNodes", async brokenNodes => {
+									const indexes: string[] = brokenNodes.indexes
+									const toFix = (await Promise.all(
+										indexes.map(async index => {
+											const message = await finishedBeeps.fetch(index).catch(() => null)
+											if (!message) return {index, value: null}
+											const value = `date("${time.convert(message.createdAt).format("YYYY-MM-DD")}")`
+											console.log(`Beep ${index}["${property}"] => ${value}`)
+											return {index, value}
+										})
+									)).filter(node => node)
+									socket.emit("fixBrokenNodes", {
+										label,
+										property,
+										index,
+										toFix
+									})
+								})
+								socket.once("fixedBrokenNodes", async fixedNodes => {
+									interaction.editReply({ content: "Done!" })
+								})
+							}
+							catch (error) {
+								tracer.error(error)
+							}
 						default:
 							break;
 					}

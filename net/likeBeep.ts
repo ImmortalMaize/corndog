@@ -3,8 +3,6 @@ import { request } from "undici"
 import {getBlurb, getLink} from "../utils"
 
 export const likeBeep = async (beep: Message, liker: User, author: User) => {
-	const blurb = getBlurb(beep)
-	const link = getLink(beep)[0] 
 	const { DATA_URL } = process.env
     const contentType = { 'Content-Type': 'application/json' }
         return await request(DATA_URL + 'bot/' + beep.id + '/likeBeep' + liker.id, {

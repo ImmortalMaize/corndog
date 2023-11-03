@@ -7,7 +7,7 @@ env.config()
 
 import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction } from "discord.js"
 import { emote, tracer, enumerate } from "./utils"
-import { ReadableEvent } from "./classes"
+import { ReadableCommand, ReadableEvent } from "./classes"
 import ReadableRoute from "./classes/ReadableRoute"
 import socket from "./socket"
 import { Socket } from "socket.io-client"
@@ -17,8 +17,8 @@ const { Message, Channel, Reaction, User } = Partials
 
 const app = express()
 
-interface Corndog extends Client {
-    commands?: Collection<string, ChatInputCommandInteraction>
+export interface Corndog extends Client {
+    commands?: Collection<string, ReadableCommand>
     app?: express.Application
     socket?: Socket
 }

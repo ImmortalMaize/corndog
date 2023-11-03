@@ -13,5 +13,7 @@ export default () => {
 		tracer.error(error)
 	})
 
+	socket.onAnyOutgoing((event: string) => tracer.event(`Sent socket event ${event.inverse}`))
+	socket.onAny(((event: string) => tracer.event(`Received socket event ${event.inverse}`)))
 	return socket
 }
