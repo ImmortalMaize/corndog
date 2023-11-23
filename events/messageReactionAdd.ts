@@ -1,14 +1,18 @@
 import { ReadableEvent } from "../classes";
-import { MessageReaction, Message, User, TextChannel, userMention} from "discord.js"
+import { MessageReaction, Message, User, TextChannel, userMention, roleMention} from "discord.js"
 import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
 import { time, pickEmbed, emojis,hasSauce} from "../utils"
+import { report as reportInventory} from "../redis/entities"
 import { likeBeep } from "../net";
 
+const generateReportMessage = (count: number, link: string, mod?: string) => {
+    let message = `${roleMention(roles.reports)} A post has been reported ${count} times in ${link}. `
+    if (mod) message += `${userMention(mod)} has taken a look. `
+    return message
+}
+
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-    if (!(reaction.message.channel.id === channels["finished-beeps"])) {
-        return
-    }
     if (reaction.partial) {
         try {
             await reaction.fetch()
@@ -17,7 +21,38 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
         }
     }
 
+    if (reaction.emoji.name === emojis.report) {
+        const message = reaction.message
+        const reportsChannel = reaction.message.guild?.channels.cache.get(channels["reports"]) as TextChannel
 
+        const reports = message.reactions.cache.get(emojis.report).count 
+        const link = message.url
+        const existingReport = await reportInventory.get("link", link)
+        if (existingReport) {
+            const { link, mod } = existingReport
+            const reportMessage = await reportsChannel.messages.fetch(existingReport.id)
+            if (reportMessage) reportMessage.edit({
+                content: generateReportMessage(reports, link, mod),
+            })
+            else reportsChannel.send({
+                content: generateReportMessage(reports, link, mod),
+            })
+            return
+        }
+        else if (reports >= 3) {
+            const report = await reportsChannel.send({
+                content: generateReportMessage(reports, link)
+            })
+            await reportInventory.generate({
+                id:  report.id,
+                link: link,
+                mod: null,
+                resolved: null
+            })
+        }
+    }
+
+    if (reaction.message.channel.id === channels["finished-beeps"]) {
     const guild = reaction.message.guild
     const member = (guild.members.cache.get((reaction.message.author as User)?.id)) ?? (await guild.members.fetch((reaction.message.author as User)?.id))
     if (reaction.emoji.name === emojis.hand) {
@@ -84,5 +119,6 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
             }
         }
     }
+}
 })
 

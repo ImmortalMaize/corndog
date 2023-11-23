@@ -15,7 +15,7 @@ export const addBeep = async (message: Message) => {
         })
             message.react(emojis.hand)
             await request(DATA_URL + 'content/beep/', {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },

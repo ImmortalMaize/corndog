@@ -1,5 +1,6 @@
 export const emojis = ({
     hand: "👌",
     question: "❔",
-    heart: "💖"
+    heart: "💖",
+    report: "⚠️"
 })

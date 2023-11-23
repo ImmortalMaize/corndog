@@ -9,14 +9,7 @@ export default async function getPicks(period: ManipulateType) {
 	const { quota } = picks
 	const thisPeriod = time.startOf(period)
 
-	const query = `
-	MATCH (b: Beep) WHERE b.published > date({year: ${thisPeriod.year()}, month: ${thisPeriod.month()+1}, day: ${thisPeriod.date()}})
-	MATCH (a: User)-[:MADE]->(b) MATCH (b)<-[l:LIKED]-(u:User) WHERE NOT (u.discordId = a.discordId) AND NOT (u.discordId  = ${clientId})
-	MATCH (b)-[s:SUBMITTED_TO]->(:Sheet)
-	RETURN a.username as author, b.sauce as sauce, b.published as published, s.caption as caption, count(l) as score
-	ORDER BY score DESC
-	LIMIT ${quota}
-	`
+	const query = `MATCH (b: Beep) WHERE b.published > date({year: ${thisPeriod.year()}, month: ${thisPeriod.month()+1}, day: ${thisPeriod.date()}}) MATCH (a: User)-[:MADE]->(b) MATCH (b)<-[l:LIKED]-(u:User) WHERE NOT (u.discordId = a.discordId) AND NOT (u.discordId  = ${clientId}) MATCH (b)-[s:SUBMITTED_TO]->(:Sheet) RETURN a.username as author, b.sauce as sauce, b.published as published, s.caption as caption, count(l) as score ORDER BY score DESC LIMIT ${quota}`
 
 	console.log(query)
 	console.log("Getting beeps from after " + thisPeriod.format("YYYY-MM-DD"))

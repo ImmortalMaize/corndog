@@ -1,4 +1,4 @@
-import { Entity, Schema, Repository } from 'redis-om'
+import { Entity, Schema } from 'redis-om'
 import { Inventory } from '../classes'
 import client from '../index'
 
