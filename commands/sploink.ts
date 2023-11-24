@@ -4,6 +4,7 @@ import { roles } from "../config";
 import { timeControl } from "../redis/entities";
 import { woof, emote, time } from "../utils";
 import { userMention } from 'discord.js';
+import { users } from '../config'
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").setDescription("Sploinks! O _o").addUserOption(option => option.setName("target").setDescription("Target to sploink...").setRequired(true)), async (interaction: ChatInputCommandInteraction) => {
     const check = await timeControl.check("sploink", undefined, true)
@@ -22,11 +23,12 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").
 
         //@ts-ignore
         const sploinked = member.roles.cache.has(role)
-        if (!sploinked) {
+        if (!sploinked || interaction.member.user.id === users.maize) {
             interaction.reply({
                 content: "In this world, it's be sploinked then sploink.",
                 ephemeral: true
             })
+            return
         }
         
         
