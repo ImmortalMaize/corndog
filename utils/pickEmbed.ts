@@ -1,6 +1,6 @@
 import { Message, User, EmbedBuilder, ColorResolvable } from "discord.js"
 import { config } from "../config"
-import { hasSauce, colorScale, time } from "."
+import { getPurple, hasSauce, time } from "."
 
 export const pickEmbed = (
     submission: Message,
@@ -15,13 +15,13 @@ export const pickEmbed = (
         .replaceAll(/^\n$/gm, "")
         : submission.cleanContent) as string
 
-    const colors = colorScale(config.colors)
+    const purple = getPurple()
 
     return new EmbedBuilder()
     .setTitle("Check Out " + nickname as string + "'s Beep!")
     .setURL(submission.url)
     .setThumbnail(avatar as string)
-    .setColor(colors(Math.random()).hex() as ColorResolvable)
+    .setColor(purple as ColorResolvable)
     .setDescription(blurb.length > 0 ? blurb : "undefined")
     .addFields(
         {name: "Sauce 🎵", value: sauce.join("\n") ?? "undefined", inline: true},

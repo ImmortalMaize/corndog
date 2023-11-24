@@ -9,7 +9,8 @@ const schema = new Schema(
 		id: { type: 'string' },
 		resolved: { type: 'boolean' },
 		link: { type: 'string' },
-		mod: { type: 'string' }
+		mod: { type: 'string' },
+		content: { type: 'string' }
 	},
 	{
 		dataStructure: 'JSON'
@@ -20,7 +21,9 @@ interface ReportProps {
 	id: string,
 	resolved: boolean,
 	link: string,
-	mod: string
+	mod: string,
+	content: string,
+	user: string
 }
 
 interface Report extends Entity, ReportProps {}

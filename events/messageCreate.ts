@@ -9,7 +9,6 @@ const reply = async (message: Message, content: string) => {
         const botCommands = (await message.guild.channels.fetch()).get(channels["bot-commands"]) as TextChannel
         const reply = await botCommands.send({
             content: userMention(message.author.id) + content,
-            // embeds: [new EmbedBuilder().setDescription(message.content).setAuthor({ name: message.author.username, iconURL: message.author.avatarURL()})]
         })
         setTimeout(async () => {
             await reply?.delete()
@@ -50,11 +49,12 @@ async function validateBeep(message: Message): Promise<boolean> {
 }
 
 export default new ReadableEvent("messageCreate", async (message: Message) => {
-    if (message.author.id === config.clientId) {
-        return
-    }
+    if (message.author.id === config.clientId) return;
 
-    if ((message.channel.id === (channels["finished-beeps"]))||(message.channel.id === (channels["recycled-beeps"]))||(message.channel.id === (channels["midi-beeps"]))) {
+    const { channel } = message
+    const { id } = channel
+    const isBeepChannel = (id === (channels["finished-beeps"]))||(id === (channels["recycled-beeps"]))||(id === (channels["midi-beeps"]))
+    if (isBeepChannel) {
         const bad = await validateBeep(message)
         if (bad) {
             message.react(emojis.question)

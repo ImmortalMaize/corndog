@@ -1,4 +1,4 @@
-export { colorScale } from "./colorScale"
+export { getPurple } from "./getPurple"
 export { hasSauce } from "./hasSauce"
 export { emojis } from "./emojis"
 export { time } from "./time"
@@ -14,3 +14,9 @@ export { getLink } from "./getLink"
 export { getBlurb } from "./getBlurb"
 export { trunk } from "./trunk"
 export { tracer } from "./tracer"
+export { getChannel } from './getChannel'
+export { reportEmbed } from './reportEmbed'
+export { getMember } from './getMember'
+export { getRole } from './getRole'
+export { getReactions } from './getReactions'
+export { impartial } from './impartial'

@@ -2,7 +2,6 @@ import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction } from 'discord.js';
 import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
 import {pickEmbed, emojis} from '../utils';
 
 export default new ReadableCommand(
