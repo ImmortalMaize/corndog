@@ -5,7 +5,7 @@ import express from 'express'
 
 env.config()
 
-import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction } from "discord.js"
+import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction, ClientPresenceStatus } from "discord.js"
 import { emote, tracer, enumerate } from "./utils"
 import { ReadableCommand, ReadableEvent } from "./classes"
 import ReadableRoute from "./classes/ReadableRoute"
@@ -41,7 +41,8 @@ const corndog: Corndog = new Client({
     ]
 })
 
-const { CLIENT_TOKEN } = process.env
+const { CLIENT_TOKEN, STATUS } = process.env
+console.log(STATUS)
 
 corndog.login(CLIENT_TOKEN)
 const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'

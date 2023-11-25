@@ -8,14 +8,15 @@ import { likeBeep } from "../net";
 import { impartial } from "../utils";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-    impartial(reaction)
+    await impartial(reaction)
+    const { name } = reaction.emoji
 
-    if (reaction.emoji.name === emojis.report) {
-        const message: Message = reaction.message.partial ? reaction.message as unknown as Message : await reaction.message.fetch()
+    if (name === emojis.report) {
+        const message: Message = await impartial(reaction.message)
         handleReport(message)
     }
 
-    if (reaction.message.channel.id === channels["finished-beeps"] && reaction.emoji.name === emojis.hand) {
+    if (reaction.message.channel.id === channels["finished-beeps"] && name === emojis.hand) {
         handleBeep(reaction, user)
     }
 })
@@ -89,7 +90,7 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
 const handleReport = async (message: Message) => {
     const { url, cleanContent, member, guild } = message
     const reportsChannel = await getChannel(guild.channels, channels.reports) as TextChannel
-    const reports = message.reactions.cache.get(emojis.report).count
+    const reports = getReactions(message, emojis.report).users.cache.filter(user => user.id !== "203221713440210944").size
 
     const existingReport = await reportInventory.get("link", url)
     if (existingReport) {
@@ -100,7 +101,7 @@ const handleReport = async (message: Message) => {
         else reportsChannel.send(generateReportMessage(reports, link, content, member.user, mod))
         return
     }
-    else if (reports >= 3) {
+    if (reports >= 3) {
         const report = await reportsChannel.send(generateReportMessage(reports, url, cleanContent, member.user))
         await reportInventory.generate({
             id: report.id,

@@ -23,8 +23,11 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").
 
         //@ts-ignore
         const sploinked = member.roles.cache.has(role)
-        if (!sploinked || interaction.member.user.id !== users.maize) {
-            interaction.reply({
+        const isMaize = member.user.id === users.maize
+        console.log(sploinked, isMaize)
+
+        if (!isMaize && !sploinked) {
+            await interaction.reply({
                 content: "In this world, it's be sploinked then sploink.",
                 ephemeral: true
             })
