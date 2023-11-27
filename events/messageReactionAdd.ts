@@ -12,8 +12,9 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     const { name } = reaction.emoji
 
     if (name === emojis.report) {
-        const message: Message = await impartial(reaction.message)
-        handleReport(message)
+        const { message } = reaction
+        await impartial(message)
+        handleReport(message as Message)
     }
 
     if (reaction.message.channel.id === channels["finished-beeps"] && name === emojis.hand) {
@@ -88,9 +89,9 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
     }
 }
 const handleReport = async (message: Message) => {
-    const { url, cleanContent, member, guild } = message
+    const { url, cleanContent, member, guild, attachments } = message
     const reportsChannel = await getChannel(guild.channels, channels.reports) as TextChannel
-    const reports = getReactions(message, emojis.report).users.cache.filter(user => user.id !== "203221713440210944").size
+    const reports = (await getReactions(message, emojis.report).users.fetch()).filter(user => user.id !== "203221713440210944").size
 
     const existingReport = await reportInventory.get("link", url)
     if (existingReport) {
@@ -101,12 +102,15 @@ const handleReport = async (message: Message) => {
         else reportsChannel.send(generateReportMessage(reports, link, content, member.user, mod))
         return
     }
+    
     if (reports >= 3) {
-        const report = await reportsChannel.send(generateReportMessage(reports, url, cleanContent, member.user))
+        const attachmentLinks = attachments.map(attachment => attachment.url).join(' ')
+        const content = cleanContent + " " + attachmentLinks
+        const report = await reportsChannel.send(generateReportMessage(reports, url, content, member.user))
         await reportInventory.generate({
             id: report.id,
             link: url,
-            content: cleanContent,
+            content,
             mod: null,
             resolved: null,
             user: member.user.id
@@ -114,7 +118,7 @@ const handleReport = async (message: Message) => {
     }
 }
 const generateReportMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
-    let content = `${roleMention(roles.reports)} A post has been reported ${count} times in ${link}! `
+    let content = `${roleMention(roles.reports)} A post has been flagged ${count} times in ${link}! `
     if (mod) content += `${userMention(mod)} took a look. `
     return {
         content,

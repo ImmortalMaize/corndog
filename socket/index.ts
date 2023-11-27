@@ -3,7 +3,8 @@ import { emote, tracer } from "../utils";
 
 
 export default () => {
-	const socket = io("http://localhost:3000/bot")
+	const { DATA_URL } = process.env
+	const socket = io(DATA_URL + "bot")
 
 	socket.on("connect", () => {
 		tracer.build(`Connected to socket ${emote("elated")}`)
