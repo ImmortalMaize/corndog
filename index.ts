@@ -56,7 +56,6 @@ async function getCommands() {
         const filePath = path.join(commandsPath, file);
         const command = (await import(filePath)).default
 
-        // @ts-ignore
         corndog.commands.set(command.data.name, command);
         tracer.build(`Loaded command ${command.data.name} ${emote("content")}`)
     }
@@ -72,7 +71,7 @@ async function getMenus() {
         const filePath = path.join(menusPath, file);
         const menu = (await import(filePath)).default
 
-        // @ts-ignore
+        
         corndog.commands.set(menu.data.name, menu);
         tracer.build(`Loaded menu ${menu.data.name} ${emote("content")}`)
     }

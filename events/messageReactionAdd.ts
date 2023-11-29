@@ -8,13 +8,14 @@ import { likeBeep } from "../net";
 import { impartial } from "../utils";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-    
+    if (user.id === config.clientId) return;
+
     const { name } = reaction.emoji
     const { message } = reaction
-    const { guild, author } = message
-
-    await impartial(reaction)
     await impartial(message)
+    await impartial(reaction)
+
+    const { guild, author } = message
     const member = await getMember(guild.members, author.id)
 
     const { report, oui, non, hand } = emojis
@@ -24,14 +25,13 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     if (message.channel.id === channels["reports"]) name === oui ? onOui(reaction, member) : onNon(reaction)
 })
 const handleBeep = async (reaction: MessageReaction, user: User) => {
-
     const { message } = reaction
     await impartial(message)
 
     const { guild, author } = message
     const member = await getMember(guild.members, author.id)
     const count = (await getReactions(message as Message, emojis.hand).users.fetch()).filter(user => {
-        if (user.id) return user.id !== (member.id ?? message.author.id) && user.id !== config.clientId; else return false
+        if (user?.id) return user.id !== (member.id ?? message.author.id) && user.id !== config.clientId; else return false
     }).size
     console.log('👌:' + count)
     const quota = count >= picks.quota
@@ -44,7 +44,6 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
     console.log(link)
 
     likeBeep(message as Message, user, reaction.message.author)
-    if (quota) {
         if (quota && precedent) {
             console.log("Quota and precedent met!")
             const embedID = precedent.toJSON().embed
@@ -65,7 +64,7 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
         }
         if (quota && !precedent) {
             console.log("Quota but no precedent!")
-            const memberData = await memberInventory.get("id", member.id ?? reaction.message.author.id)
+            const memberData = await memberInventory.get("id", member?.id ?? reaction.message.author.id)
             const scopeUnit: "years" | "months" | "weeks" | "days" = memberData ? memberData.toJSON()["picks scope unit"] : "month"
             const scopeNumber = memberData ? memberData.toJSON()["picks scope number"] : 1
             const pings: boolean = memberData ? memberData.toJSON()["picks pings"] : false
@@ -89,7 +88,6 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
             console.log("Generated ting")
         }
     }
-}
 
 const onOui = async (reaction: MessageReaction, member: GuildMember) => {
     const { message } = reaction
@@ -100,11 +98,9 @@ const onOui = async (reaction: MessageReaction, member: GuildMember) => {
     if (type === "flag") resolveFlag(message as Message, member, report)
     if (type === "ticket") resolveTicket(message as Message, member, report)
 }
-
 const resolveFlag = async (message: Message, member: GuildMember, report) => {
 }
 const resolveTicket = async (message: Message, member: GuildMember, report) => {
-
 }
 const onNon = async (reaction: MessageReaction) => {}
 const onFlag = async (message: Message) => {
