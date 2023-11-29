@@ -1,5 +1,5 @@
 import { ReadableEvent } from "../classes";
-import { MessageReaction, Message, User, TextChannel, userMention, roleMention, BaseMessageOptions } from "discord.js"
+import { MessageReaction, Message, User, TextChannel, userMention, roleMention, BaseMessageOptions, GuildMember } from "discord.js"
 import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
 import { time, pickEmbed, emojis, reportEmbed, getChannel, getReactions, getMember, getRole, getLink } from "../utils"
@@ -8,18 +8,20 @@ import { likeBeep } from "../net";
 import { impartial } from "../utils";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-    await impartial(reaction)
+    
     const { name } = reaction.emoji
+    const { message } = reaction
+    const { guild, author } = message
 
-    if (name === emojis.report) {
-        const { message } = reaction
-        await impartial(message)
-        handleReport(message as Message)
-    }
+    await impartial(reaction)
+    await impartial(message)
+    const member = await getMember(guild.members, author.id)
 
-    if (reaction.message.channel.id === channels["finished-beeps"] && name === emojis.hand) {
-        handleBeep(reaction, user)
-    }
+    const { report, oui, non, hand } = emojis
+
+    if (name === emojis.report) onFlag(message as Message)
+    if (message.channel.id === channels["finished-beeps"] && name === hand) handleBeep(reaction, user)
+    if (message.channel.id === channels["reports"]) name === oui ? onOui(reaction, member) : onNon(reaction)
 })
 const handleBeep = async (reaction: MessageReaction, user: User) => {
 
@@ -88,7 +90,24 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
         }
     }
 }
-const handleReport = async (message: Message) => {
+
+const onOui = async (reaction: MessageReaction, member: GuildMember) => {
+    const { message } = reaction
+    const report = await reportInventory.get("id", message.id)
+    if (!report) return;
+
+    const { type } = report
+    if (type === "flag") resolveFlag(message as Message, member, report)
+    if (type === "ticket") resolveTicket(message as Message, member, report)
+}
+
+const resolveFlag = async (message: Message, member: GuildMember, report) => {
+}
+const resolveTicket = async (message: Message, member: GuildMember, report) => {
+
+}
+const onNon = async (reaction: MessageReaction) => {}
+const onFlag = async (message: Message) => {
     const { url, cleanContent, member, guild, attachments } = message
     const reportsChannel = await getChannel(guild.channels, channels.reports) as TextChannel
     const reports = (await getReactions(message, emojis.report).users.fetch()).filter(user => user.id !== "203221713440210944").size
@@ -98,16 +117,17 @@ const handleReport = async (message: Message) => {
         const { link, mod, content } = existingReport
         const reportMessage = await reportsChannel.messages.fetch(existingReport.id)
 
-        if (reportMessage) reportMessage.edit(generateReportMessage(reports, link, content, member.user, mod))
-        else reportsChannel.send(generateReportMessage(reports, link, content, member.user, mod))
+        if (reportMessage) reportMessage.edit(generateFlagMessage(reports, link, content, member.user, mod))
+        else reportsChannel.send(generateFlagMessage(reports, link, content, member.user, mod))
         return
     }
     
     if (reports >= 3) {
         const attachmentLinks = attachments.map(attachment => attachment.url).join(' ')
         const content = cleanContent + " " + attachmentLinks
-        const report = await reportsChannel.send(generateReportMessage(reports, url, content, member.user))
+        const report = await reportsChannel.send(generateFlagMessage(reports, url, content, member.user))
         await reportInventory.generate({
+            type: "flag",
             id: report.id,
             link: url,
             content,
@@ -117,7 +137,7 @@ const handleReport = async (message: Message) => {
         })
     }
 }
-const generateReportMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
+const generateFlagMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
     let content = `${roleMention(roles.reports)} A post has been flagged ${count} times in ${link}! `
     if (mod) content += `${userMention(mod)} took a look. `
     return {
@@ -125,4 +145,3 @@ const generateReportMessage = (count: number, link: string, message: string, use
         embeds: [reportEmbed(user, message)]
     }
 }
-

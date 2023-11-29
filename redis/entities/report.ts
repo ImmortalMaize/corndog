@@ -6,6 +6,7 @@ class Report extends Entity { }
 const schema = new Schema(
 	Report,
 	{
+		type: { type: 'string'},
 		id: { type: 'string' },
 		resolved: { type: 'boolean' },
 		link: { type: 'string' },
@@ -18,6 +19,7 @@ const schema = new Schema(
 )
 
 interface ReportProps {
+	type: string,
 	id: string,
 	resolved: boolean,
 	link: string,

@@ -58,8 +58,6 @@ export default {
         if (!timeControl) {
             if (logs) console.log("No such cooldown!")
             if (handler) await handler()
-
-            if (handler) await handler()
             return true
         }
 

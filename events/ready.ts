@@ -3,6 +3,7 @@ import { ReadableEvent } from '../classes';
 import { config, roles } from '../config';
 import { timeControl } from '../redis/entities';
 import redisClient from "../redis"
+import { time } from '../utils';
 
 export default new ReadableEvent(
     'ready', 
@@ -13,7 +14,10 @@ export default new ReadableEvent(
 
         await redisClient.open(process.env.REDIS_URL)
         const guild = (await corndog.guilds.cache.get(config.guildId).fetch())
-    
+
+        guild.setBanner("https://paintbox.thurm64.repl.co/test.png")
+        setInterval(() => guild.setBanner("https://paintbox.thurm64.repl.co/test.png"), time.duration({ hours: 1}))
+        
         timeControl.resume(new Map([
             ["test", async (timeControl) => {
                 const channels = await guild.channels.fetch()
@@ -27,4 +31,3 @@ export default new ReadableEvent(
     },
     true
 )
-
