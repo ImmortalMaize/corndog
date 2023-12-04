@@ -35,11 +35,13 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
     }).size
     console.log('👌:' + count)
     const quota = count >= picks.quota
+    if (!quota) return;
+
     const precedent = await finishedBeep.get("submission", reaction.message.id)
+    const reward = await getRole(guild.roles, count >= 40 ? roles.p4 : count >= 30 ? roles.p3 : count >= 20 ? roles.p2 : roles.p1)
+    await member.roles.add(reward)
 
-    const reward = await getRole(guild.roles, roles.picked)
     const finishedPicks = await getChannel(guild.channels, channels["finished-picks"]) as TextChannel
-
     const link = getLink(message as Message)[0]
     console.log(link)
 
@@ -68,8 +70,6 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
             const scopeUnit: "years" | "months" | "weeks" | "days" = memberData ? memberData.toJSON()["picks scope unit"] : "month"
             const scopeNumber = memberData ? memberData.toJSON()["picks scope number"] : 1
             const pings: boolean = memberData ? memberData.toJSON()["picks pings"] : false
-            await member.roles.add(reward)
-
             const embed = pickEmbed(reaction.message as Message, count)
             const old = time.compare(time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
             const pingOrNah = !pings || old ? (member.nickname ?? author.username) : userMention(member.id ?? author.id)
