@@ -11,7 +11,7 @@ export default () => {
 	})
 
 	socket.on("connect_error", (error: Error) => {
-		tracer.error(error)
+		tracer.error("Connection failed. Retrying...")
 	})
 
 	socket.onAnyOutgoing((event: string) => tracer.event(`Sent socket event ${event.inverse}`))

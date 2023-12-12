@@ -1,7 +1,7 @@
 import { ReadableEvent } from "../classes"
 import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
-import { hasSauce, emojis} from "../utils";
+import { hasSauce, emojis, tracer} from "../utils";
 import { TextChannel, userMention } from 'discord.js';
 import { addBeep } from "../net";
 
@@ -15,37 +15,36 @@ const reply = async (message: Message, content: string) => {
         }, 20000)
     }
 
-async function validateBeep(message: Message): Promise<boolean> {
-    console.log("New finished beep! Alright let's see...")
-    let bad: boolean = false
+async function isBeepBad(message: Message): Promise<boolean> {
+    tracer.info("New finished beep! Alright let's see...")
     if (message.cleanContent.length > 450) {
-        console.log("Message length is bad.")
-        bad = true
+        tracer.log("Message length is bad.")
         await reply(message, "The character limit is 450 or under. Yours is " + message.cleanContent.length + "! > _<")
+        return true
     }
     if (message.cleanContent.match(/\n/gm)?.length >= 5 && !(message.channel.id === (channels["recycled-beeps"]))) {
-        console.log("Message line breaks are bad.")
-        bad = true
+        tracer.log("Message line breaks are bad.")
         await reply(message, "Too many line breaks! > _<")
+        return true
     }
     if (!message.cleanContent.match(hasSauce)) {
-        console.log("No link = bad!")
-        bad = true
+        tracer.log("No link = bad!")
         await reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
+        return true
     }
-        if (!message.cleanContent.match(hasSauce).every(
+        if (!message.cleanContent.match(hasSauce)?.every(
                 sauce => sauce.length < 100
         )) {
-            console.log("The link is too long. BAD.")
-            bad = true
+            tracer.log("The link is too long. BAD.")
             await reply(message, "Shorten your link(s)...! > _<")
+            return true
         }
     if (message.attachments.size > 0) {
-        console.log("ATTACHMENTS ARE BAD!!!")
-        bad = true
-        reply(message, "Shorten your link(s)...! > _<")
+        tracer.log("ATTACHMENTS ARE BAD!!!")
+        await reply(message, "NO ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
+        return true
     }
-    return bad
+    return false
 }
 
 export default new ReadableEvent("messageCreate", async (message: Message) => {
@@ -55,7 +54,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
     const { id } = channel
     const isBeepChannel = (id === (channels["finished-beeps"]))||(id === (channels["recycled-beeps"]))||(id === (channels["midi-beeps"]))
     if (isBeepChannel) {
-        const bad = await validateBeep(message)
+        const bad = await isBeepBad(message).catch(() => true)
         if (bad) {
             message.react(emojis.question)
             setTimeout(
@@ -63,6 +62,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             )
             return
         }
+        tracer.info("Looks good to me! Sending to the database!")
         await addBeep(message)
     }
 })
