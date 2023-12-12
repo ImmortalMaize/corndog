@@ -1,11 +1,13 @@
 import emotions from "./emotions.json"
+type Emotion = Array<string>
 interface Emotions {
-    elated: Array<string>,
-    content: Array<string>,
-    furry: Array<string>,
-    malcontent: Array<string>,
-    neutral: Array<string>,
-    cat: Array<string>,
+    elated: Emotion,
+    content: Emotion,
+    furry: Emotion,
+    malcontent: Emotion,
+    neutral: Emotion,
+    cat: Emotion,
+    glomp: Emotion,
 }
 export const emote = (emotion: keyof Emotions) => {
     return emotions[emotion][Math.floor(Math.random() * emotions[emotion].length)]
