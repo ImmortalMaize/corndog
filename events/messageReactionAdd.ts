@@ -20,7 +20,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
     const { report, oui, non, hand } = emojis
 
-    if (name === emojis.report) onFlag(message as Message)
+    if (name === emojis.report && message.channel.id !== channels.announcements) onFlag(message as Message)
     if (message.channel.id === channels["finished-beeps"] && name === hand) handleBeep(reaction, user)
     if (message.channel.id === channels["reports"]) name === oui ? onOui(reaction, member) : onNon(reaction)
 })

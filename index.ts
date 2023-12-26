@@ -42,7 +42,6 @@ const corndog: Corndog = new Client({
 })
 
 const { CLIENT_TOKEN, STATUS } = process.env
-console.log(STATUS)
 
 corndog.login(CLIENT_TOKEN)
 const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'
