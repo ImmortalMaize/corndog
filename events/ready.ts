@@ -22,9 +22,6 @@ export default new ReadableEvent(
         })
         await redisClient.open(process.env.REDIS_URL)
         const guild = (await corndog.guilds.cache.get(config.guildId).fetch())
-
-        await updatePaintbox(guild)
-        setInterval(async () => await updatePaintbox(guild), time.duration({ minutes: 1}))
         
         timeControl.resume(new Map([
             ["test", async (timeControl) => {
