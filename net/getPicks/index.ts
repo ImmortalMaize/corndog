@@ -2,12 +2,13 @@ import { ManipulateType } from "dayjs"
 import { request } from "undici"
 import { config, picks } from "../../config"
 import { time } from "../../utils"
+import { finishedBeep } from "../../redis/entities"
 
-export default async function getPicks(period: ManipulateType) {
+export default async function getPicks(period: ManipulateType, subtract?: number) {
 	const { DATA_URL } = process.env
 	const { clientId } = config
 	const { quota } = picks
-	const thisPeriod = time.startOf(period)
+	const thisPeriod = time.startOf(period).subtract(subtract ?? 0, period)
 
 	const query = `MATCH (b: Beep) WHERE b.published > date({year: ${thisPeriod.year()}, month: ${thisPeriod.month()+1}, day: ${thisPeriod.date()}}) MATCH (a: User)-[:MADE]->(b) MATCH (b)<-[l:LIKED]-(u:User) WHERE NOT (u.discordId = a.discordId) AND NOT (u.discordId  = ${clientId}) MATCH (b)-[s:SUBMITTED_TO]->(:Sheet) RETURN a.username as author, b.sauce as sauce, b.published as published, s.caption as caption, count(l) as score ORDER BY score DESC LIMIT ${quota}`
 

@@ -5,6 +5,9 @@ Day.extend(duration)
 import RelativeTime from "dayjs/plugin/relativeTime"
 Day.extend(RelativeTime)
 
+import isBetween from "dayjs/plugin/isBetween"
+Day.extend(isBetween)
+
 export const time = {
     convert: (time: Date) => {
         return Day(time)
@@ -29,6 +32,9 @@ export const time = {
     },
     compare: (date1: Date, date2: Date) => {
 	return Day(date1).unix() >= Day(date2).unix()
+    },
+    between: (date1: Date, range: [Date, Date]) => {
+        return Day(date1).isBetween(range[0], range[1])
     },
     goForth: (amount: number, unit: Day.ManipulateType) => {
         return Day().add(amount, unit)

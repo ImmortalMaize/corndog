@@ -2,8 +2,8 @@ import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from 'discord.js';
 import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
-import {woof, emote, numbers, trunk} from "../utils"
-import { member } from "../redis/entities";
+import {woof, emote, numbers, trunk, time} from "../utils"
+import { finishedBeep, member } from "../redis/entities";
 import getPicks from "../net/getPicks";
 import { ManipulateType } from "dayjs";
 
@@ -25,6 +25,17 @@ export default new ReadableCommand(
             subcommand => subcommand
                 .setName("yearly")
                 .setDescription("Get finished picks for this year.")
+        )
+        .addSubcommand(
+            subcommand => subcommand
+                .setName("best-of")
+                .setDescription("Get the top finished picks for a year.")
+                .addIntegerOption(
+                    option => option
+                        .setName("year")
+                        .setDescription("What year do you want to get the top picks for?")
+                        .setRequired(true)
+                )
         )
         .addSubcommandGroup(
             new SlashCommandSubcommandGroupBuilder()
@@ -99,6 +110,24 @@ export default new ReadableCommand(
                     break;
                 default: break;
             }
+        }
+        if (interaction.options.getSubcommand() === "best-of") {
+                interaction.deferReply({
+                    ephemeral: true
+                })
+                const year = interaction.options.getInteger("year", true)
+                const picks = (await finishedBeep.view()).filter(beep => time.between(beep.date, [time.startOf("year").subtract(1, "year").toDate(), time.startOf("year").toDate()])).sort((a, b) => b.count - a.count)
+                const slicedPicks = picks.slice(0, 10)
+
+                let leaderboard = `**Here are the top beeps for ${year}!**\n`
+
+                for (const num in slicedPicks) {
+                    const pick = slicedPicks[num]
+                    leaderboard += `${+num + 1}. https://discord.com/channels/${interaction.guildId}/${channels["finished-beeps"]}/${pick.submission}\n`
+                }
+                interaction.editReply({
+                    content: leaderboard,
+                })
         }
         else {
             const unit = interaction.options.getSubcommand() === "yearly" ? "year"
