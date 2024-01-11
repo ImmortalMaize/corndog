@@ -117,7 +117,7 @@ export default new ReadableCommand(
                 })
                 const year = interaction.options.getInteger("year", true)
                 const picks = (await finishedBeep.view()).filter(beep => time.between(beep.date, [time.startOf("year").subtract(1, "year").toDate(), time.startOf("year").toDate()])).sort((a, b) => b.count - a.count)
-                const slicedPicks = picks.slice(0, 10)
+                const slicedPicks = picks.slice(0, 20)
 
                 let leaderboard = `**Here are the top beeps for ${year}!**\n`
 
