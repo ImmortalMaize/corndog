@@ -3,7 +3,6 @@ import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
 import { hasSauce, emojis, tracer} from "../utils";
 import { TextChannel, userMention } from 'discord.js';
-import { addBeep } from "../net";
 
 const reply = async (message: Message, content: string) => {
         const botCommands = (await message.guild.channels.fetch()).get(channels["bot-commands"]) as TextChannel
@@ -63,6 +62,5 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             return
         }
         tracer.info("Looks good to me! Sending to the database!")
-        await addBeep(message)
     }
 })

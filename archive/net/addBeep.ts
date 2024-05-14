@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { request } from "undici";
-import { getLink, getBlurb, emojis } from "../utils";
+import { getLink, getBlurb, emojis } from "../../utils";
 
 export const addBeep = async (message: Message) => {
 			const {DATA_URL} = process.env

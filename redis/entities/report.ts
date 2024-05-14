@@ -18,7 +18,7 @@ const schema = new Schema(
 	}
 )
 
-interface ReportProps {
+export interface ReportProps {
 	type: string,
 	id: string,
 	resolved: boolean,

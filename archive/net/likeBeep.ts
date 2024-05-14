@@ -1,6 +1,5 @@
 import { Message, User } from "discord.js"
 import { request } from "undici"
-import {getBlurb, getLink} from "../utils"
 
 export const likeBeep = async (beep: Message, liker: User, author: User) => {
 	const { DATA_URL } = process.env

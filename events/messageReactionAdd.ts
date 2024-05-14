@@ -4,8 +4,9 @@ import { picks, roles, channels, config } from "../config"
 import { finishedBeep, member as memberInventory } from "../redis/entities"
 import { time, pickEmbed, emojis, reportEmbed, getChannel, getReactions, getMember, getRole, getLink } from "../utils"
 import { report as reportInventory } from "../redis/entities"
-import { likeBeep } from "../net";
 import { impartial } from "../utils";
+import { Inventory } from "../redis/classes";
+import { ReportProps } from "../redis/entities/report";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (user.id === config.clientId) return;
@@ -44,8 +45,6 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
     const finishedPicks = await getChannel(guild.channels, channels["finished-picks"]) as TextChannel
     const link = getLink(message as Message)[0]
     console.log(link)
-
-    likeBeep(message as Message, user, reaction.message.author)
         if (quota && precedent) {
             console.log("Quota and precedent met!")
             const embedID = precedent.toJSON().embed
@@ -94,11 +93,19 @@ const onOui = async (reaction: MessageReaction, member: GuildMember) => {
     const report = await reportInventory.get("id", message.id)
     if (!report) return;
 
-    const { type } = report
+    const { type, mod } = report
+    const currentMods = mod.split(" ")
+    currentMods.push(member.id)
+    report.mod = new Array(new Set(currentMods)).join(" ")
+    await reportInventory.save(report)
+
     if (type === "flag") resolveFlag(message as Message, member, report)
     if (type === "ticket") resolveTicket(message as Message, member, report)
 }
 const resolveFlag = async (message: Message, member: GuildMember, report) => {
+    report
+    const { content } = message
+    await message.edit(content)
 }
 const resolveTicket = async (message: Message, member: GuildMember, report) => {
 }
@@ -113,8 +120,8 @@ const onFlag = async (message: Message) => {
         const { link, mod, content } = existingReport
         const reportMessage = await reportsChannel.messages.fetch(existingReport.id)
 
-        if (reportMessage) reportMessage.edit(generateFlagMessage(reports, link, content, member.user, mod))
-        else reportsChannel.send(generateFlagMessage(reports, link, content, member.user, mod))
+        if (reportMessage) reportMessage.edit(generateFlagMessage(reports, link, content, member.user))
+        else reportsChannel.send(generateFlagMessage(reports, link, content, member.user))
         return
     }
     
@@ -133,9 +140,9 @@ const onFlag = async (message: Message) => {
         })
     }
 }
-const generateFlagMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
+const generateFlagMessage = (count: number, link: string, message: string, user: User, mods?: Array<string>): BaseMessageOptions => {
     let content = `${roleMention(roles.reports)} A post has been flagged ${count} times in ${link}! `
-    if (mod) content += `${userMention(mod)} took a look. `
+    if (mods) content += `${mods.map(mod => userMention(mod))} took a look. `
     return {
         content,
         embeds: [reportEmbed(user, message)]
