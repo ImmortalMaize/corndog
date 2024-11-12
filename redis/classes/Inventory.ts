@@ -56,4 +56,8 @@ export default class Inventory<Form> {
 
         await repository.remove(id)
     }
+    public save: (form: Form & Entity) => Promise<void> =  async(form: Form & Entity) => {
+        const repository = this.client.fetchRepository(this.schema)
+        await repository.save(form)
+    }
 }
