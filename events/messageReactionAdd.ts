@@ -140,15 +140,9 @@ const onFlag = async (message: Message) => {
         })
     }
 }
-<<<<<<< HEAD
 const generateFlagMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
     let content = `${roleMention(roles.management)} A post has been flagged ${count} times in ${link}! `
     if (mod) content += `${userMention(mod)} took a look. `
-=======
-const generateFlagMessage = (count: number, link: string, message: string, user: User, mods?: Array<string>): BaseMessageOptions => {
-    let content = `${roleMention(roles.reports)} A post has been flagged ${count} times in ${link}! `
-    if (mods) content += `${mods.map(mod => userMention(mod))} took a look. `
->>>>>>> fdfed782259334b75a5993d9ea87b9217f4353ce
     return {
         content,
         embeds: [reportEmbed(user, message)]
