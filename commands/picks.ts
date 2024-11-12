@@ -135,7 +135,7 @@ export default new ReadableCommand(
             :            interaction.options.getSubcommand() === "weekly" ? "week"
             :            "day"
 
-            const picks = await getPicks(unit)
+            const picks = []
             console.log()
             const slicedPicks = picks.slice(0, 10)
             console.log(unit)
