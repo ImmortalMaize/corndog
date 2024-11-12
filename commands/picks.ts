@@ -5,7 +5,6 @@ import { TextChannel } from 'discord.js';
 import {woof, emote, numbers, trunk, time} from "../utils"
 import { finishedBeep, member } from "../redis/entities";
 import { ManipulateType } from "dayjs";
-import getPicks from "../archive/net/getPicks";
 
 export default new ReadableCommand(
     new SlashCommandBuilder()
