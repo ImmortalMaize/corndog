@@ -134,7 +134,7 @@ const onFlag = async (message: Message) => {
     }
 }
 const generateFlagMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
-    let content = `${roleMention(roles.reports)} A post has been flagged ${count} times in ${link}! `
+    let content = `${roleMention(roles.management)} A post has been flagged ${count} times in ${link}! `
     if (mod) content += `${userMention(mod)} took a look. `
     return {
         content,
