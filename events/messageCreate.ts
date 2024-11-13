@@ -61,6 +61,6 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             )
             return
         }
-        tracer.info("Looks good to me! Sending to the database!")
+        message.react(emojis.hand)
     }
 })
