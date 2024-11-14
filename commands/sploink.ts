@@ -24,7 +24,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").
         //@ts-ignore
         const sploinked = member.roles.cache.has(role)
         const isMaize = member.user.id === users.maize
-        console.log(sploinked, isMaize)
+        console.log("Are they sploinked? " + sploinked, "Is the sploinker Maize? " +  isMaize)
 
         if (!isMaize && !sploinked) {
             await interaction.reply({
@@ -50,7 +50,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").
         )
         .then(
             () => {
-                target instanceof GuildMember ? target.roles.add(role) : interaction.guild.members.fetch(target.id).then(user => user.roles.add(role))
+                target instanceof GuildMember && !isMaize ? target.roles.add(role) : interaction.guild.members.fetch(target.id).then(user => user.roles.add(role))
             }
         )
         .catch(
@@ -59,7 +59,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").
         .then(
             async () => {
                 reply = await interaction.reply({
-                content: `${woof()}! ${userMention(target.id)} has been sploinked! O _o`,
+                content: `${woof()}! ${userMention(target.id)} just got sploinked! O _o`,
                 ephemeral: false
             }
         )})

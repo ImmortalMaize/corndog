@@ -1,10 +1,10 @@
 import { Message } from "discord.js"
-import { getLink, hasSauce } from "."
+import { getLink, hasUrl } from "."
 
 export const getBlurb = (message: Message) => {
 	const link = getLink(message)
 	const blurb = link ? message.cleanContent
-            .replaceAll(hasSauce, "")
+            .replaceAll(hasUrl, "")
             .replaceAll(/^\n$/gm, "")
             : message.cleanContent
     return blurb

@@ -1,6 +1,6 @@
 import { Message, User, EmbedBuilder, ColorResolvable } from "discord.js"
 import { config } from "../config"
-import { getPurple, hasSauce, time } from "."
+import { getPurple, hasUrl, time } from "."
 
 export const pickEmbed = (
     submission: Message,
@@ -9,9 +9,9 @@ export const pickEmbed = (
     const member  = submission.guild.members.cache.get((submission.author as User).id)
     const nickname = member.nickname ?? member.user.username ?? submission.author.username
     const avatar = member.avatarURL() ?? member.user.avatarURL()
-    const sauce = submission.cleanContent.match(hasSauce)
+    const sauce = submission.cleanContent.match(hasUrl)
     const blurb = (sauce ? submission.cleanContent
-        .replaceAll(hasSauce, "")
+        .replaceAll(hasUrl, "")
         .replaceAll(/^\n$/gm, "")
         : submission.cleanContent) as string
 

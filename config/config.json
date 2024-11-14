@@ -4,5 +4,33 @@
     "colors": [
         "#e300ff",
         "#6a00ff"
+    ],
+    "modWhitelist": [
+        "beepbox.co",
+        "ultraabox.github.io",
+        "jummb.us",
+        "moddedbeepbox.github.io",
+        "fillygroove.github.io/sandbox-3.1",
+        "haileylgbt.github.io/harrybox",
+        "lihzahrd.github.io/blackbox",
+        "hidden-realm.github.io/beepbox1bar",
+        "jodellm27.github.io/toughbox",
+        "cnwmakescode.github.io/AestheticBox",
+        "choptop84.github.io/TBB-app",
+        "ultraabox.github.io/archives/brucebox",
+        "ultraabox.github.io/archives/nerdbox",
+        "ultraabox.github.io/archives/zefbox",
+        "choptop84.github.io/abyssbox-app",
+        "mid-the-modder.github.io/Midbox",
+        "mmmdonuts2008.github.io/AwesomeBox/website/",
+        "andrebariani.github.io/baribox/"
+    ],
+    "urlWhitelist": [
+        "youtube.com",
+        "soundcloud.com",
+        "bandcamp.com",
+        "youtu.be",
+        "x.com",
+        "twitter.com"
     ]
 }

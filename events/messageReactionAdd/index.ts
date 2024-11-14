@@ -1,12 +1,12 @@
-import { ReadableEvent } from "../classes";
+import { ReadableEvent } from "../../classes";
 import { MessageReaction, Message, User, TextChannel, userMention, roleMention, BaseMessageOptions, GuildMember } from "discord.js"
-import { picks, roles, channels, config } from "../config"
-import { finishedBeep, member as memberInventory } from "../redis/entities"
-import { time, pickEmbed, emojis, reportEmbed, getChannel, getReactions, getMember, getRole, getLink } from "../utils"
-import { report as reportInventory } from "../redis/entities"
-import { impartial } from "../utils";
-import { Inventory } from "../redis/classes";
-import { ReportProps } from "../redis/entities/report";
+import { picks, roles, channels, config } from "../../config"
+import { finishedBeep, member as memberInventory } from "../../redis/entities"
+import { time, pickEmbed, emojis, reportEmbed, getChannel, getReactions, getMember, getRole, getLink } from "../../utils"
+import { report as reportInventory } from "../../redis/entities"
+import { impartial } from "../../utils";
+import { Inventory } from "../../redis/classes";
+import { ReportProps } from "../../redis/entities/report";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (user.id === config.clientId) return;

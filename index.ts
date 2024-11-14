@@ -11,6 +11,7 @@ import { ReadableCommand, ReadableEvent } from "./classes"
 import ReadableRoute from "./classes/ReadableRoute"
 import socket from "./socket"
 import { Socket } from "socket.io-client"
+import { file } from "googleapis/build/src/apis/file"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
@@ -80,7 +81,13 @@ getMenus()
 
 async function getEvents() {
     const eventsPath = path.join(__dirname, 'events');
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(extension));
+    const eventFiles = fs.readdirSync(eventsPath).filter(content => {
+        if (content.endsWith(extension)) return content
+        const folder = fs.readdirSync(eventsPath + "/" + content)
+        if (folder.some(file => file === ("index" + extension))) return content
+    });
+    
+    console.log(fs.readdirSync(eventsPath))
 
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file)

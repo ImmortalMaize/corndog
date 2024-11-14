@@ -1,48 +1,71 @@
 import { ReadableEvent } from "../classes"
 import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
-import { hasSauce, emojis, tracer} from "../utils";
+import { hasUrl, emojis, tracer, hasSauce } from "../utils";
 import { TextChannel, userMention } from 'discord.js';
+import { request } from "undici";
 
 const reply = async (message: Message, content: string) => {
-        const botCommands = (await message.guild.channels.fetch()).get(channels["bot-commands"]) as TextChannel
-        const reply = await botCommands.send({
-            content: userMention(message.author.id) + content,
-        })
-        setTimeout(async () => {
-            await reply?.delete()
-        }, 20000)
-    }
+    const botCommands = (await message.guild.channels.fetch()).get(channels["bot-commands"]) as TextChannel
+    const reply = await botCommands.send({
+        content: userMention(message.author.id) + content,
+    })
+    setTimeout(async () => {
+        await reply?.delete()
+    }, 20000)
+}
 
 async function isBeepBad(message: Message): Promise<boolean> {
+    const { cleanContent, channel, attachments } = message
+    const urls = cleanContent.match(hasUrl) 
+    const redirections = await Promise.all(urls?.map(async (urls): Promise<string> => (await request(urls)).headers.location as unknown as string))
+    const sauce = redirections.every(redirection => redirection.match(hasSauce))
+    console.log(sauce)
+    const linebreaks = cleanContent.match(/\n/gm)
+    const channelIsRecycledBeeps = channel.id === channels["recycled-beeps"]
+    const longLink = urls?.some(url => url.length > 100)
+    const noAttachments = attachments.size === 0
+    const tooLong = cleanContent.length > 450
+    tracer.info(redirections)
     tracer.info("New finished beep! Alright let's see...")
-    if (message.cleanContent.length > 450) {
+    
+    if (tooLong) {
         tracer.log("Message length is bad.")
         await reply(message, "The character limit is 450 or under. Yours is " + message.cleanContent.length + "! > _<")
         return true
     }
-    if (message.cleanContent.match(/\n/gm)?.length >= 5 && !(message.channel.id === (channels["recycled-beeps"]))) {
+
+    if (linebreaks?.length >= 5 && !channelIsRecycledBeeps) {
         tracer.log("Message line breaks are bad.")
         await reply(message, "Too many line breaks! > _<")
         return true
     }
-    if (!message.cleanContent.match(hasSauce)) {
+
+    if (!urls) {
         tracer.log("No link = bad!")
         await reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
         return true
     }
-        if (!message.cleanContent.match(hasSauce)?.every(
-                sauce => sauce.length < 100
-        )) {
-            tracer.log("The link is too long. BAD.")
-            await reply(message, "Shorten your link(s)...! > _<")
-            return true
-        }
-    if (message.attachments.size > 0) {
+
+    if (!sauce) {
+        tracer.log("No sauce = bad!")
+        await reply(message, "I ain't see no SAUCE???!!! > _< (Please link to a whitelisted mod.)")
+        return true
+    }
+
+    if (longLink) {
+        tracer.log("A link is too long. BAD.")
+        await reply(message, "Shorten your link(s)...! > _<")
+        return true
+    }
+
+    if (!noAttachments) {
         tracer.log("ATTACHMENTS ARE BAD!!!")
         await reply(message, "NO ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
         return true
     }
+
+    tracer.log("Looks good!")
     return false
 }
 
@@ -51,7 +74,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
 
     const { channel } = message
     const { id } = channel
-    const isBeepChannel = (id === (channels["finished-beeps"]))||(id === (channels["recycled-beeps"]))||(id === (channels["midi-beeps"]))
+    const isBeepChannel = (id === (channels["finished-beeps"])) || (id === (channels["recycled-beeps"])) || (id === (channels["midi-beeps"]))
     if (isBeepChannel) {
         const bad = await isBeepBad(message).catch(() => true)
         if (bad) {
