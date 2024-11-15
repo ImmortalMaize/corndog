@@ -19,7 +19,7 @@ async function isBeepBad(message: Message): Promise<boolean> {
     const { cleanContent, channel, attachments } = message
     const urls = cleanContent.match(hasUrl) 
     const redirections = await Promise.all(urls?.map(async (urls): Promise<string> => (await request(urls)).headers.location as unknown as string))
-    const sauce = redirections.every(redirection => redirection.match(hasSauce))
+    const sauce = redirections.some(redirection => redirection.match(hasSauce))
     console.log(sauce)
     const linebreaks = cleanContent.match(/\n/gm)
     const channelIsRecycledBeeps = channel.id === channels["recycled-beeps"]
