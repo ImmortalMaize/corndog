@@ -6,6 +6,8 @@
         "#6a00ff"
     ],
     "modWhitelist": [
+        "pastelink.net",
+        "pastebin.com",
         "beepbox.co",
         "moddedbeepbox.github.io/3.0",
         "moddedbeepbox.github.io/3.3",

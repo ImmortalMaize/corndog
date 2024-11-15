@@ -18,7 +18,8 @@ const reply = async (message: Message, content: string) => {
 async function isBeepBad(message: Message): Promise<boolean> {
     const { cleanContent, channel, attachments } = message
     const urls = cleanContent.match(hasUrl) 
-    const redirections = await Promise.all(urls?.map(async (urls): Promise<string> => (await request(urls)).headers.location as unknown as string))
+    const redirections = await Promise.all(urls?.map(async (url): Promise<string> => (await request(url)).headers.location as unknown as string ?? url))
+    tracer.info(redirections)
     const sauce = redirections.some(redirection => redirection.match(hasSauce))
     console.log(sauce)
     const linebreaks = cleanContent.match(/\n/gm)
@@ -26,7 +27,6 @@ async function isBeepBad(message: Message): Promise<boolean> {
     const longLink = urls?.some(url => url.length > 100)
     const noAttachments = attachments.size === 0
     const tooLong = cleanContent.length > 450
-    tracer.info(redirections)
     tracer.info("New finished beep! Alright let's see...")
     
     if (tooLong) {
