@@ -2,7 +2,7 @@ export const emojis = ({
     hand: "👌",
     question: "❔",
     heart: "💖",
-    report: "⚠️",
+    report: "reportmessage",
     non: "❎",
     oui: "✅",
 })
