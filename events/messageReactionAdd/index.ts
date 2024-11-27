@@ -1,5 +1,5 @@
 import { ReadableEvent } from "../../classes";
-import { MessageReaction, Message, User, TextChannel, userMention, roleMention, BaseMessageOptions, GuildMember } from "discord.js"
+import { MessageReaction, Message, User, TextChannel, userMention, roleMention, BaseMessageOptions, GuildMember, GuildMemberManager } from "discord.js"
 import { picks, roles, channels, config } from "../../config"
 import { finishedBeep, member as memberInventory } from "../../redis/entities"
 import { time, pickEmbed, emojis, reportEmbed, getChannel, getReactions, getMember, getRole, getLink } from "../../utils"
@@ -7,9 +7,12 @@ import { report as reportInventory } from "../../redis/entities"
 import { impartial } from "../../utils";
 import { Inventory } from "../../redis/classes";
 import { ReportProps } from "../../redis/entities/report";
+import onFlag from "./onFlag";
+import generateFlagMessage from "./generateFlagMessage";
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (user.id === config.clientId) return;
+    const members = reaction.message.guild.members
 
     const { name } = reaction.emoji
     const { message } = reaction
@@ -18,12 +21,12 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
     const { guild, author } = message
     const member = await getMember(guild.members, author.id)
-
+    
     const { report, oui, non, hand } = emojis
 
     if (name === emojis.report && message.channel.id !== channels.announcements) onFlag(message as Message)
     if (message.channel.id === channels["finished-beeps"] && name === hand) handleBeep(reaction, user)
-    if (message.channel.id === channels["reports"]) name === oui ? onOui(reaction, member) : onNon(reaction)
+    if (message.channel.id === channels["reports"]) name === oui ? onOui(reaction, members) : onNon(reaction)
 })
 const handleBeep = async (reaction: MessageReaction, user: User) => {
     const { message } = reaction
@@ -88,63 +91,27 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
         }
     }
 
-const onOui = async (reaction: MessageReaction, member: GuildMember) => {
+const onOui = async (reaction: MessageReaction, members: GuildMemberManager) => {
     const { message } = reaction
     const report = await reportInventory.get("id", message.id)
     if (!report) return;
 
-    const { type, mod } = report
-    const currentMods = mod.split(" ")
-    currentMods.push(member.id)
-    report.mod = new Array(new Set(currentMods)).join(" ")
+    const reactors = await reaction.users.fetch()
+
+    report.mod = reactors.map(reactor => reactor.id).filter(id => id !== config.clientId).join(" ")
     await reportInventory.save(report)
 
-    if (type === "flag") resolveFlag(message as Message, member, report)
-    if (type === "ticket") resolveTicket(message as Message, member, report)
+    const { type } = report
+    const handle = type === "flag" ? resolveFlag : resolveTicket
+
+    handle(message as Message, report, members)
 }
-const resolveFlag = async (message: Message, member: GuildMember, report) => {
-    report
+const resolveFlag = async (message: Message, report: ReportProps, members: GuildMemberManager) => {
+    const member = await getMember(members, report.user)
+    generateFlagMessage(report.link, "", member.user, report.mod)
     const { content } = message
     await message.edit(content)
 }
-const resolveTicket = async (message: Message, member: GuildMember, report) => {
+const resolveTicket = async (message: Message, report: ReportProps, members: GuildMemberManager) => {
 }
 const onNon = async (reaction: MessageReaction) => {}
-const onFlag = async (message: Message) => {
-    const { url, cleanContent, member, guild, attachments } = message
-    const reportsChannel = await getChannel(guild.channels, channels.reports) as TextChannel
-    const reports = (await getReactions(message, emojis.report).users.fetch()).filter(user => user.id !== "203221713440210944").size
-
-    const existingReport = await reportInventory.get("link", url)
-    if (existingReport) {
-        const { link, mod, content } = existingReport
-        const reportMessage = await reportsChannel.messages.fetch(existingReport.id)
-
-        if (reportMessage) reportMessage.edit(generateFlagMessage(reports, link, content, member.user))
-        else reportsChannel.send(generateFlagMessage(reports, link, content, member.user))
-        return
-    }
-    
-    if (reports >= 3) {
-        const attachmentLinks = attachments.map(attachment => attachment.url).join(' ')
-        const content = cleanContent + " " + attachmentLinks
-        const report = await reportsChannel.send(generateFlagMessage(reports, url, content, member.user))
-        await reportInventory.generate({
-            type: "flag",
-            id: report.id,
-            link: url,
-            content,
-            mod: null,
-            resolved: null,
-            user: member.user.id
-        })
-    }
-}
-const generateFlagMessage = (count: number, link: string, message: string, user: User, mod?: string): BaseMessageOptions => {
-    let content = `${roleMention(roles.management)} A post has been flagged ${count} times in ${link}! `
-    if (mod) content += `${userMention(mod)} took a look. `
-    return {
-        content,
-        embeds: [reportEmbed(user, message)]
-    }
-}
