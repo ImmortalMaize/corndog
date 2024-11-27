@@ -28,7 +28,7 @@ export default async (message: Message) => {
             id: report.id,
             link: url,
             content,
-            mod: null,
+            mod: "",
             resolved: null,
             user: member.user.id
         })
