@@ -11,7 +11,8 @@ const schema = new Schema(
 		resolved: { type: 'boolean' },
 		link: { type: 'string' },
 		mod: { type: 'string' },
-		content: { type: 'string' }
+		content: { type: 'string' },
+		user: { type: 'string' }
 	},
 	{
 		dataStructure: 'JSON'
