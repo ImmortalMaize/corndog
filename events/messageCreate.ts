@@ -1,7 +1,7 @@
 import { ReadableEvent } from "../classes"
 import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config } from "../config";
-import { hasUrl, emojis, tracer, hasSauce } from "../utils";
+import { hasUrl, emojis, tracer, hasSauce, hasHeaders } from "../utils";
 import { TextChannel, userMention } from 'discord.js';
 import { request } from "undici";
 
@@ -27,6 +27,8 @@ async function isBeepBad(message: Message): Promise<boolean> {
     const longLink = urls?.some(url => url.length > 100)
     const noAttachments = attachments.size === 0
     const tooLong = cleanContent.length > 450
+    const headerFormatting = cleanContent.match(hasHeaders)
+
     tracer.info("New finished beep! Alright let's see...")
     
     if (tooLong) {
@@ -58,14 +60,18 @@ async function isBeepBad(message: Message): Promise<boolean> {
         await reply(message, "Shorten your link(s)...! > _<")
         return true
     }
-
+    if (headerFormatting) {
+        tracer.log("NO HEADERS >:(")
+        await reply(message, "DON'T USE HEADERS...!!! > _<")
+        return true
+    }
     if (!noAttachments) {
         tracer.log("ATTACHMENTS ARE BAD!!!")
         await reply(message, "NO ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
         return true
     }
 
-    tracer.log("Looks good!")
+    tracer.info("Looks good!")
     return false
 }
 

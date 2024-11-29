@@ -14,7 +14,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     if (user.id === config.clientId) return;
     const members = reaction.message.guild.members
 
-    const { name } = reaction.emoji
+    const { name, id } = reaction.emoji
     const { message } = reaction
     await impartial(message)
     await impartial(reaction)
@@ -24,7 +24,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
     
     const { report, oui, non, hand } = emojis
 
-    if (name === emojis.report && message.channel.id !== channels.announcements) onFlag(message as Message)
+    if (id === emojis.report && message.channel.id !== channels.announcements) onFlag(message as Message)
     if (message.channel.id === channels["finished-beeps"] && name === hand) handleBeep(reaction, user)
     if (message.channel.id === channels["reports"]) name === oui ? onOui(reaction, members) : onNon(reaction)
 })
@@ -108,7 +108,7 @@ const onOui = async (reaction: MessageReaction, members: GuildMemberManager) => 
 }
 const resolveFlag = async (message: Message, report: ReportProps, members: GuildMemberManager) => {
     const member = await getMember(members, report.user)
-    generateFlagMessage(report.link, "", member.user, report.mod)
+    generateFlagMessage(report.link, report.content, member.user, report.mod)
     const { content } = message
     await message.edit(content)
 }

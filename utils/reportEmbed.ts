@@ -1,11 +1,15 @@
-import { ColorResolvable, EmbedBuilder, User} from "discord.js";
+import { ColorResolvable, EmbedBuilder, GuildMember, User} from "discord.js";
 import { getPurple } from "./getPurple";
 
 export const reportEmbed = (
-	author: User,
+	author: {
+		username: string
+		avatar: string
+		avatarURL: () => string
+	},
 	content: string
 ) => {
-	console.log(author.avatar)
+	console.log(author)
 	const username = author.username
 
 	return new EmbedBuilder()

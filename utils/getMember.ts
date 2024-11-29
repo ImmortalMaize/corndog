@@ -1,3 +1,5 @@
-import { GuildMemberManager } from "discord.js";
+import { GuildMember, GuildMemberManager } from "discord.js";
 
-export const getMember = async (members: GuildMemberManager, id: string) => members.cache.get(id) ?? await members.fetch(id)
+export const getMember = async (members: GuildMemberManager, id: string): Promise<GuildMember> => members.cache.get(id) ?? await members.fetch({
+    user: id
+})
