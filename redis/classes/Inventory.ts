@@ -4,7 +4,9 @@ export default class Inventory<Form> {
     constructor(
         public client: Client,
         public schema: Schema<Form & Entity>,
-    ) {}
+    ) {
+        client.open(process.env["REDIS_URL"])
+    }
     public generate: (form: Form) => Promise<Form & Entity> = async (form: Form) => {
         const repository = this.client.fetchRepository(this.schema)
         const item = repository.createEntity()
@@ -23,6 +25,7 @@ export default class Inventory<Form> {
         .search()
         .where(key)
         .equals(value).return.first().catch((reason => console.log(reason)))
+    
 
         return results
     }

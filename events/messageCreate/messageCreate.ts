@@ -1,7 +1,7 @@
-import { ReadableEvent } from "../classes"
+import { ReadableEvent } from "../../classes"
 import { EmbedBuilder, Message } from 'discord.js';
-import { channels, config } from "../config";
-import { hasUrl, emojis, tracer, hasSauce, hasHeaders } from "../utils";
+import { channels, config } from "../../config";
+import { hasUrl, emojis, tracer, hasSauce, hasHeaders } from "../../utils";
 import { TextChannel, userMention } from 'discord.js';
 import { request } from "undici";
 
@@ -81,6 +81,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
     const { channel } = message
     const { id } = channel
     const isBeepChannel = (id === (channels["finished-beeps"])) || (id === (channels["recycled-beeps"])) || (id === (channels["midi-beeps"]))
+    const isOffTopic = (id === (channels["off-topic-2"])) || ()
     if (isBeepChannel) {
         const bad = await isBeepBad(message).catch(() => true)
         if (bad) {
