@@ -5,9 +5,9 @@ export default class Inventory<Form> {
         public client: Client,
         public schema: Schema<Form & Entity>,
     ) {
-        client.open(process.env["REDIS_URL"])
     }
     public generate: (form: Form) => Promise<Form & Entity> = async (form: Form) => {
+        this.client.open(process.env["REDIS_URL"])
         const repository = this.client.fetchRepository(this.schema)
         const item = repository.createEntity()
 
@@ -18,6 +18,7 @@ export default class Inventory<Form> {
         return item
     }
     public get: (key: string & keyof (Form & Entity), value: string) => Promise<Form & Entity|void> = async (key: string & keyof Form, value: any) => {
+        this.client.open(process.env["REDIS_URL"])
         const repository = this.client.fetchRepository(this.schema)
         await repository.createIndex()
 
