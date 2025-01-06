@@ -81,7 +81,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
     const { channel } = message
     const { id } = channel
     const isBeepChannel = (id === (channels["finished-beeps"])) || (id === (channels["recycled-beeps"])) || (id === (channels["midi-beeps"]))
-    const isOffTopic = (id === (channels["off-topic-2"])) || ()
+    const isOffTopic = (id === (channels["off-topic"]))
     if (isBeepChannel) {
         const bad = await isBeepBad(message).catch(() => true)
         if (bad) {
