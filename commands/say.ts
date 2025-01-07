@@ -3,7 +3,7 @@ import { ReadableCommand } from "../classes";
 import { users } from "../config";
 import { emote, woof } from "../utils";
 
-export default new ReadableCommand(new SlashCommandBuilder().setName("say").setDescription("Make me say something!").addStringOption(option => option.setName("something").setDescription("What should I say?")), async (interaction: ChatInputCommandInteraction) => {
+export default new ReadableCommand(new SlashCommandBuilder().setName("say").setDescription("Make me say something!").setDefaultMemberPermissions(0).addStringOption(option => option.setName("something").setRequired(true).setDescription("What should I say?")), async (interaction: ChatInputCommandInteraction) => {
 	const { channel, options } = interaction
 	const something = options.getString("something")
 

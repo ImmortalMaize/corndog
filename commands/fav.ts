@@ -61,7 +61,7 @@ export default new ReadableCommand(
     .addSubcommand(
         subcommand => subcommand
         .setName("clear")
-        .setDescription("Get a bookmark!")
+        .setDescription("Clear a bookmark!")
         .addStringOption(
             option => option
             .setName("name")
