@@ -83,7 +83,10 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
     const isBeepChannel = (id === (channels["finished-beeps"])) || (id === (channels["recycled-beeps"])) || (id === (channels["midi-beeps"]))
     const isOffTopic = (id === (channels["off-topic"]))
     if (isBeepChannel) {
-        const bad = await isBeepBad(message).catch(() => true)
+        const bad = await isBeepBad(message).catch((err) => {
+            tracer.error(err)
+            return false
+        })
         if (bad) {
             message.react(emojis.question)
             setTimeout(
