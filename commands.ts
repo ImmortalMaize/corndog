@@ -8,13 +8,21 @@ import env from 'dotenv'
 env.config()
 
 const commands: any[] = [];
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'));
 
 async function getCommands() {
+	const commandsPath = path.join(__dirname, 'commands');
+	const commandFiles = fs.readdirSync(commandsPath).filter(content => {
+			if (content.endsWith('.ts')) return content
+			const folder = fs.readdirSync(commandsPath + "/" + content)
+			if (folder.some(file => file === ("index" + '.ts'))) return content
+		});
+
 	for (const file of commandFiles) {
+		console.log(file)
 		const filePath = path.join(commandsPath, file);
+		console.log(filePath)
 		await import(filePath).then(command => {
+			console.log(command)
 			commands.push(command.default.data.toJSON())
 		})
 	}

@@ -48,10 +48,15 @@ corndog.login(CLIENT_TOKEN)
 const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'
 
 corndog.commands = new Collection(); corndog.app = app; corndog.socket = socket()
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(extension));
 
 async function getCommands() {
+    const commandsPath = path.join(__dirname, 'commands');
+    const commandFiles = fs.readdirSync(commandsPath).filter(content => {
+        if (content.endsWith(extension)) return content
+        const folder = fs.readdirSync(commandsPath + "/" + content)
+        if (folder.some(file => file === ("index" + extension))) return content
+    });
+
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         const command = (await import(filePath)).default
@@ -63,10 +68,10 @@ async function getCommands() {
 
 getCommands()
 
-const menusPath = path.join(__dirname, 'menus');
-const menuFiles = fs.readdirSync(menusPath).filter(file => file.endsWith(extension));
-
 async function getMenus() {
+    const menusPath = path.join(__dirname, 'menus');
+    const menuFiles = fs.readdirSync(menusPath).filter(file => file.endsWith(extension));
+
     for (const file of menuFiles) {
         const filePath = path.join(menusPath, file);
         const menu = (await import(filePath)).default
@@ -110,9 +115,9 @@ async function getRoutes() {
     for (const file of routeFiles) {
         const filePath = path.join(routesPath, file)
         const route = (await import(filePath)).default as ReadableRoute
-        const iRoute = app.route(route.path)
+        const appRoute = app.route(route.path)
         for (const handler in route.handlers) {
-            iRoute[handler](route.handlers[handler])
+            appRoute[handler](route.handlers[handler])
         }
 
         const methods = Object.keys(route.handlers).map(method => `"${method.toUpperCase()}"`)
