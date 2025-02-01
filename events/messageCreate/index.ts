@@ -17,7 +17,13 @@ const reply = async (message: Message, content: string) => {
 
 async function isBeepBad(message: Message): Promise<boolean> {
     const { cleanContent, channel, attachments } = message
-    const urls = cleanContent.match(hasUrl) 
+    const urls = cleanContent.match(hasUrl)
+    if (!urls) {
+        tracer.log("No link = bad!")
+        await reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
+        return true
+    }
+    
     const redirections = await Promise.all(urls?.map(async (url): Promise<string> => (await request(url)).headers.location as unknown as string ?? url))
     tracer.info(redirections)
     const sauce = redirections.some(redirection => redirection.match(hasSauce))
@@ -40,12 +46,6 @@ async function isBeepBad(message: Message): Promise<boolean> {
     if (linebreaks?.length >= 5 && !channelIsRecycledBeeps) {
         tracer.log("Message line breaks are bad.")
         await reply(message, "Too many line breaks! > _<")
-        return true
-    }
-
-    if (!urls) {
-        tracer.log("No link = bad!")
-        await reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
         return true
     }
 
