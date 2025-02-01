@@ -30,6 +30,8 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
         const length = options.getInteger("length")
 
         const member = await getMember(guild.members, options.getUser("member").id)
+        if (!member) return;
+
         const reportsChannel = (await getChannel(guild.channels, channels["audit"])) as TextChannel
 
         const preterite = action === "kick" ? "kicked" :
@@ -41,13 +43,13 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
         const summary = `
 ${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** ${length ? length + " min" : "N/A"}\n**Reason:** ${reason}
 `
-        const resolveAction = async (promise: Promise<any>) => promise.then(async () => await reportsChannel.send(summary)).catch(async (err) => {
+        const resolveAction = async (promise: Promise<any>) => promise.catch(async (err) => {
             tracer.error(err)
             await interaction.reply({
                 ephemeral: true,
                 content: "Didn't work. Sorry!"
             })
-        }).then(async () => await interaction.reply({
+        }).then(async () => await reportsChannel.send(summary)).then(async () => await interaction.reply({
             ephemeral: true,
             content: `Okay, I ${preterite} ${userMention(member.user.id)}!`
         }))
