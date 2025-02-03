@@ -23,7 +23,7 @@ async function isBeepBad(message: Message): Promise<boolean> {
         await reply(message, "Where's the link?! > _< (Make sure it starts with https://)")
         return true
     }
-    
+
     const redirections = await Promise.all(urls?.map(async (url): Promise<string> => (await request(url)).headers.location as unknown as string ?? url))
     tracer.info(redirections)
     const sauce = redirections.some(redirection => redirection.match(hasSauce))
@@ -75,6 +75,24 @@ async function isBeepBad(message: Message): Promise<boolean> {
     return false
 }
 
+async function isUserContentBad(message: Message): Promise<boolean> {
+    const { attachments, cleanContent } = message
+    const noAttachments = attachments.size === 0
+    const urls = cleanContent.match(hasUrl)
+    return !urls && noAttachments ? true : false
+}
+
+const judgeForReactChannel = (message: Message, bad: boolean) => {
+    if (bad) {
+        message.react(emojis.question)
+        setTimeout(
+            async () => await message.delete().catch(() => console.log("No message to delete!")), 8000
+        )
+        return
+    }
+    message.react(emojis.hand)
+}
+
 export default new ReadableEvent("messageCreate", async (message: Message) => {
     if (message.author.id === config.clientId) return;
 
@@ -82,18 +100,19 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
     const { id } = channel
     const isBeepChannel = (id === (channels["finished-beeps"])) || (id === (channels["recycled-beeps"])) || (id === (channels["midi-beeps"]))
     const isOffTopic = (id === (channels["off-topic"]))
+    const isUserContent = (id === channels["user-content"])
     if (isBeepChannel) {
         const bad = await isBeepBad(message).catch((err) => {
             tracer.error(err)
             return false
         })
-        if (bad) {
-            message.react(emojis.question)
-            setTimeout(
-                async () => await message.delete().catch(() => console.log("No message to delete!")), 8000
-            )
-            return
-        }
-        message.react(emojis.hand)
+        judgeForReactChannel(message, bad)
+    }
+    if (isUserContent) {
+        const bad = await isUserContentBad(message).catch((err) => {
+            tracer.error(err)
+            return false
+        })
+        judgeForReactChannel(message, bad)
     }
 })
