@@ -1,13 +1,13 @@
 import ReadableCommand from "../classes/ReadableCommand";
 import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType, InteractionResponse, Guild, GuildMember, GuildMemberRoleManager } from 'discord.js';
 import { roles } from "../config";
-import { timeControl } from "../redis/entities";
+import { TimeControl } from "../redis/entities";
 import { woof, emote, time } from "../utils";
 import { userMention } from 'discord.js';
 import { users } from '../config'
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").setDescription("Sploinks! O _o").addUserOption(option => option.setName("target").setDescription("Target to sploink...").setRequired(true)), async (interaction: ChatInputCommandInteraction) => {
-    const check = await timeControl.check("sploink", undefined, true)
+    const check = await TimeControl.check("sploink", undefined, true)
     const target = interaction.options.getUser("target")
     const member = interaction.member
 
@@ -64,21 +64,15 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sploink").
             }
         )})
         .then(
-            
             async () => {
                 //@ts-ignore
-                if (reply) await timeControl.generate({
+                if (reply) await TimeControl.generate({
                 channel: interaction.channel.id,
                 message: reply.id ?? "",
                 name: "sploink",
-                cooldown: time.goForth(1, "day").toDate()
-            })
+            }, time.duration({ days: 1 })/1000)
         }
         )
-        
-        const interval = setInterval(async () => await timeControl.check("yoink", async () => {
-            clearInterval(interval)
-        }, false), 1000)
     }
     else {
         interaction.reply(`${woof()}! Someone has already been sploinked...! ${emote("malcontent")}`)

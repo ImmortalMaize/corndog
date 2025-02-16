@@ -1,4 +1,6 @@
 import { Client, Entity, Schema } from "redis-om";
+import { tracer } from "../../utils";
+import { inverse } from "colors";
 
 export default class Inventory<Form> {
     constructor(
@@ -6,15 +8,19 @@ export default class Inventory<Form> {
         public schema: Schema<Form & Entity>,
     ) {
     }
-    public generate: (form: Form) => Promise<Form & Entity> = async (form: Form) => {
+    public generate: (form: Form , expire?: number) => Promise<Form & Entity> = async (form: Form, expire?: number) => {
+        tracer.log(`Generating object classed "${this.schema.indexName}"`)
         this.client.open(process.env["REDIS_URL"])
         const repository = this.client.fetchRepository(this.schema)
         const item = repository.createEntity()
 
         Object.assign(item, form)
         await repository.save(item)
-
-        console.log("Did it work?")
+        
+        if (expire) {
+            await repository.expire(item.entityId, expire).then(() => tracer.log(`Object ${inverse(item.entityId)} expires in ${expire} seconds!`))
+        }
+        tracer.info("Did it work?")
         return item
     }
     public get: (key: string & keyof (Form & Entity), value: string) => Promise<Form & Entity|void> = async (key: string & keyof Form, value: any) => {

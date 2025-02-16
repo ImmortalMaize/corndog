@@ -1,6 +1,6 @@
 import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember } from 'discord.js';
-import { finishedBeep, timeControl } from "../redis/entities";
+import { finishedBeep, TimeControl } from "../redis/entities";
 import { channels, config, roles } from "../config"
 import {time, emojis} from "../utils";
 import { TextChannel } from 'discord.js';
@@ -53,15 +53,14 @@ export default new ReadableCommand(
                 })
 
             //@ts-ignore
-            timeControl.generate({
+            TimeControl.generate({
                 channel: interaction.channelId,
                 message: (await interaction.fetchReply()).id,
                 name: "test",
-                cooldown: time.goForth(1, "minute").toDate()
             })
 
             const checks = setInterval(() => {
-                timeControl.check("test", async () => {
+                TimeControl.check("test", async () => {
                     interaction.followUp({
                         content: "Time controls seem to be normal!",
                         ephemeral: false
@@ -74,7 +73,7 @@ export default new ReadableCommand(
         if (interaction.options.getSubcommand() === "fix-users") {
             const members = await interaction.guild.members.fetch()
             const filteredMembers = members.filter(member => member.roles.cache.has("373936282893811723") && !member.roles.cache.has("235144257147502592"))
-            filteredMembers.each(member => member.roles.add("235144257147502592").catch(() => console.log("Couldn't add role to" + member.nickname ?? member.user.username)))
+            filteredMembers.each(member => member.roles.add("235144257147502592").catch(() => console.log("Couldn't add role to" + member.nickname)))
         }
 
         if (interaction.options.getSubcommand() === "fix-ascend") {
@@ -84,18 +83,18 @@ export default new ReadableCommand(
             console.log(mb)     
             mb.each((member: GuildMember) => {
                 if (member.roles.cache.has(roles.mbl4)) {
-                    member.roles.remove(roles.mbl3).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
-                    member.roles.remove(roles.mbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
-                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.mbl3).catch(() => console.log("Couldn't remove role from" + member.nickname))
+                    member.roles.remove(roles.mbl2).catch(() => console.log("Couldn't remove role from" + member.nickname))
+                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname))
                 }
 
                 if (member.roles.cache.has(roles.mbl3)) {
-                    member.roles.remove(roles.mbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
-                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.mbl2).catch(() => console.log("Couldn't remove role from" + member.nickname))
+                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname))
                 }
 
                 if (member.roles.cache.has(roles.mbl2)) {
-                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.mbl1).catch(() => console.log("Couldn't remove role from" + member.nickname))
                 }
             })
 
@@ -104,18 +103,18 @@ export default new ReadableCommand(
             console.log(bb)
             bb.each((member: GuildMember) => {
                 if (member.roles.cache.has(roles.bbl4)) {
-                    member.roles.remove(roles.bbl3).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
-                    member.roles.remove(roles.bbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
-                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.bbl3).catch(() => console.log("Couldn't remove role from" + member.nickname))
+                    member.roles.remove(roles.bbl2).catch(() => console.log("Couldn't remove role from" + member.nickname))
+                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname))
                 }
 
                 if (member.roles.cache.has(roles.bbl3)) {
-                    member.roles.remove(roles.bbl2).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
-                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.bbl2).catch(() => console.log("Couldn't remove role from" + member.nickname))
+                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname))
                 }
 
                 if (member.roles.cache.has(roles.bbl2)) {
-                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname ?? member.user.username))
+                    member.roles.remove(roles.bbl1).catch(() => console.log("Couldn't remove role from" + member.nickname))
                 }
             })
         }

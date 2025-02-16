@@ -1,12 +1,12 @@
 import ReadableCommand from "../classes/ReadableCommand";
 import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType, InteractionResponse, Guild, GuildMember } from 'discord.js';
 import { roles } from "../config";
-import { timeControl } from "../redis/entities";
+import { TimeControl } from "../redis/entities";
 import { woof, emote, time } from "../utils";
 import { userMention } from 'discord.js';
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").setDescription("Yoinks! >:3c"), async (interaction: ChatInputCommandInteraction) => {
-    const check = await timeControl.check("yoink", undefined, true)
+    const check = await TimeControl.check("yoink", undefined, true)
 
     if (check) {
         const member = interaction.member
@@ -18,49 +18,30 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("yoink").se
             return
         }
         const role = roles["some role idk"]
-        
+
         let reply: InteractionResponse
 
         interaction.guild.members.fetch()
-        .then(
-            members => members.each(mem => {
-                if (mem.roles.cache.has(role)) mem.roles.remove(role)
-            })
-        )
-        .catch(
-            async () => {interaction.reply("It's unyoinkable...")}
-        )
-        .then(
-            () => {
-                member instanceof GuildMember ? member.roles.add(role) : member.roles.push(role)
-            }
-        )
-        .catch(
-                (caught) => {console.log(caught);interaction.reply("You can't yoink it! >:(")}
-            )
-        .then(
-            async () => {
+            .then(members => members.each(mem => { if (mem.roles.cache.has(role)) mem.roles.remove(role) }))
+            .catch(async () => { interaction.reply("It's unyoinkable...") })
+            .then(() => { member instanceof GuildMember ? member.roles.add(role) : member.roles.push(role) })
+            .catch((caught) => { console.log(caught); interaction.reply("You can't yoink it! >:(") })
+            .then(async () => {
                 reply = await interaction.reply({
-                content: `${woof()}! ${userMention(member.user.id)} yoinked it! ${emote("elated")}`,
-                ephemeral: false
-            }
-        )})
-        .then(
-            
-            async () => {
-                //@ts-ignore
-                if (reply) await timeControl.generate({
-                channel: interaction.channel.id,
-                message: reply.id ?? "",
-                name: "yoink",
-                cooldown: time.goForth(1, "day").toDate()
+                    content: `${woof()}! ${userMention(member.user.id)} yoinked it! ${emote("elated")}`, ephemeral: false
+                }
+                )
             })
-        }
-        )
-        
-        const interval = setInterval(async () => await timeControl.check("yoink", async () => {
-            clearInterval(interval)
-        }, false), 1000)
+            .then(async () => {
+                //@ts-ignore
+                if (reply) await TimeControl.generate({
+                    channel: interaction.channel.id,
+                    message: reply.id ?? "",
+                    name: "yoink",
+                    
+                }, time.duration({ days: 1 })/1000)
+            }
+            )
     }
     else {
         interaction.reply(`${woof()}! Someone already yoinked it! ${emote("malcontent")}`)
