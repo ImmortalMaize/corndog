@@ -22,5 +22,17 @@ export default new ReadableEvent(
         })
         await redisClient.open(process.env.REDIS_URL)
         const guild = (await corndog.guilds.cache.get(config.guildId).fetch())
-    }
+        
+        TimeControl.resume(new Map([
+            ["test", async (timeControl) => {
+                const channels = await guild.channels.fetch()
+        
+                const commands = channels.get(timeControl.channel) as TextChannel
+        
+                commands.send("Time control resumption looks good too!")
+            }],
+            ["weeklies", async (timeControl) => {}]
+        ]))
+    },
+    true
 )

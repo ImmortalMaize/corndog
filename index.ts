@@ -12,6 +12,7 @@ import ReadableRoute from "./classes/ReadableRoute"
 import socket from "./socket"
 import { Socket } from "socket.io-client"
 import { file } from "googleapis/build/src/apis/file"
+import { inverse } from "colors"
 
 const { Guilds, GuildMessageReactions, GuildMessages, GuildMembers, GuildPresences, GuildMessageTyping, GuildEmojisAndStickers, MessageContent } = GatewayIntentBits
 const { Message, Channel, Reaction, User } = Partials
@@ -100,7 +101,10 @@ async function getEvents() {
         if (event.once) {
             corndog.once(event.name, (...args) => event.execute(...args));
         } else {
-            corndog.on(event.name, (...args) => event.execute(...args).catch((error: Error) => void tracer.error(error)));
+            corndog.on(event.name, (...args) => { 
+                tracer.event(`${inverse(event.name)}`)
+                event.execute(...args).catch((error: Error) => void tracer.error(error))
+            });
         }
         tracer.build(`Loaded event ${event.name} ${emote("content")}`)
     }
