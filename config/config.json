@@ -79,8 +79,9 @@
         "lihzahrd.github.io/3.0nomidi",
         "dinobox.vercel.app",
         "sxomus.neocities.org/axobox",
-        "lemmbox.github.io"
-    ],
+        "lemmbox.github.io",
+        "VeryImpossibleThingToGuess"
+    ], 
     "urlWhitelist": [
         "youtube.com",
         "soundcloud.com",
