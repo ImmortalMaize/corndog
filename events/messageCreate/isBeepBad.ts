@@ -29,7 +29,9 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
     const linebreaks = cleanContent.match(/\n/gm)
     const channelIsRecycledBeeps = channel.id === channels["recycled-beeps"]
     const longLink = urls?.some(url => url.length > 100)
-    const noAttachments = attachments.size === 0
+
+    // checks if submission has one image or less, and if that image is 64x64 or less
+    const oneImageOrLess = attachments.size <= 1 && attachments.first().contentType.match(/image\/.+/g) && attachments.first().width <= 64 && attachments.first().height <= 64
     const tooLong = cleanContent.length > 450
     const headerFormatting = cleanContent.match(hasHeaders)
 
@@ -63,9 +65,9 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
         await reply(message, "DON'T USE HEADERS...!!! > _<")
         return true
     }
-    if (!noAttachments) {
+    if (!oneImageOrLess) {
         tracer.log("ATTACHMENTS ARE BAD!!!")
-        await reply(message, "NO ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
+        await reply(message, "TOO MANY ATTACHMENTS ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
         return true
     }
 
