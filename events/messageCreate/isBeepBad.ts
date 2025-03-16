@@ -31,7 +31,7 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
     const longLink = urls?.some(url => url.length > 100)
 
     // checks if submission has one image or less, and if that image is 64x64 or less
-    const oneImageOrLess = attachments.size <= 1 && attachments.first().contentType.match(/image\/.+/g) && attachments.first().width <= 64 && attachments.first().height <= 64
+    const oneImageOrLess = attachments.size <= 1 && attachments.first().contentType.match(/image\/.+/g) && attachments.first().height <= 64
     const tooLong = cleanContent.length > 450
     const headerFormatting = cleanContent.match(hasHeaders)
 
