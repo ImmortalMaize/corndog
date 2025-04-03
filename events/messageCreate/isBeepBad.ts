@@ -23,6 +23,7 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
     }
 
     const redirections = await Promise.all(urls?.map(async (url): Promise<string> => (await request(url)).headers.location as unknown as string ?? url))
+    tracer.info(cleanContent)
     tracer.info(redirections)
     const sauce = redirections.some(redirection => redirection.match(hasSauce))
     console.log(sauce)
@@ -31,7 +32,8 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
     const longLink = urls?.some(url => url.length > 100)
 
     // checks if submission has one image or less, and if that image is 64x64 or less
-    const oneImageOrLess = attachments.size <= 1 && attachments.first().contentType.match(/image\/.+/g) && attachments.first().height <= 64
+    const oneAttachmentOrLess = attachments.size <= 1
+    const attachmentReqs = attachments.size === 0 ? true : attachments.first().contentType.match(/image\/.+/g) ? attachments.first().height <= 64 : attachments.first().contentType.match(/audio\/.+/g)
     const tooLong = cleanContent.length > 450
     const headerFormatting = cleanContent.match(hasHeaders)
 
@@ -65,10 +67,15 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
         await reply(message, "DON'T USE HEADERS...!!! > _<")
         return true
     }
-    if (!oneImageOrLess) {
+    if (!oneAttachmentOrLess) {
         tracer.log("ATTACHMENTS ARE BAD!!!")
         await reply(message, "TOO MANY ATTACHMENTS ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
         return true
+    }
+
+    if (!attachmentReqs) {
+        tracer.log("Attachments don't fulfill requirements.")
+        await reply(message, "Image taller than 64px or no image or audio file detected...!! > _<")
     }
 
     tracer.info("Looks good!")
