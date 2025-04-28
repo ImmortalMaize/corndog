@@ -3,48 +3,77 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionType, Inte
 import { roles, users } from "../config";
 import { meow, woof, emote, time } from "../utils";
 import { userMention } from 'discord.js';
+import { TimeControl } from "../redis/entities";
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("setIcon").setDescription("Give or remove an icon if you have the correct role"), async (interaction: ChatInputCommandInteraction) => {
-    const hypergeekIconRole = roles["hypergeek icon"];
-    //const setIcon = interaction.options.getUser("setIcon")
-    const hypergeekRole = roles["hypergeek"]; 
-    const member = interaction.member;
+    const check = await TimeControl.check("sploink", undefined, true)
+    const target = interaction.options.getUser("target")
+    const member = interaction.member
 
-    //@ts-ignore
-    const check = member.roles.cache.has(hypergeekRole);
-
-    if (check && (member.user.id === users.maize || member.user.id === users.choptop84)) {
-        if (!member) {
+    if (check) {
+        if (!target) {
             interaction.reply({
-                content: "what.",
+                content: "You can't sploink someone that doesn't exist.",
                 ephemeral: true
             })
             return
         }
+        const role = roles["..."]
+
+        //@ts-ignore
+        const sploinked = member.roles.cache.has(role)
+        const isMaize = member.user.id === users.maize
+        console.log("Are they sploinked? " + sploinked, "Is the sploinker Maize? " +  isMaize)
+
+        if (!isMaize && !sploinked) {
+            await interaction.reply({
+                content: "In this world, it's be sploinked then sploink.",
+                ephemeral: true
+            })
+            return
+        }
+        
+        
+        let reply: InteractionResponse
+
         interaction.guild.members.fetch()
         .then(
             members => members.each(mem => {
-                if (mem.roles.cache.has(hypergeekIconRole)) { 
-                    mem.roles.remove(hypergeekIconRole)
-                    interaction.reply(`${woof()}! Got that icon off of you! ${emote("elated")}`)
-                } else {
-                    mem.roles.add(hypergeekIconRole)
-                    interaction.reply(`${meow()}! Here ya go! ${emote("cat")}`)
-                }
+                if (mem.roles.cache.has(role)) mem.roles.remove(role)
             })
         )
         .catch(
             async () => {
-                interaction.reply("If you're seeing this then even I don't know ")
+                interaction.reply("It's unsploinkable...")
             }
         )
-        console.log("Who: " + member, ", What: " +  hypergeekIconRole)
-    } else {
-        if (!(member.user.id === users.maize || member.user.id === users.choptop84)) {
-        interaction.reply(`No`)
-        } else {
-        interaction.reply(`${woof()}..? Erm... Yous not hypergeek! ${emote("malcontent")}`) 
+        .then(
+            () => {
+                target instanceof GuildMember && !isMaize ? target.roles.add(role) : interaction.guild.members.fetch(target.id).then(user => user.roles.add(role))
+            }
+        )
+        .catch(
+                (caught) => {console.log(caught);interaction.reply("You can't sploink them! >:(")}
+            )
+        .then(
+            async () => {
+                reply = await interaction.reply({
+                content: `${woof()}! ${userMention(target.id)} just got sploinked! O _o`,
+                ephemeral: false
+            }
+        )})
+        .then(
+            async () => {
+                //@ts-ignore
+                if (reply) await TimeControl.generate({
+                channel: interaction.channel.id,
+                message: reply.id ?? "",
+                name: "sploink",
+            }, time.duration({ days: 1 })/1000)
         }
+        )
     }
-    
+    else {
+        interaction.reply(`${woof()}! Someone has already been sploinked...! ${emote("malcontent")}`)
+    }
 })
