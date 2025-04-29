@@ -1,7 +1,7 @@
 import ReadableCommand from "../classes/ReadableCommand";
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { roles  } from "../config";
-import { woof, emote, getMember } from "../utils";
+import { woof, meow, emote, getMember } from "../utils";
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("icon").setDescription("Get yourself an icon here"), async (interaction: ChatInputCommandInteraction) => {
     const { options, guild } = interaction
@@ -18,26 +18,13 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("icon").set
     }
 
     if (member.roles.cache.some(role => role.id === hypergeekRole)) {
-        interaction.guild.members.fetch()
-        .then(
-            () => {
-                if (member.roles.cache.some(role => role.id === hypergeekIconRole)) { 
-                    member.roles.remove(hypergeekIconRole) 
-                } else { 
-                    member.roles.add(hypergeekIconRole);
-                }
-            }
-        )
-        .catch(
-            async () => {
-                interaction.reply("Qhar..?")
-            }
-        )
-        .then(
-            () => {
-                interaction.reply(`${woof()}! Here ya go~! ${emote("elated")}`)
-            }
-        )
+        if (member.roles.cache.some(role => role.id === hypergeekIconRole)) { 
+            member.roles.remove(hypergeekIconRole) 
+            interaction.reply(`${meow()}! Mine now omnomnom..! ${emote("cat")}`)
+        } else { 
+            member.roles.add(hypergeekIconRole);
+            interaction.reply(`${woof()}! Here ya go~! ${emote("elated")}`)
+        }
         
     } else {
         interaction.reply(`No`)
