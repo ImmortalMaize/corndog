@@ -19,13 +19,12 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("icon").set
 
     if (member.roles.cache.some(role => role.id === hypergeekRole)) {
         if (member.roles.cache.some(role => role.id === hypergeekIconRole)) { 
-            member.roles.remove(hypergeekIconRole) 
-            interaction.reply(`${meow()}! Mine now omnomnom..! ${emote("cat")}`)
+            member.roles.remove(hypergeekIconRole);
+            interaction.reply(`${meow()}! Mine now omnomnom..! ${emote("cat")}`);
         } else { 
             member.roles.add(hypergeekIconRole);
-            interaction.reply(`${woof()}! Here ya go~! ${emote("elated")}`)
+            interaction.reply(`${woof()}! Here ya go~! ${emote("elated")}`);
         }
-        
     } else {
         interaction.reply(`No`)
     }
