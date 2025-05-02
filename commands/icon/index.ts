@@ -20,13 +20,16 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("icon").set
     { name: "Hypergeek", value: "hypergeek" },
     { name: "Heckin' Typing Maniac", value: "maniac" },
     { name: "BeepBoxer Of High Society", value: "society" },
+    { name: "Picked", "value": "picked"},
+    { name: "Beep Bishop", value: "bishop"},
     { name: "No Icon", value: "nothing" })), async (interaction: ChatInputCommandInteraction) => {
         const { member } = interaction
         const role = interaction.options.getString("role")
         const success = await setIconRole(member as GuildMember, role === "nothing" ? null : role)
+        console.log(success)
 
         interaction.reply({
-            content: success ? `${woof()}! Icon set! ${emote("elated")}` : `${woof()}.. you don't have the needed role for that icon. ${emote("malcontent")}`,
+            content: success && (role === "nothing") ? `${woof()}! Omnomnom! ${emote("furry")}` : success ? `${woof()}! Icon set! ${emote("elated")}` : `${woof()}.. you don't have the needed role for that icon. ${emote("malcontent")}`,
             ephemeral: true
         })
     })
