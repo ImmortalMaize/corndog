@@ -12,7 +12,9 @@ async function setIconRole(member: GuildMember, icon: string) {
     if (!icon) await member.roles.remove(iconRoles)
     if (!member.roles.cache.has(requiredRole)) return false
     
-    await member.roles.remove(iconRoles).then(async () => await member.roles.add(iconRole))
+    await member.roles.remove(iconRoles)
+    await member.roles.add(iconRole)
+    
     return true
 }
 
