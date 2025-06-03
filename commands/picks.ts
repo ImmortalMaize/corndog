@@ -2,7 +2,7 @@ import { ReadableCommand } from "../classes";
 import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from 'discord.js';
 import { channels, config } from "../config";
 import { TextChannel } from 'discord.js';
-import {woof, emote, numbers, trunk, time} from "../utils"
+import { woof, emote, numbers, trunk, time } from "../utils"
 import { finishedBeep, member } from "../redis/entities";
 import { ManipulateType } from "dayjs";
 
@@ -94,7 +94,7 @@ export default new ReadableCommand(
                 case "scope":
                     const number = Math.abs(interaction.options.getInteger("number"))
                     const unit = interaction.options.getString("unit", true)
-                    
+
                     if (thisMember) {
                         await member.amend(thisMember.entityId, [
                             ["picks scope number", number],
@@ -102,7 +102,7 @@ export default new ReadableCommand(
                         ])
 
                         interaction.reply({
-                            content: `${woof()}! You won't get pings for picks older than ${numbers(number)} ${number === 1 ? unit.substring(0, unit.length-1) : unit}! ${emote("elated")}`,
+                            content: `${woof()}! You won't get pings for picks older than ${numbers(number)} ${number === 1 ? unit.substring(0, unit.length - 1) : unit}! ${emote("elated")}`,
                             ephemeral: true
                         })
                     }
@@ -111,28 +111,28 @@ export default new ReadableCommand(
             }
         }
         if (interaction.options.getSubcommand() === "best-of") {
-                interaction.deferReply({
-                    ephemeral: true
-                })
-                const year = interaction.options.getInteger("year", true)
-                const picks = (await finishedBeep.view()).filter(beep => time.between(beep.date, [time.startOf("year").subtract(1, "year").toDate(), time.startOf("year").toDate()])).sort((a, b) => b.count - a.count)
-                const slicedPicks = picks.slice(0, 20)
+            interaction.deferReply({
+                ephemeral: true
+            })
+            const year = interaction.options.getInteger("year", true)
+            const picks = (await finishedBeep.view()).filter(beep => time.between(beep.date, [time.startOf("year").subtract(1, "year").toDate(), time.startOf("year").toDate()])).sort((a, b) => b.count - a.count)
+            const slicedPicks = picks.slice(0, 20)
 
-                let leaderboard = `**Here are the top beeps for ${year}!**\n`
+            let leaderboard = `**Here are the top beeps for ${year}!**\n`
 
-                for (const num in slicedPicks) {
-                    const pick = slicedPicks[num]
-                    leaderboard += `${+num + 1}. https://discord.com/channels/${interaction.guildId}/${channels["finished-beeps"]}/${pick.submission}\n`
-                }
-                interaction.editReply({
-                    content: leaderboard,
-                })
+            for (const num in slicedPicks) {
+                const pick = slicedPicks[num]
+                leaderboard += `${+num + 1}. https://discord.com/channels/${interaction.guildId}/${channels["finished-beeps"]}/${pick.submission}\n`
+            }
+            interaction.editReply({
+                content: leaderboard,
+            })
         }
         else {
             const unit = interaction.options.getSubcommand() === "yearly" ? "year"
-            :            interaction.options.getSubcommand() === "monthly" ? "month"
-            :            interaction.options.getSubcommand() === "weekly" ? "week"
-            :            "day"
+                : interaction.options.getSubcommand() === "monthly" ? "month"
+                    : interaction.options.getSubcommand() === "weekly" ? "week"
+                        : "day"
 
             const picks = []
             console.log()
@@ -143,11 +143,11 @@ export default new ReadableCommand(
 
             for (const num in slicedPicks) {
                 const pick = slicedPicks[num]
-                
+
                 const { author, score, sauce, caption, published } = pick
                 const trunkedCaption = trunk(caption.split("\n")[0], 30)
                 const datePublished = `${published.day.low}-${published.month.low}-${published.year.low}`
-                
+
                 leaderboard += `${+num + 1}. **[${datePublished}]** ${author} – ${trunkedCaption} with ${score.low} likes! (<${sauce}>)\n`
             }
             interaction.reply({

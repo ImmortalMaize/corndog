@@ -3,7 +3,7 @@ import { roles } from "../../config"
 import { reportEmbed } from "../../utils"
 
 export default (link: string, message: string, user: GuildMember|User, mod?: string): BaseMessageOptions => {
-    let content = `${roleMention(roles.management)} Users flagged a post in ${link}! `
+    let content = `${roleMention(roles.moderator)} Users flagged a post in ${link}! `
     if (mod) content += `${mod.split(" ").map(m => userMention(m))} took a look. `
 
     return {

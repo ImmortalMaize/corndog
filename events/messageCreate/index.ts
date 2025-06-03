@@ -1,11 +1,11 @@
 import { ReadableEvent } from "../../classes"
 import { EmbedBuilder, Message } from 'discord.js';
 import { channels, config, users } from "../../config";
-import { hasUrl, emojis, tracer, hasSauce, hasHeaders } from "../../utils";
+import { hasUrl, emojis, tracer, hasSauce, hasHeaders, getMember } from "../../utils";
 import { TextChannel, userMention } from 'discord.js';
-import { request } from "undici";
 import isBeepBad from "./isBeepBad";
 import isUserContentBad from "./isUserContentBad";
+import netty from '../../net'
 
 const judgeForReactChannel = (message: Message, bad: boolean) => {
     if (bad) {
@@ -34,6 +34,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             return false
         })
         judgeForReactChannel(message, bad)
+        if (bad === false) await netty.postBeep(message, message.author)
     }
     if (isUserContent) {
         const bad = await isUserContentBad(message).catch((err) => {

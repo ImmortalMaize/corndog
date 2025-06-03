@@ -33,7 +33,7 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
 
     // checks if submission has one image or less, and if that image is 64x64 or less
     const oneAttachmentOrLess = attachments.size <= 1
-    const attachmentReqs = attachments.size === 0 ? true : attachments.first().contentType.match(/image\/.+/g) ? attachments.first().height <= 64 : attachments.first().contentType.match(/audio\/.+/g)
+    const attachmentReqs = attachments.size === 0 ? true : attachments.every(attachment => attachment.contentType.match(/image\/.+/g) ? attachment.height <= 64 : attachment.contentType.match(/audio\/.+/g))
     const tooLong = cleanContent.length > 450
     const headerFormatting = cleanContent.match(hasHeaders)
 

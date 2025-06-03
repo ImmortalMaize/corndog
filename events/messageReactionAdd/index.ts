@@ -9,6 +9,7 @@ import { Inventory } from "../../redis/classes";
 import { ReportProps } from "../../redis/entities/report";
 import onFlag from "./onFlag";
 import generateFlagMessage from "./generateFlagMessage";
+import netty from "../../net"
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
     if (user.id === config.clientId) return;
@@ -21,7 +22,7 @@ export default new ReadableEvent("messageReactionAdd", async (reaction: MessageR
 
     const { guild, author } = message
     const member = await getMember(guild.members, author.id)
-    
+
     const { report, oui, non, hand } = emojis
 
     if (id === emojis.report && message.channel.id !== channels.announcements) onFlag(message as Message)
@@ -34,9 +35,13 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
 
     const { guild, author } = message
     const member = await getMember(guild.members, author.id)
-    const count = (await getReactions(message as Message, emojis.hand).users.fetch()).filter(user => {
+    const likers = (await getReactions(message as Message, emojis.hand).users.fetch()).filter(user => {
         if (user?.id) return user.id !== (member.id ?? message.author.id) && user.id !== config.clientId; else return false
-    }).size
+    })
+    const likersArray = Array.from(likers.values())
+    await netty.likeBeep(message as Message, message.author, likersArray)
+    
+    const count = likers.size
     console.log('👌:' + count)
     const quota = count >= picks.quota
     if (!quota) return;
@@ -47,49 +52,49 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
 
     const finishedPicks = await getChannel(guild.channels, channels["finished-picks"]) as TextChannel
     const link = getLink(message as Message)[0]
-    console.log(link)
-        if (quota && precedent) {
-            console.log("Quota and precedent met!")
-            const embedID = precedent.toJSON().embed
-            console.log(embedID)
+    console.log(link + "<-")
+    if (quota && precedent) {
+        console.log("Quota and precedent met!")
+        const embedID = precedent.toJSON().embed
+        console.log(embedID)
 
-            const embed = pickEmbed(reaction.message as Message, count);
-            (await finishedPicks.messages.fetch(embedID))
-                .edit({
-                    embeds: [embed]
-                })
-
-            finishedBeep.amend(precedent.entityId, [
-                ["count", count]
-            ])
-
-            console.log("Amended ting; " + count)
-
-        }
-        if (quota && !precedent) {
-            console.log("Quota but no precedent!")
-            const memberData = await memberInventory.get("id", member?.id ?? reaction.message.author.id)
-            const scopeUnit: "years" | "months" | "weeks" | "days" = memberData ? memberData.toJSON()["picks scope unit"] : "month"
-            const scopeNumber = memberData ? memberData.toJSON()["picks scope number"] : 1
-            const pings: boolean = memberData ? memberData.toJSON()["picks pings"] : false
-            const embed = pickEmbed(reaction.message as Message, count)
-            const old = time.compare(time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
-            const pingOrNah = !pings || old ? (member.nickname ?? author.username) : userMention(member.id ?? author.id)
-            const pick = await finishedPicks.send({
-                content: `Congratulations ${pingOrNah} on getting picked!`,
+        const embed = pickEmbed(reaction.message as Message, count);
+        (await finishedPicks.messages.fetch(embedID))
+            .edit({
                 embeds: [embed]
             })
 
-            //@ts-ignore
-            await finishedBeep.generate({
-                submission: message.id,
-                embed: pick.id,
-                count,
-                date: message.createdAt
-            })
-            console.log("Generated ting")
-        }
+        finishedBeep.amend(precedent.entityId, [
+            ["count", count]
+        ])
+
+        console.log("Amended ting; " + count)
+
     }
+    if (quota && !precedent) {
+        console.log("Quota but no precedent!")
+        const memberData = await memberInventory.get("id", member?.id ?? reaction.message.author.id)
+        const scopeUnit: "years" | "months" | "weeks" | "days" = memberData ? memberData.toJSON()["picks scope unit"] : "month"
+        const scopeNumber = memberData ? memberData.toJSON()["picks scope number"] : 1
+        const pings: boolean = memberData ? memberData.toJSON()["picks pings"] : false
+        const embed = pickEmbed(reaction.message as Message, count)
+        const old = time.compare(time.goBack(scopeNumber, scopeUnit).toDate(), reaction.message.createdAt)
+        const pingOrNah = !pings || old ? (member.nickname ?? author.username) : userMention(member.id ?? author.id)
+        const pick = await finishedPicks.send({
+            content: `Congratulations ${pingOrNah} on getting picked!`,
+            embeds: [embed]
+        })
+
+        //@ts-ignore
+        await finishedBeep.generate({
+            submission: message.id,
+            embed: pick.id,
+            count,
+            date: message.createdAt
+        })
+        console.log("Generated ting")
+    }
+}
 
 const onOui = async (reaction: MessageReaction, members: GuildMemberManager) => {
     const { message } = reaction
@@ -114,4 +119,4 @@ const resolveFlag = async (message: Message, report: ReportProps, members: Guild
 }
 const resolveTicket = async (message: Message, report: ReportProps, members: GuildMemberManager) => {
 }
-const onNon = async (reaction: MessageReaction) => {}
+const onNon = async (reaction: MessageReaction) => { }
