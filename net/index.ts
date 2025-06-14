@@ -2,8 +2,33 @@ import { User, Message } from "discord.js";
 import { BeepDto, UserDto } from "./interfaces";
 import { request } from "undici";
 import { hasSauce, hasUrl, parseMessage, time } from "../utils";
+interface FetchedBeep {
+    rank?: number,
+    message?: string,
+    avatar?: string,
+    username: string,
+    title: string,
+    blurb: string,
+    discordId: string,
+    published: number,
+    sauce: string,
+    score: number
+}
 
-class Netty {
+interface FetchedBeep {
+    title: string,
+    blurb: string,
+    discordId: string,
+    published: number,
+    sauce: string,
+    score: number,
+    username: string,
+    rank?: number,
+    message?: string,
+    avatar?: string
+}
+
+class Fetch {
     public dataURL: string = process.env["DATA_URL"]
     convertUser(user: User): UserDto {
         return {
@@ -34,17 +59,57 @@ class Netty {
         return await request(this.dataURL + "bot/postBeep", {
             method: "POST",
             headers: ["Content-Type", "application/json"],
-            body: JSON.stringify({beep: await this.convertBeep(beep), author: this.convertUser(author)})
+            body: JSON.stringify({ beep: await this.convertBeep(beep), author: this.convertUser(author) })
         })
     }
 
     public async likeBeep(beep: Message, author: User, likers: User[]) {
+        const convertedBeep = await this.convertBeep(beep)
+        const convertedAuthor = this.convertUser(author)
         return await request(this.dataURL + "bot/likeBeep", {
             method: "POST",
             headers: ["Content-Type", "application/json"],
-            body: JSON.stringify({beep: await this.convertBeep(beep), author: this.convertUser(author), likers: likers.map(liker => this.convertUser(liker))})
+            body: JSON.stringify({ beep: convertedBeep, author: convertedAuthor, likers: likers.map(liker => this.convertUser(liker)) })
+        })
+    }
+
+    public async getPicksTemporally(after: Date, before?: Date) {
+        const body = {
+            after: time.convert(after).toISOString(),
+            before: before ? time.convert(before).toISOString() : undefined
+        }
+        const response = await request(this.dataURL + "bot/getPicksTemporally", {
+            method: "POST",
+            headers: ["Content-Type", "application/json"],
+            body: JSON.stringify(body)
+        })
+
+        return response.body.json() as unknown as FetchedBeep[]
+    }
+
+    async getBeepById(id: string) {
+        return await request(this.dataURL + "content/beep/discordId/" + id, {
+            method: "GET"
+        }) as unknown as FetchedBeep
+    }
+
+    async updateBeepTitle(id: string, title: string) {
+        return await request(this.dataURL + "bot/updateTitle", {
+            method: "POST",
+            headers: ["Content-Type", "application/json"],
+            body: JSON.stringify({ discordId: id, title })
+        })
+    }
+
+    async updateBeep(beep: Message, author: User) {
+        const convertedBeep = await this.convertBeep(beep)
+        const convertedAuthor = this.convertUser(author)
+        return await request(this.dataURL + "bot/updateBeep", {
+            method: "POST",
+            headers: ["Content-Type", "application/json"],
+            body: JSON.stringify({ beep: convertedBeep, author: convertedAuthor })
         })
     }
 }
 
-export default new Netty()
+export default new Fetch()

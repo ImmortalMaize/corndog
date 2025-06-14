@@ -6,17 +6,7 @@ import { TextChannel, userMention } from 'discord.js';
 import isBeepBad from "./isBeepBad";
 import isUserContentBad from "./isUserContentBad";
 import netty from '../../net'
-
-const judgeForReactChannel = (message: Message, bad: boolean) => {
-    if (bad) {
-        message.react(emojis.question)
-        setTimeout(
-            async () => await message.delete().catch(() => console.log("No message to delete!")), 8000
-        )
-        return
-    }
-    message.react(emojis.hand)
-}
+import judgeForReactChannel from "./judgeForReactChannel";
 
 export default new ReadableEvent("messageCreate", async (message: Message) => {
     if (message.author.id === config.clientId) return;

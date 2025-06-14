@@ -1,0 +1,1 @@
+export { hasUrl } from './hasUrl'

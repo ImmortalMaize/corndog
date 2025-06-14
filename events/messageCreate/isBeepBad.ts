@@ -15,6 +15,7 @@ const reply = async (message: Message, content: string) => {
 
 export default async function isBeepBad(message: Message): Promise<boolean> {
     const { cleanContent, channel, attachments } = message
+    console.log(cleanContent)
     const urls = cleanContent.match(hasUrl)
     if (!urls) {
         tracer.log("No link = bad!")

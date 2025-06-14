@@ -1,9 +1,12 @@
 import { ReadableCommand } from "../classes";
-import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember } from 'discord.js';
+import { SlashCommandBuilder, Interaction, ChatInputCommandInteraction, ThreadChannel, GuildMember, Message } from 'discord.js';
 import { finishedBeep, TimeControl } from "../redis/entities";
 import { channels, config, roles } from "../config"
-import {time, emojis} from "../utils";
+import { time, emojis, getReactions, impartial } from "../utils";
 import { TextChannel } from 'discord.js';
+import { getMessage } from "../utils/getMessage";
+import net from "../net";
+import { DynamicPool } from "node-worker-threads-pool";
 
 // async function crawl (channel: TextChannel) {
 //     const seen = new Set()
@@ -78,9 +81,9 @@ export default new ReadableCommand(
 
         if (interaction.options.getSubcommand() === "fix-ascend") {
             const members = await interaction.guild.members.fetch()
-            const mb = members.filter(member => (member.roles.cache.has(roles.mbl2)||member.roles.cache.has(roles.mbl3)||member.roles.cache.has(roles.mbl4))||member.roles.cache.has(roles.mbl1)) 
+            const mb = members.filter(member => (member.roles.cache.has(roles.mbl2) || member.roles.cache.has(roles.mbl3) || member.roles.cache.has(roles.mbl4)) || member.roles.cache.has(roles.mbl1))
             console.log("Fixing MB!")
-            console.log(mb)     
+            console.log(mb)
             mb.each((member: GuildMember) => {
                 if (member.roles.cache.has(roles.mbl4)) {
                     member.roles.remove(roles.mbl3).catch(() => console.log("Couldn't remove role from" + member.nickname))
@@ -98,7 +101,7 @@ export default new ReadableCommand(
                 }
             })
 
-            const bb = members.filter(member => (member.roles.cache.has(roles.bbl2)||member.roles.cache.has(roles.bbl3)||member.roles.cache.has(roles.bbl4))||member.roles.cache.has(roles.bbl1))
+            const bb = members.filter(member => (member.roles.cache.has(roles.bbl2) || member.roles.cache.has(roles.bbl3) || member.roles.cache.has(roles.bbl4)) || member.roles.cache.has(roles.bbl1))
             console.log("Fixing BB!")
             console.log(bb)
             bb.each((member: GuildMember) => {
@@ -121,7 +124,32 @@ export default new ReadableCommand(
 
         if (interaction.options.getSubcommand() === "bb-scraper") {
             const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
-            const messages = await finishedBeeps.messages.fetch({ limit: 100 })
+            let percentage = 0
+            await interaction.reply({
+                content: `Scraping for Beep Bishop submissions! This may take a while, please be patient! ${percentage}%`,
+                ephemeral: true
+            })
+            const beeps = await finishedBeep.view()
+            const submissions = beeps.filter(beep => beep.submission).sort((a, b) => time.convert(a.date).unix() - time.convert(b.date).unix())
+            
+            const entries = Array.from(submissions.entries())
+
+            const dynamicPool = new DynamicPool(5)
+            for (let i = 296; i < entries.length; i++) {
+                const [index, beep] = entries[i]
+                const message = await impartial(await getMessage(finishedBeeps.messages, beep.submission)).catch(() => null)
+                console.log("Processing " + beep.entityId + "...")
+                if (!message) continue;
+                const likers = (await getReactions(message as Message, emojis.hand).users.fetch()).filter(user => {
+                    if (user?.id) return user.id !== (message.author.id) && user.id !== config.clientId; else return false
+                })
+                await net.likeBeep(message, message.author, Array.from(likers.values())).catch(() => {})
+                percentage = Math.round((index / submissions.length) * 100)
+                console.log("Progress: " + percentage + "%" + index + "/" + submissions.length)
+                await interaction.editReply({
+                    content: `Scraping for Beep Bishop submissions! This may take a while, please be patient! ${percentage}% ${index}`
+                })
+            }
         }
 
         if (interaction.options.getSubcommand() === "fix-records") {
@@ -129,9 +157,9 @@ export default new ReadableCommand(
             const finishedBeeps = (interaction.guild.channels.cache.get(channels["finished-beeps"]) ?? await interaction.guild.channels.fetch(channels["finished-beeps"])) as TextChannel
             const beeps = await finishedBeep.view()
             beeps.filter(beep => !beep.submission || !beep.embed).forEach(async beep => {
-                    console.log("Found a bastard! " + beep.entityId)
-                    await finishedBeep.waste(beep.entityId)
-                    return
+                console.log("Found a bastard! " + beep.entityId)
+                await finishedBeep.waste(beep.entityId)
+                return
             })
             for (const [index, beep] of beeps.entries()) {
                 const percentage = Math.round((index / beeps.length) * 100)
@@ -155,3 +183,4 @@ export default new ReadableCommand(
         }
     }
 )
+

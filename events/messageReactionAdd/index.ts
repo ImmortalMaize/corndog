@@ -12,7 +12,6 @@ import generateFlagMessage from "./generateFlagMessage";
 import netty from "../../net"
 
 export default new ReadableEvent("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-    if (user.id === config.clientId) return;
     const members = reaction.message.guild.members
 
     const { name, id } = reaction.emoji
@@ -33,7 +32,7 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
     const { message } = reaction
     await impartial(message)
 
-    const { guild, author } = message
+    const { guild, author } =  message && reaction.message
     const member = await getMember(guild.members, author.id)
     const likers = (await getReactions(message as Message, emojis.hand).users.fetch()).filter(user => {
         if (user?.id) return user.id !== (member.id ?? message.author.id) && user.id !== config.clientId; else return false
@@ -52,7 +51,7 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
 
     const finishedPicks = await getChannel(guild.channels, channels["finished-picks"]) as TextChannel
     const link = getLink(message as Message)[0]
-    console.log(link + "<-")
+    console.log(link)
     if (quota && precedent) {
         console.log("Quota and precedent met!")
         const embedID = precedent.toJSON().embed

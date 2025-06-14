@@ -1,5 +1,5 @@
 export { getPurple } from "./getPurple"
-export { hasUrl } from './hasUrl';
+export { hasUrl } from './hasUrl/hasUrl';
 export { hasSauce } from './hasSauce';
 export { emojis } from "./emojis"
 export { time } from "./time"
