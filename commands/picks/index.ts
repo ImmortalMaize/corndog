@@ -92,6 +92,8 @@ export default new ReadableCommand(
         const subcommand = options.getSubcommand()
         const unit = subcommand.substring(0, subcommand.length - 2) as ManipulateType;
         const picks = await getPicksTemporally(unit)
+        if (!picks) throw Error("Could not get picks! :(")
+
         for (const pick of picks) {
             const channel = await getChannel(interaction.guild.channels, channels["finished-beeps"]) as TextChannel
             const message = await getMessage(channel.messages, pick.discordId)
@@ -112,6 +114,13 @@ export default new ReadableCommand(
             const page = paginate(picks, pageSize, i + 1)
             return page
         })
+        console.log("Picks pages: ", paginatedPicks.length)
+        if (paginatedPicks.length === 0) {
+            await interaction.editReply({
+                content: `No picks found for this ${unit}.`,
+            })
+            return;
+        }
         console.log(paginatedPicks[0])
         const embeds = picksLeaderboard(paginatedPicks[0])
         
@@ -125,11 +134,12 @@ export default new ReadableCommand(
         const nextButton = new ButtonBuilder()
             .setCustomId('next')
             .setLabel('➡️')
-            .setStyle(ButtonStyle.Primary);
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(paginatedPicks.length <= 1);
         
         const paginationRow = new ActionRowBuilder().addComponents(previousButton, nextButton)
         await interaction.editReply({
-            content: `Here are the Top 10 picks for this ${unit}`,
+            content: `Here are the Top ${Math.min(picks.length, 10)} picks for this ${unit}`,
             ephemeral: true,
             // @ts-ignore
             components: [paginationRow],
@@ -163,6 +173,6 @@ export default new ReadableCommand(
                 embeds: picksLeaderboard(paginatedPicks[currentPage]),
                 //@ts-ignore
                 components: [paginationRow]
-            });
+            }).catch(console.error);
         });
     })

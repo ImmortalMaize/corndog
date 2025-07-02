@@ -15,6 +15,7 @@ const reply = async (message: Message, content: string) => {
 
 export default async function isBeepBad(message: Message): Promise<boolean> {
     const { cleanContent, channel, attachments } = message
+    console.log(attachments.map(attachment => attachment.contentType))
     console.log(cleanContent)
     const urls = cleanContent.match(hasUrl)
     if (!urls) {
