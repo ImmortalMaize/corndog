@@ -23,6 +23,7 @@ export interface Corndog extends Client {
     commands?: Collection<string, ReadableCommand>
     app?: express.Application
     socket?: Socket
+    sleep?: boolean
 }
 
 const corndog: Corndog = new Client({

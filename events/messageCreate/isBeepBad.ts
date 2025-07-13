@@ -34,8 +34,10 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
     const longLink = urls?.some(url => url.length > 100)
 
     // checks if submission has one image or less, and if that image is 64x64 or less
-    const oneAttachmentOrLess = attachments.size <= 1
-    const attachmentReqs = attachments.size === 0 ? true : attachments.every(attachment => attachment.contentType.match(/image\/.+/g) ? attachment.height <= 64 : attachment.contentType.match(/audio\/.+/g))
+    const twoAttachmentOrLess = attachments.size <= 2
+    const oneImageOrLess = attachments.filter(attachment => attachment.contentType.match(/image\/.+/g)).size <= 1
+    const oneAudioOrLess = attachments.filter(attachment => attachment.contentType.match(/audio\/.+/g)).size <= 1
+    const attachmentReqs = attachments.size === 0 ? true : oneImageOrLess && oneAudioOrLess && attachments.some(attachment => attachment.height <= 64)
     const tooLong = cleanContent.length > 450
     const headerFormatting = cleanContent.match(hasHeaders)
 
@@ -69,7 +71,7 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
         await reply(message, "DON'T USE HEADERS...!!! > _<")
         return true
     }
-    if (!oneAttachmentOrLess) {
+    if (!twoAttachmentOrLess) {
         tracer.log("ATTACHMENTS ARE BAD!!!")
         await reply(message, "TOO MANY ATTACHMENTS ATTACHMENTS RGRGHRHAAAAAAAARGRGHRGHRARHARRR...!!! > _<")
         return true
