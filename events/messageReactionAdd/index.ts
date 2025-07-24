@@ -32,13 +32,15 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
     const { message } = reaction
     await impartial(message)
 
+    console.log("Handling beep reaction...")
     const { guild, author } =  message && reaction.message
     const member = await getMember(guild.members, author.id)
     const likers = (await getReactions(message as Message, emojis.hand).users.fetch()).filter(user => {
         if (user?.id) return user.id !== (member.id ?? message.author.id) && user.id !== config.clientId; else return false
     })
+
     const likersArray = Array.from(likers.values())
-    await netty.likeBeep(message as Message, message.author, likersArray)
+    await netty.likeBeep(message as Message, message.author, likersArray).catch(console.error)
     
     const count = likers.size
     console.log('👌:' + count)
@@ -58,8 +60,8 @@ const handleBeep = async (reaction: MessageReaction, user: User) => {
         console.log(embedID)
 
         const embed = pickEmbed(reaction.message as Message, count);
-        (await finishedPicks.messages.fetch(embedID))
-            .edit({
+        const pick = (await finishedPicks.messages.fetch(embedID))
+        pick.edit({
                 embeds: [embed]
             })
 

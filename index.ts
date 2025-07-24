@@ -2,7 +2,7 @@ import env from "dotenv"
 import fs from 'node:fs'
 import path from 'node:path'
 import express from 'express'
-
+import { Client as UndiciClient } from "undici"
 env.config()
 
 import { Client, Collection, GatewayIntentBits, Partials, TextChannel, ChatInputCommandInteraction, ClientPresenceStatus } from "discord.js"
@@ -24,6 +24,7 @@ export interface Corndog extends Client {
     app?: express.Application
     socket?: Socket
     sleep?: boolean
+    undici?: UndiciClient
 }
 
 const corndog: Corndog = new Client({
@@ -50,6 +51,10 @@ corndog.login(CLIENT_TOKEN)
 const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'
 
 corndog.commands = new Collection(); corndog.app = app; corndog.socket = socket()
+corndog.undici = new UndiciClient("http://localhost:5000", {
+    maxHeaderSize: 100000,
+})
+export const undici = corndog.undici
 
 async function getCommands() {
     const commandsPath = path.join(__dirname, 'commands');
