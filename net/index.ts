@@ -67,11 +67,11 @@ class Fetch {
         const convertedBeep = await this.convertBeep(beep)
         const convertedAuthor = this.convertUser(author)
 
-        // return await request(this.dataURL + "bot/likeBeep", {
-        //     method: "POST",
-        //     headers: ["Content-Type", "application/json"],
-        //     body: JSON.stringify({ beep: convertedBeep, author: convertedAuthor, likers: likers.map(liker => this.convertUser(liker)) })
-        // })
+        return await request(this.dataURL + "bot/likeBeep", {
+            method: "POST",
+            headers: ["Content-Type", "application/json"],
+            body: JSON.stringify({ beep: convertedBeep, author: convertedAuthor, likers: likers.map(liker => this.convertUser(liker)) })
+        })
     }
 
     public async getPicksTemporally(after: Date, before?: Date) {

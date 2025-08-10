@@ -1,11 +1,19 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, ClientPresenceStatus, PermissionFlagsBits } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction, ClientPresenceStatus, PermissionFlagsBits, RoleManager, GuildMemberRoleManager } from "discord.js";
 import { Corndog } from "..";
+import { roles } from "../config"
 import { ReadableCommand } from "../classes";
+import { } from "dotenv";
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("sleep").setDescription("Toggle the bot's sleep mode!").setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild), async (interaction: ChatInputCommandInteraction) => {
     const corndog: Corndog = interaction.client;
     const { sleep } = corndog;
     const { STATUS } = process.env
+    const { member } = interaction;
+    const { roles: memberRoles } = member
+    let valid = true
+    if (memberRoles instanceof GuildMemberRoleManager) if (!memberRoles.cache.some(role => role.id === roles["server support"])) valid = false
+    if (Array.isArray(memberRoles)) if (!memberRoles.includes(roles["server support"])) valid = false
+    if (!valid) { interaction.reply({ content: "You do not have permission to use this command.", ephemeral: true }); return;}
 
     if (sleep) {
         corndog.sleep = false;
