@@ -8,6 +8,13 @@ Day.extend(RelativeTime)
 import isBetween from "dayjs/plugin/isBetween"
 Day.extend(isBetween)
 
+import UpdateLocale from "dayjs/plugin/updateLocale"
+Day.extend(UpdateLocale)
+
+Day.updateLocale("en", {
+    weekStart: 1 // Set Monday as the first day of the week
+})
+
 export const time = {
     convert: (time: Date) => {
         return Day(time)
@@ -24,6 +31,7 @@ export const time = {
     relative: (time: number) => {
         return  Day(time).fromNow()
     },
+    
     goBack: (amount: number, unit: Day.ManipulateType) => {
         return Day().subtract(amount, unit)
     },

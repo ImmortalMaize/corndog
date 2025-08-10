@@ -1,3 +1,4 @@
     {
-      "exec": "node --max-http-header-size 100000 -r ts-node/register index.ts"
+      "exec": "node --max-http-header-size 100000 -r ts-node/register index.ts",
+      "ext": "ts,json"
     }
