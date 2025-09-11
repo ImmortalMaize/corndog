@@ -38,10 +38,10 @@ class Fetch {
     }
 
     private async convertBeep(message: Message): Promise<BeepDto> {
-        const { content, id, createdTimestamp } = message
-        const { redirections } = await parseMessage(message)
-        const sauce = redirections.filter(redirection => redirection.match(hasSauce))[0]
-        console.log(sauce)
+        const { content, id: discordId, createdTimestamp: published } = message
+        const parsedURLs = await parseMessage(message)
+        const sauceURL = parsedURLs.filter(parsedURL => parsedURL.redirection.match(hasSauce))[0]
+        console.log(sauceURL)
         const messageWithoutUrls = content.replaceAll(hasUrl, "").replaceAll(/[\*\_\~\`]*/gm, "")
         const firstLineBreak = messageWithoutUrls.search(/\n/gm)
         let title: string = messageWithoutUrls.trim()
@@ -52,7 +52,8 @@ class Fetch {
         }
         if (!title) title = "untitled " + time.now().format("YYYY.MM.DD")
         console.log(title)
-        return { sauce, blurb, title, discordId: id, published: createdTimestamp }
+        const { url, redirection: sauce } = sauceURL
+        return { sauce, url, blurb, title, discordId, published }
     }
 
     public async postBeep(beep: Message, author: User) {
