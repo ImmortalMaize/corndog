@@ -3,22 +3,27 @@ import { ReadableCommand } from "../../classes";
 import { getMember } from '../../utils/getMember';
 import { getChannel, tracer } from "../../utils";
 import { channels, roles as roleIds } from "../../config";
+import notif from "./notif";
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setDescription("Moderation actions.").setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-    .addSubcommand(subcommand => subcommand.setName("timeout").setDescription("Times out a member. Logs the action in #reports.")
+    .addSubcommand(subcommand => subcommand.setName("timeout").setDescription("Times out a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to time out.").setRequired(true))
         .addIntegerOption(option => option.setName("length").setDescription("How long to time out the member").setRequired(true).setMinValue(0))
         .addStringOption(option => option.setName("reason").setDescription("Reason for timing the member out.").setRequired(true))
     )
-    .addSubcommand(subcommand => subcommand.setName("kick").setDescription("Kicks a member. Logs the action in #reports.")
+    .addSubcommand(subcommand => subcommand.setName("kick").setDescription("Kicks a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to kick.").setRequired(true))
         .addStringOption(option => option.setName("reason").setDescription("Reason for kicking the member.").setRequired(true))
     )
-    .addSubcommand(subcommand => subcommand.setName("ban").setDescription("Bans out a member. Logs the action in #reports.")
+    .addSubcommand(subcommand => subcommand.setName("ban").setDescription("Bans out a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to ban.").setRequired(true))
         .addStringOption(option => option.setName("reason").setDescription("Reason for banning the member.").setRequired(true))
     )
-    .addSubcommand(subcommand => subcommand.setName("offense").setDescription("Grants an offense to a member. Logs the action in #reports.")
+    .addSubcommand(subcommand => subcommand.setName("offense").setDescription("Grants an offense to a member. Logs the action in #audit.")
+        .addUserOption(option => option.setName("member").setDescription("Member to grant an offense to.").setRequired(true))
+        .addStringOption(option => option.setName("reason").setDescription("Reason for granting an offense to the member.").setRequired(true))
+    )
+    .addSubcommand(subcommand => subcommand.setName("warn").setDescription("Warns a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to grant an offense to.").setRequired(true))
         .addStringOption(option => option.setName("reason").setDescription("Reason for granting an offense to the member.").setRequired(true))
     )
@@ -65,4 +70,5 @@ ${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** 
             roles.cache.has(roleIds["offense1"]) ? roleIds["offense2"] : roleIds["offense1"]
             await resolveAction(member.roles.add(newOffense))
         }
+        await notif(guild.channels, member.user, {name: action, description: reason})
     })
