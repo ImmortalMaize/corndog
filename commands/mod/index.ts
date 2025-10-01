@@ -58,7 +58,7 @@ ${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** 
             ephemeral: true,
             content: `Okay, I ${preterite} ${userMention(member.user.id)}!`
         }))
-
+        if (action === "warn") await resolveAction((async () => {})())
         if (action === "timeout") await resolveAction(member.timeout(length * 60_000, reason))
         if (action === "ban") await resolveAction(member.ban({ reason }))
         if (action === "kick") await resolveAction(member.kick(reason))
