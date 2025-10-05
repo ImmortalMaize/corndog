@@ -50,7 +50,7 @@ const { CLIENT_TOKEN, STATUS } = process.env
 corndog.login(CLIENT_TOKEN)
 const extension = __filename.split(".").pop() === 'ts' ? '.ts' : '.js'
 
-corndog.commands = new Collection(); corndog.app = app; corndog.socket = socket()
+corndog.commands = new Collection(); corndog.app = app;
 corndog.undici = new UndiciClient("http://localhost:5000", {
     maxHeaderSize: 100000,
 })

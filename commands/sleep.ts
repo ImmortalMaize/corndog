@@ -26,6 +26,6 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("sleep").se
         corndog.sleep = true;
         corndog.user.setStatus("dnd")
         await interaction.reply({ content: "The bot is now sleeping! Zzz... :sleeping:", ephemeral: true });
-        await announcements.send(woof() + "! I am undergoing some maintenance. In the meantime my commands won't work, so please be patient!" + emote("furry"))
+        await announcements.send(woof() + "! I am undergoing some maintenance. In the meantime my commands won't work, so please be patient! " + emote("furry"))
     }
 })

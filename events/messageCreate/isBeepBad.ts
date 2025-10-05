@@ -33,11 +33,12 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
     const channelIsRecycledBeeps = channel.id === channels["recycled-beeps"]
     const longLink = urls?.some(url => url.length > 100)
 
-    // checks if submission has one image or less, and if that image is 64x64 or less
+    attachments.forEach(attachment => tracer.info(attachment.height))
+    // checks if submission has one image or less, and if that image is 100px tall or less
     const twoAttachmentOrLess = attachments.size <= 2
     const oneImageOrLess = attachments.filter(attachment => attachment.contentType.match(/image\/.+/g)).size <= 1
     const oneAudioOrLess = attachments.filter(attachment => attachment.contentType.match(/audio\/.+/g)).size <= 1
-    const attachmentReqs = attachments.size === 0 ? true : oneImageOrLess && oneAudioOrLess && attachments.some(attachment => attachment.height <= 64)
+    const attachmentReqs = attachments.size === 0 ? true : oneImageOrLess && oneAudioOrLess && attachments.some(attachment => attachment.height <= 100)
     const tooLong = cleanContent.length > 450
     const headerFormatting = cleanContent.match(hasHeaders)
 
@@ -79,7 +80,8 @@ export default async function isBeepBad(message: Message): Promise<boolean> {
 
     if (!attachmentReqs) {
         tracer.log("Attachments don't fulfill requirements.")
-        await reply(message, "Image taller than 64px or no image or audio file detected...!! > _<")
+        await reply(message, "Image taller than 100px!! > _<")
+        return true
     }
 
     tracer.info("Looks good!")

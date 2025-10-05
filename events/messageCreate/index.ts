@@ -24,7 +24,7 @@ export default new ReadableEvent("messageCreate", async (message: Message) => {
             return false
         })
         judgeForReactChannel(message, bad)
-        if (bad === false) await netty.postBeep(message, message.author)
+        //if (bad === false) await netty.postBeep(message, message.author)
     }
     if (isUserContent) {
         const bad = await isUserContentBad(message).catch((err) => {
