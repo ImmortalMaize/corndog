@@ -30,7 +30,8 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
     , async (interaction: ChatInputCommandInteraction) => {
         const { options, guild } = interaction
         const moderator = interaction.member
-        const action = options.getSubcommand()
+        let action = options.getSubcommand()
+
         const reason = options.getString("reason")
         const length = options.getInteger("length")
 
@@ -70,5 +71,7 @@ ${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** 
             roles.cache.has(roleIds["offense1"]) ? roleIds["offense2"] : roleIds["offense1"]
             await resolveAction(member.roles.add(newOffense))
         }
+
+        if (action === "warn") action = "warning"
         await notif(guild.channels, member.user, {name: action, description: reason})
     })
