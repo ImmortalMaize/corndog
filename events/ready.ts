@@ -31,7 +31,10 @@ export default new ReadableEvent(
         
                 commands.send("Time control resumption looks good too!")
             }],
-            ["weeklies", async (timeControl) => {}]
+            ["weeklies", async (timeControl) => {}],
+            ["ban", async (timeControl) => {
+                guild.bans.remove(timeControl.user)
+            }]
         ]))
     },
     true

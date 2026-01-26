@@ -1,9 +1,11 @@
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, TextChannel, userMention } from "discord.js";
 import { ReadableCommand } from "../../classes";
 import { getMember } from '../../utils/getMember';
-import { getChannel, tracer } from "../../utils";
+import { getChannel, time, tracer } from "../../utils";
 import { channels, roles as roleIds } from "../../config";
 import notif from "./notif";
+import bannotif from "./bannotif";
+import { TimeControl } from "../../redis/entities";
 
 export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setDescription("Moderation actions.").setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .addSubcommand(subcommand => subcommand.setName("timeout").setDescription("Times out a member. Logs the action in #audit.")
@@ -18,6 +20,13 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
     .addSubcommand(subcommand => subcommand.setName("ban").setDescription("Bans out a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to ban.").setRequired(true))
         .addStringOption(option => option.setName("reason").setDescription("Reason for banning the member.").setRequired(true))
+        .addIntegerOption(option => option.setName("length").setDescription("How long to time out the member").setRequired(true).setMinValue(0))
+        .addStringOption(option => option.setName("unit").setDescription("Unit of time for the ban.").setRequired(true).addChoices(
+            { name: "Days", value: "days" },
+            { name: "Weeks", value: "weeks" },
+            { name: "Months", value: "months" },
+            { name: "Years", value: "years"}
+        ))
     )
     .addSubcommand(subcommand => subcommand.setName("offense").setDescription("Grants an offense to a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to grant an offense to.").setRequired(true))
@@ -34,6 +43,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
 
         const reason = options.getString("reason")
         const length = options.getInteger("length")
+        const unit = options.getString("unit")
 
         const member = await getMember(guild.members, options.getUser("member").id)
         if (!member) return;
@@ -61,7 +71,14 @@ ${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** 
         }))
         if (action === "warn") await resolveAction((async () => {})())
         if (action === "timeout") await resolveAction(member.timeout(length * 60_000, reason))
-        if (action === "ban") await resolveAction(member.ban({ reason }))
+        if (action === "ban") await bannotif(member.user, {name: action, description: reason}).then(async () => {
+            await resolveAction(member.ban({ reason }))
+            //@ts-ignore
+            await TimeControl.generate({
+                                user: member.user.id,
+                                name: "ban",
+                            }, time.duration({ [unit]: length})/1000)
+        })
         if (action === "kick") await resolveAction(member.kick(reason))
         if (action === "offense") {
             const { roles } = member

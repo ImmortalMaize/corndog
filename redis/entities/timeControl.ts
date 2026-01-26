@@ -6,6 +6,7 @@ import { Inventory } from '../classes';
 interface TimeControl {
     channel: string,
     message: string,
+    user: string,
     name: string,
     cooldown: Date
 }
@@ -17,6 +18,7 @@ const schema = new Schema(
     {
         channel: { type: "string" },
         message: { type: "string" },
+        user: { type: "string" },
         name: { type: "string" },
         cooldown: {type: "date"}
     },
@@ -54,7 +56,7 @@ class TimeControlInventory extends Inventory<TimeControl> {
         if (leftovers.length > 0) {
         console.log("There's some unresolved time controls...")
         const interval = setInterval(async () => {
-                const timeControls = await repository.search().all()
+                const timeControls = await repository.search()?.all()
                 if (timeControls.length === 0) {
                     console.log("That's a wrap!")
                     clearInterval(interval)
