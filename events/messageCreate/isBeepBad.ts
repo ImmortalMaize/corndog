@@ -1,6 +1,6 @@
 import { Message, TextChannel, userMention } from "discord.js"
 import { channels } from "../../config"
-import { hasHeaders, hasSauce, hasUrl, tracer } from "../../utils"
+import { hasHeaders, hasSauce, hasUrl, time, tracer } from "../../utils"
 import { request } from "undici"
 
 const reply = async (message: Message, content: string) => {
@@ -14,7 +14,8 @@ const reply = async (message: Message, content: string) => {
 }
 
 export default async function isBeepBad(message: Message): Promise<boolean> {
-    const { cleanContent, channel, attachments } = message
+    const { cleanContent, channel, attachments, createdAt } = message
+    if (time.past(time.goForth(1, "month", createdAt).toDate())) return false;
     console.log(attachments.map(attachment => attachment.contentType))
     console.log(cleanContent)
     const urls = cleanContent.match(hasUrl)

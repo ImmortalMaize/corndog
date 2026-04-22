@@ -11,6 +11,15 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
     .addSubcommand(subcommand => subcommand.setName("timeout").setDescription("Times out a member. Logs the action in #audit.")
         .addUserOption(option => option.setName("member").setDescription("Member to time out.").setRequired(true))
         .addIntegerOption(option => option.setName("length").setDescription("How long to time out the member").setRequired(true).setMinValue(0))
+        .addStringOption(option => option.setName("unit").setDescription("Unit of time for the ban.").setRequired(true).addChoices(
+            { name: "Seconds", value: "seconds"},
+            { name: "Minutes", value: "minutes"},
+            { name: "Hours", value: "hours"},
+            { name: "Days", value: "days" },
+            { name: "Weeks", value: "weeks" },
+            { name: "Months", value: "months" },
+            { name: "Years", value: "years"}
+        ))
         .addStringOption(option => option.setName("reason").setDescription("Reason for timing the member out.").setRequired(true))
     )
     .addSubcommand(subcommand => subcommand.setName("kick").setDescription("Kicks a member. Logs the action in #audit.")
@@ -57,7 +66,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
                         action === "offense" ? "granted an offense to" :
                             "moderated"
         const summary = `
-${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** ${length ? length + " min" : "N/A"}\n**Reason:** ${reason}
+${moderator.user.username} ${preterite} ${member.user.username} (ID: ${member.user.id}).\n\n**Length:** ${length ? length + " min" : "N/A"}\n**Reason:** ${reason}
 `
         const resolveAction = async (promise: Promise<any>) => promise.catch(async (err) => {
             tracer.error(err)
@@ -69,8 +78,9 @@ ${moderator.user.username} ${preterite} ${member.user.username}.\n\n**Length:** 
             ephemeral: true,
             content: `Okay, I ${preterite} ${userMention(member.user.id)}!`
         }))
+
         if (action === "warn") await resolveAction((async () => {})())
-        if (action === "timeout") await resolveAction(member.timeout(length * 60_000, reason))
+        if (action === "timeout") await resolveAction(member.timeout(time.duration({ [unit]: length}), reason))
         if (action === "ban") await bannotif(member.user, {name: action, description: reason}).then(async () => {
             await resolveAction(member.ban({ reason }))
             //@ts-ignore

@@ -32,8 +32,8 @@ export const time = {
         return  Day(time).fromNow()
     },
     
-    goBack: (amount: number, unit: Day.ManipulateType) => {
-        return Day().subtract(amount, unit)
+    goBack: (amount: number, unit: Day.ManipulateType, date?: Date) => {
+        return Day(date).subtract(amount, unit)
     },
     past: (date: Date) => {
         return Day().unix() >= Day(date).unix()
@@ -44,8 +44,8 @@ export const time = {
     between: (date1: Date, range: [Date, Date]) => {
         return Day(date1).isBetween(range[0], range[1])
     },
-    goForth: (amount: number, unit: Day.ManipulateType) => {
-        return Day().add(amount, unit)
+    goForth: (amount: number, unit: Day.ManipulateType, date?: Date) => {
+        return Day(date).add(amount, unit)
     },
     startOf: (unit:Day.ManipulateType) => {
         return Day().startOf(unit)
