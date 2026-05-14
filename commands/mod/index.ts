@@ -66,7 +66,7 @@ export default new ReadableCommand(new SlashCommandBuilder().setName("mod").setD
                         action === "offense" ? "granted an offense to" :
                             "moderated"
         const summary = `
-${moderator.user.username} ${preterite} ${member.user.username} (ID: ${member.user.id}).\n\n**Length:** ${length ? length + " min" : "N/A"}\n**Reason:** ${reason}
+${moderator.user.username} ${preterite} ${member.user.username} (ID: ${member.user.id}).\n\n**Length:** ${length ? length + " " + unit : "N/A"}\n**Reason:** ${reason}
 `
         const resolveAction = async (promise: Promise<any>) => promise.catch(async (err) => {
             tracer.error(err)
