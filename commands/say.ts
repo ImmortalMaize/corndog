@@ -3,11 +3,11 @@ import { ReadableCommand } from "../classes";
 import { users } from "../config";
 import { emote, woof } from "../utils";
 
-export default new ReadableCommand(new SlashCommandBuilder().setName("say").setDescription("Make me say something!").setDefaultMemberPermissions(0).addStringOption(option => option.setName("something").setRequired(true).setDescription("What should I say?")), async (interaction: ChatInputCommandInteraction) => {
+export default new ReadableCommand(new SlashCommandBuilder().setName("say").setDescription("Make me say something!").addStringOption(option => option.setName("something").setRequired(true).setDescription("What should I say?")), async (interaction: ChatInputCommandInteraction) => {
 	const { channel, options } = interaction
 	const something = options.getString("something")
 
-	if (interaction.member.user.id !== users.maize) {
+	if (interaction.member.user.id !== users.maize && interaction.member.user.id !== users.happylemonlime && interaction.member.user.id !== users.choptop84) {
 		interaction.reply({
 			content: `You're not the boss of me RGHRGHRGHRGH! ${emote("malcontent")}`,
 			ephemeral: true

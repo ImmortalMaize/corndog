@@ -7,5 +7,5 @@ export default async (user: User, action: {
     description: string
 }) => {
     const {name, description} = action
-    await user.createDM().then(dm => dm.send(`${woof()}... <@${user.id}>, you have been granted a ${name} for the following reason.\n> ${description}\n In the future, please make sure to follow server and channel rules. Server-wide rules are listed in <#${channels["rules"]}>, while channel-specific rules can be found in the channel description. You can appeal the ban [here](https://forms.gle/y2sHb3Tzcha5zxX47), but it's probably best to give it time. Thank you! ${emote("furry")}`))
+    await user.createDM().then(dm => dm.send(`${woof()}... <@${user.id}>, you have been granted a ${name} for the following reason.\n> ${description}\n In the future, please make sure to follow server and channel rules. Server-wide rules can be found [here](https://docs.google.com/document/d/1bIPD_u572_WVxplqQ8FmmaKLhoPItBto57h3nekh1fs/edit?tab=t.0), while channel-specific rules can be found in the channel description. You can appeal the ban [here](https://forms.gle/y2sHb3Tzcha5zxX47), but it's probably best to give it time. Thank you! ${emote("furry")}`))
 }

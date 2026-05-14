@@ -40,6 +40,7 @@
     "commands": "ts-node commands.ts",
     "sleep": "ts-node sleep.ts",
     "build": "tsc",
+    "fullbuild": "npm run build && npm run commands && npm run woof",
     "postinstall": "",
     "test": "jest"
   }
